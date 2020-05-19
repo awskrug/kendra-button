@@ -19,10 +19,10 @@ functions:
     timeout: 600
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
-#    events:
-#      - http:
-#          path: scrap
-#          method: get
+    events:
+      - http:
+          path: scrap
+          method: get
 
 plugins:
   - serverless-python-requirements

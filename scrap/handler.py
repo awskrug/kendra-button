@@ -1,10 +1,10 @@
 import os
 import tempfile
 
-from scrapy.crawler import CrawlerRunner
+from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import SitemapSpider
 from scrapy.utils.reactor import install_reactor
-from twisted.internet import reactor
+from twisted.internet import reactor, defer
 
 td = tempfile.TemporaryDirectory()
 # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -32,13 +32,10 @@ class AWSDoc(SitemapSpider):
         os.makedirs(os.path.dirname(file), exist_ok=True)
         with open(file, 'wb') as f:
             f.write(response.body)
-        return {
+        yield {
             "url": response.url,
             "service": service,
         }
-
-
-install_reactor('twisted.internet.asyncioreactor.AsyncioSelectorReactor')
 
 
 def get_all_files():
@@ -54,7 +51,7 @@ def get_all_files():
 def handler(event, context):
     td = tempfile.TemporaryDirectory()
     result_file = os.path.join(td.name, 'result.json')
-    process = CrawlerRunner({
+    process = CrawlerProcess({
         'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
         'FEEDS': {
             result_file: {
@@ -66,10 +63,7 @@ def handler(event, context):
     })
 
     process.crawl(AWSDoc)
-    d = process.join()
-    d.addBoth(lambda _: reactor.stop())
-    reactor.run()
-    # process.start(stop_after_crawl=False)  # the script will block here until the crawling is finished
+    process.start(stop_after_crawl=False)  # the script will block here until the crawling is finished
 
     file_list =  get_all_files()
     response = {
