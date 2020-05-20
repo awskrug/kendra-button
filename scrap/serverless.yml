@@ -1,0 +1,28 @@
+service: scrap
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    layer: true
+
+provider:
+  name: aws
+  runtime: python3.8
+
+  stage: dev
+  region: us-east-1
+
+functions:
+  scrappy:
+    handler: handler.handler
+    memorySize: 1024
+    timeout: 600
+    layers:
+      - { Ref: PythonRequirementsLambdaLayer }
+    events:
+      - http:
+          path: scrap
+          method: get
+
+plugins:
+  - serverless-python-requirements
