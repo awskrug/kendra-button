@@ -6,6 +6,7 @@ interface BText {
   state: any;
   stateB: stateBtype;
 }
+
 const Button = (props: BText) => {
   const { text, state, stateB } = props
   const btnOnClick = useCallback((e: any) => {

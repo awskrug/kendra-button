@@ -1,16 +1,30 @@
 service: scrap
 
 custom:
+  stage:  ${opt:stage, 'dev'}
+  kendra:
+    account: 294038372338
+  bucket:
+    scrapOrigin: awskrug.kendra.${self:custom.stage}
   pythonRequirements:
     dockerizePip: true
     layer: true
 
+
 provider:
   name: aws
   runtime: python3.8
-
   stage: dev
-  region: us-east-1
+  region: us-west-2
+  environment:
+    BUCKET: ${self:custom.bucket.scrapOrigin}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+        - "sns:*"
+      Resource:
+        - "*"
 
 functions:
   scrappy:
@@ -20,9 +34,36 @@ functions:
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
     events:
-      - http:
-          path: scrap
-          method: get
+      - sns: dispatch
 
 plugins:
   - serverless-python-requirements
+
+resources:
+  Resources:
+    ScrapBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket.scrapOrigin}
+    
+    SampleBucketPolicy: 
+      Type: AWS::S3::BucketPolicy
+      Properties: 
+        Bucket: 
+          Ref: "ScrapBucket"
+        PolicyDocument: 
+          Statement: 
+            - 
+              Action: 
+                - "s3:*"
+              Effect: "Allow"
+              Resource: 
+                Fn::Join: 
+                  - ""
+                  - 
+                    - "arn:aws:s3:::"
+                    - 
+                      Ref: "ScrapBucket"
+                    - "/*"
+              Principal:
+                AWS: "arn:aws:iam::${self:custom.kendra.account}:root"

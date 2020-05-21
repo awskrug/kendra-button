@@ -1,21 +1,30 @@
 import os
 import tempfile
-
+import io
 from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import SitemapSpider
 from scrapy.utils.reactor import install_reactor
 from twisted.internet import reactor, defer
-
-td = tempfile.TemporaryDirectory()
-# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+import boto3
+from hashids import Hashids
+td # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = td.name
 DATA_DIR = os.path.join(BASE_DIR, 'data')
-
+BUCKET = os.environ.get('BUCKET')
 
 def get_file_name(name, path):
     path = os.path.join(DATA_DIR, name, path.replace('/', '-'))
     return path
 
+s3 = boto3.client('s3')
+def site_hash(name:str):
+    hashids = Hashids(salt=name)
+    return hashids.encode(1)
+    
+
+def make_obj_name(site:str,url: str):
+    hashids = Hashids(salt=)
+    return f"{}/{hashids.encode(1)}" 
 
 class AWSDoc(SitemapSpider):
     name = 'aws_doc'
@@ -30,8 +39,9 @@ class AWSDoc(SitemapSpider):
 
         file = os.path.join(DATA_DIR, 'aws_doc', service, path)
         os.makedirs(os.path.dirname(file), exist_ok=True)
-        with open(file, 'wb') as f:
-            f.write(response.body)
+        buff2 = io.BytesIO(response.body)
+        s3.upload_fileobj(buff2,BUCKET, make_obj_name(self.name,response.url))
+
         yield {
             "url": response.url,
             "service": service,
@@ -63,7 +73,7 @@ def handler(event, context):
     })
 
     process.crawl(AWSDoc)
-    process.start(stop_after_crawl=False)  # the script will block here until the crawling is finished
+    process.start(stop_after_crawl=True)  # the script will block here until the crawling is finished
 
     file_list =  get_all_files()
     response = {
