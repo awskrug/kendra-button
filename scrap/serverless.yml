@@ -5,7 +5,7 @@ custom:
   kendra:
     account: 294038372338
   bucket:
-    scrapOrigin: awskrug.kendra.${self:custom.stage}
+    scrapOrigin: awskrug.openkendra.${self:custom.stage}
   pythonRequirements:
     dockerizePip: true
     layer: true
