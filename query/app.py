@@ -3,7 +3,7 @@ import boto3
 from flask import Flask, request, abort, jsonify
 
 app = Flask(__name__)
-kendra = boto3.client('kendra')
+app.config['JSON_AS_ASCII'] = False
 
 
 @app.route('/')
@@ -25,16 +25,18 @@ white_list = [
 
 @app.route('/kendra/<method>', methods=['POST'])
 def kendra_client(method: str):
+    kendra = boto3.client('kendra')
     if method not in white_list:
         abort(404)
     try:
-        return jsonify(kendra[method](**request.form))
+        return jsonify(getattr(kendra, method)(**request.form))
     except Exception as e:
         return jsonify({
             'error': f"{e}",
         })
 
         # We only need this for local development.
+
 
 if __name__ == '__main__':
     app.run()

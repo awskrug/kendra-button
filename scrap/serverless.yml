@@ -18,6 +18,7 @@ provider:
   region: us-west-2
   environment:
     BUCKET: ${self:custom.bucket.scrapOrigin}
+    PYPPETEER_HOME: '/tmp/'
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -25,11 +26,19 @@ provider:
         - "sns:*"
       Resource:
         - "*"
+package:
+  exclude:
+    - .venv/**
+    - node_modules/**
+  include:
+    - bin/**
+    - parser/**
+    - utils.py
 
 functions:
   scrappy:
     handler: handler.handler
-    memorySize: 1024
+    memorySize: 512
     timeout: 600
     layers:
       - { Ref: PythonRequirementsLambdaLayer }

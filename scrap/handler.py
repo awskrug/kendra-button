@@ -1,12 +1,16 @@
+import asyncio
 import io
 import os
 import tempfile
 
 import boto3
 import shortuuid
-from scrapy.crawler import CrawlerProcess
 from scrapy.spiders import SitemapSpider
 
+try:
+    from scrap.parser.sitemap import get_sitemap_urls
+except Exception as e:
+    from parser.sitemap import get_sitemap_urls
 td = tempfile.TemporaryDirectory()
 BASE_DIR = td.name
 DATA_DIR = os.path.join(BASE_DIR, 'data')
@@ -15,16 +19,7 @@ BUCKET = os.environ.get('BUCKET', 'kendra-button')
 s3 = boto3.client('s3')
 
 
-def make_hash(name: str):
-    return shortuuid.uuid(name=name)
 
-
-def make_obj_name(site: str, url: str,ext:str):
-    return f"{make_hash(site)}/{make_hash(url)}.{ext}"
-
-
-def make_meta_name(path:str):
-    return f"{path}/metadata.json"
 
 
 class AWSDoc(SitemapSpider):
@@ -41,36 +36,38 @@ class AWSDoc(SitemapSpider):
         file = os.path.join(DATA_DIR, 'aws_doc', service, path)
         os.makedirs(os.path.dirname(file), exist_ok=True)
         buff2 = io.BytesIO(response.body)
-        obj_path = make_obj_name(self.name, response.url,'html')
+        obj_path = make_obj_name(self.name, response.url, 'html')
         s3.upload_fileobj(buff2, BUCKET, obj_path)
-#         metadata = {
-#             "DocumentId": "document ID",
-#             "Attributes": {
-#         "_category": "document category",
-#         "_created_at": "ISO 8601 encoded string",
-#         "_last_updated_at": "ISO 8601 encoded string",
-#         "_source_uri": "document URI,
-#         "_version": "file version",
-#         "_view_count": number of times document has been viewed,
-#         "custom attribute key": "custom attribute value",
-#         additional custom attributes
-#     },
-#     "AccessControlList": [
-#          {
-#              "Name": "user name",
-#              "Type": "GROUP | USER",
-#              "Access": "ALLOW | DENY"
-#          }
-#     ],
-#     "Title": "document title",
-#     "ContentType": "HTML | MS_WORD | PDF | PLAIN_TEXT | PPT"
-# }
+        #         metadata = {
+        #             "DocumentId": "document ID",
+        #             "Attributes": {
+        #         "_category": "document category",
+        #         "_created_at": "ISO 8601 encoded string",
+        #         "_last_updated_at": "ISO 8601 encoded string",
+        #         "_source_uri": "document URI,
+        #         "_version": "file version",
+        #         "_view_count": number of times document has been viewed,
+        #         "custom attribute key": "custom attribute value",
+        #         additional custom attributes
+        #     },
+        #     "AccessControlList": [
+        #          {
+        #              "Name": "user name",
+        #              "Type": "GROUP | USER",
+        #              "Access": "ALLOW | DENY"
+        #          }
+        #     ],
+        #     "Title": "document title",
+        #     "ContentType": "HTML | MS_WORD | PDF | PLAIN_TEXT | PPT"
+        # }
         # s3.upload_fileobj(buff2, BUCKET, make_meta_name(obj_path))
 
         yield {
             "url": response.url,
             "service": service,
         }
+
+
 class MIT_SITE(SitemapSpider):
     name = 'aws_doc'
     base_path = 'https://docs.aws.amazon.com/'
@@ -83,26 +80,21 @@ class MIT_SITE(SitemapSpider):
         path = '-'.join(doc_path[1:])
 
         buff2 = io.BytesIO(response.body)
-        obj_path = make_obj_name(self.name, response.url,'html')
+        obj_path = make_obj_name(self.name, response.url, 'html')
         s3.upload_fileobj(buff2, BUCKET, obj_path)
 
-def handler(event, context):
-    td = tempfile.TemporaryDirectory()
-    result_file = os.path.join(td.name, 'result.json')
-    process = CrawlerProcess({
-        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)',
-        'FEEDS': {
-            result_file: {
-                'format': 'json',
-                'encoding': 'utf8',
-                'indent': 4,
-            },
-        }
-    })
 
-    # process.crawl(AWSDoc)
-    process.crawl(MIT_SITE)
-    process.start(stop_after_crawl=True)  # the script will block here until the crawling is finished
+async def get_urls(url):
+    result = await get_sitemap_urls(url)
+    print('total_page = ', len(result))
+    # print(result)
+    return result
+
+
+def handler(event, context):
+    url = 'https://docs.aws.amazon.com/kendra/latest/dg/sitemap.xml'
+    # url = 'https://docs.aws.amazon.com/sitemap_index.xml'
+    asyncio.run(get_urls(url))
 
 
 if __name__ == '__main__':
