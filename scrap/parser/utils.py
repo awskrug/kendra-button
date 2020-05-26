@@ -33,5 +33,10 @@ def make_obj_name(site: str, url: str, ext: str):
     return f"{make_hash(site)}/{make_hash(url)}.{ext}"
 
 
+def make_simple_obj_name(site: str, url: str):
+    path = '/'.join(url.split('/')[3:])
+    return f"{site}/{path}"
+
+
 def make_meta_name(path: str):
     return f"{path}/metadata.json"

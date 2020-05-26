@@ -4,22 +4,21 @@ import os
 import tempfile
 
 import boto3
-import shortuuid
 from scrapy.spiders import SitemapSpider
 
 try:
     from scrap.parser.sitemap import get_sitemap_urls
+    from scrap.parser.html import get_page
 except Exception as e:
     from parser.sitemap import get_sitemap_urls
+    from parser.html import get_page
+
 td = tempfile.TemporaryDirectory()
 BASE_DIR = td.name
 DATA_DIR = os.path.join(BASE_DIR, 'data')
 BUCKET = os.environ.get('BUCKET', 'kendra-button')
 
 s3 = boto3.client('s3')
-
-
-
 
 
 class AWSDoc(SitemapSpider):
@@ -68,26 +67,27 @@ class AWSDoc(SitemapSpider):
         }
 
 
-class MIT_SITE(SitemapSpider):
-    name = 'aws_doc'
-    base_path = 'https://docs.aws.amazon.com/'
-    sitemap_urls = ['https://docs.aws.amazon.com/kendra/latest/dg/sitemap.xml']
-
-    async def parse(self, response):
-        print(response.url)
-        doc_path = response.url[len(self.base_path):].split('/')
-        service = doc_path[0]
-        path = '-'.join(doc_path[1:])
-
-        buff2 = io.BytesIO(response.body)
-        obj_path = make_obj_name(self.name, response.url, 'html')
-        s3.upload_fileobj(buff2, BUCKET, obj_path)
+# class MIT_SITE(SitemapSpider):
+#     name = 'aws_doc'
+#     base_path = 'https://docs.aws.amazon.com/'
+#     sitemap_urls = ['https://docs.aws.amazon.com/kendra/latest/dg/sitemap.xml']
+#
+#     async def parse(self, response):
+#         print(response.url)
+#         doc_path = response.url[len(self.base_path):].split('/')
+#         service = doc_path[0]
+#         path = '-'.join(doc_path[1:])
+#
+#         buff2 = io.BytesIO(response.body)
+#         obj_path = make_obj_name(self.name, response.url, 'html')
+#         s3.upload_fileobj(buff2, BUCKET, obj_path)
 
 
 async def get_urls(url):
     result = await get_sitemap_urls(url)
     print('total_page = ', len(result))
-    # print(result)
+    for page in result:
+        await get_page('awsdoc',page,)
     return result
 
 
