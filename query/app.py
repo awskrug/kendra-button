@@ -35,7 +35,8 @@ def kendra_client(method: str):
     if method not in white_list:
         abort(404)
     try:
-        return jsonify(getattr(kendra, method)(**request.get_json(silent=True)))
+        data = request.get_json(silent=True) or {}
+        return jsonify(getattr(kendra, method)(**data))
     except Exception as e:
         return jsonify({
             'error': f"{e}",
