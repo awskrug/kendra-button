@@ -1,4 +1,4 @@
-POST https://6cev4fvcu0.execute-api.us-east-1.amazonaws.com/dev/kendra/query
+POST https://f7ngbade0c.execute-api.us-west-2.amazonaws.com/dev/kendra/query
 Content-Type: application/json
 
 {
@@ -8,6 +8,6 @@ Content-Type: application/json
 
 
 ###
-POST https://0y3n5xq4vi.execute-api.us-west-2.amazonaws.com/dev/kendra/list_indices
+POST https://f7ngbade0c.execute-api.us-west-2.amazonaws.com/dev/kendra/list_indices
 
 

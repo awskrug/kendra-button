@@ -1,0 +1,29 @@
+service: kendra-button
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: us-west-2
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "kendra:*"
+      Resource:
+        - "*"
+
+functions:
+  queryAPI:
+    handler: wsgi_handler.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+
+custom:
+  wsgi:
+    app: app.app
+    pythonBin: python3 # Some systems with Python3 may require this
+    packRequirements: false
+
+plugins:
+  - serverless-wsgi
+  - serverless-python-requirements
