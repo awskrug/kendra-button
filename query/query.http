@@ -1,4 +1,4 @@
-POST https://0y3n5xq4vi.execute-api.us-west-2.amazonaws.com/dev/kendra/query
+POST https://6cev4fvcu0.execute-api.us-east-1.amazonaws.com/dev/kendra/query
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ----WebKitFormBoundary7MA4YWxkTrZu0gW
@@ -12,7 +12,7 @@ kendra
 ----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ###
-POST https://0y3n5xq4vi.execute-api.us-west-2.amazonaws.com/dev/kendra/query
+POST https://6cev4fvcu0.execute-api.us-east-1.amazonaws.com/dev/kendra/query
 Content-Type: application/json
 {
   "IndexId": "65a73c7f-74df-43da-950b-70cbc46be778",
