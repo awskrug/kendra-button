@@ -31,9 +31,10 @@ white_list = [
 
 @app.route('/kendra/<method>', methods=['POST'])
 def kendra_client(method: str):
-    kendra = boto3.client('kendra')
     if method not in white_list:
         abort(404)
+
+    kendra = boto3.client('kendra')
     try:
         data = request.get_json(silent=True) or {}
         return jsonify(getattr(kendra, method)(**data))
@@ -42,8 +43,6 @@ def kendra_client(method: str):
             'error': f"{e}",
         })
 
-        # We only need this for local development.
-
-
+ # We only need this for local development.
 if __name__ == '__main__':
     app.run()

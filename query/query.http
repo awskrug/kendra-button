@@ -10,4 +10,12 @@ Content-Type: application/json
 ###
 POST https://f7ngbade0c.execute-api.us-west-2.amazonaws.com/dev/kendra/list_indices
 
+### For Local Test
+POST http://localhost:5000/kendra/query
+Content-Type: application/json
+
+{
+  "IndexId": "65a73c7f-74df-43da-950b-70cbc46be778",
+  "QueryText": "kendra"
+}
 
