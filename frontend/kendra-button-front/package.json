@@ -8,6 +8,8 @@
     "export": "next export"
   },
   "dependencies": {
+    "@aws-amplify/ui-react": "^0.2.7",
+    "aws-amplify": "^3.0.13",
     "cors": "2.8.5",
     "next": "latest",
     "react": "^16.13.1",
