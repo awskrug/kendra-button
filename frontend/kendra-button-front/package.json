@@ -2,7 +2,7 @@
   "name": "api-routes-cors",
   "version": "1.0.0",
   "scripts": {
-    "build": "next build src && next export",
+    "build": "next build src && cd src && next export",
     "start": "next src",
     "tsc": "cd src && tsc"
   },
