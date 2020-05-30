@@ -2,9 +2,9 @@
   "name": "api-routes-cors",
   "version": "1.0.0",
   "scripts": {
-    "build": "next build && next export",
+    "build": "next build src && next export",
     "start": "next src",
-    "tsc": "tsc"
+    "tsc": "cd src && tsc"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^0.2.7",
