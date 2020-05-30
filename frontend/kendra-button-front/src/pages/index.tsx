@@ -1,17 +1,17 @@
+import { Action, useMainContextImpls } from '../contexts'
 import { useCallback, useState } from 'react';
 
 import Link from 'next/link';
-import { useMainContextImpls } from '../contexts'
 
 type stateBtype = string | number;
 interface BText {
   text: string;
-  state: any;
-  stateB: stateBtype;
+  theme: string;
+  dispatch: React.Dispatch<Action>;
 }
 
 const Button = (props: BText) => {
-  const { text, theme, stateB, dispatch } = props;
+  const { text, theme, dispatch } = props;
   const btnOnClick = useCallback(
     (e: any) => {
       console.log('button theme', theme)

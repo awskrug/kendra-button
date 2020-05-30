@@ -1,15 +1,14 @@
-import { ApplyFormContext, CompInfoContext, MainContext, ModalContext } from './Context'
+import { MainContext, ModalContext } from './Context'
 import React, { useContext, useMemo, useReducer, useState } from 'react'
 
 export interface State {
   theme?: string;
 }
-type Action = { type: ActionType.SetUser; payload: State };
-type Reducer = (state: State, action: Action) => State;
+export type Action = { type: string; payload: State };
+export type Reducer = (state: State, action: Action) => State;
 
 const reducer: Reducer = (state, action) => {
   const { type, payload } = action
-  console.log('reducer', { type, payload })
   switch (type) {
     case 'change-theme':
       return {

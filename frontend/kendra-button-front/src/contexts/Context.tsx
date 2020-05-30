@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-const MainContext = createContext()
-const ModalContext = createContext()
+const MainContext = createContext(undefined)
+const ModalContext = createContext(undefined)
 
 export { MainContext, ModalContext }
