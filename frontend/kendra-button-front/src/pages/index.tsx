@@ -6,12 +6,13 @@ import Link from 'next/link';
 type stateBtype = string | number;
 interface BText {
   text: string;
+  currentTheme: string;
   theme: string;
   dispatch: React.Dispatch<Action>;
 }
 
 const Button = (props: BText) => {
-  const { text, theme, dispatch } = props;
+  const { text, currentTheme, theme, dispatch } = props;
   const btnOnClick = useCallback(
     (e: any) => {
       console.log('button theme', theme)
@@ -22,7 +23,7 @@ const Button = (props: BText) => {
     },
     [theme],
   );
-  const btnBgClass = theme === 'minty' ? 'btn-primary' : 'btn-dark'
+  const btnBgClass = theme === currentTheme ? 'btn-primary' : 'btn-dark'
   return (
     <>
       <button className={'btn ' + btnBgClass} onClick={btnOnClick}>
@@ -47,8 +48,10 @@ const Index = (props) => {
     <>
       <h1>This is Kendra-Frontend</h1>
       <div>
-        <Button dispatch={dispatch} theme={'minty'} text={'minty theme'} />
-        <Button dispatch={dispatch} theme={'cyborg'} text={'cyborg theme'} />
+        <Button dispatch={dispatch} currentTheme={states.theme} theme={'minty'} text={'minty theme'} />
+        <Button dispatch={dispatch} currentTheme={states.theme} theme={'cyborg'} text={'cyborg theme'} />
+        <Button dispatch={dispatch} currentTheme={states.theme} theme={'cerulean'} text={'cerulean theme'} />
+        <Button dispatch={dispatch} currentTheme={states.theme} theme={'cosmo'} text={'cosmo theme'} />
       </div>
       <Link href='/admin'>
         <a>Go To Admin Page</a>
