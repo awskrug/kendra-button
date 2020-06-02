@@ -20,7 +20,7 @@ const reducer: Reducer = (state, action) => {
   }
 }
 const MainProvider = props => {
-  const [states, dispatch] = useReducer<Reducer>(reducer, { theme: 'minty' })
+  const [states, dispatch] = useReducer<Reducer>(reducer, { theme: 'sandstone' })
 
   return <MainContext.Provider value={{ states, dispatch }}>{props.children}</MainContext.Provider>
 }

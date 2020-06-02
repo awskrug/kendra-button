@@ -20,7 +20,7 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <link
           rel='stylesheet'
-          href='https://bootswatch.com/4/minty/bootstrap.min.css'
+          href='https://bootswatch.com/4/sandstone/bootstrap.min.css'
         />
       </Head>
       <Providers contexts={[MainProvider, ModalProvider]}>
