@@ -3,3 +3,7 @@ lxml==4.5.1
 shortuuid
 boto3
 requests_html
+flask
+pynamodb
+graphene-pynamodb
+Flask-GraphQL

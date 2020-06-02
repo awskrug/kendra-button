@@ -2,10 +2,14 @@ service: scrap
 
 custom:
   stage:  ${opt:stage, 'dev'}
+  wsgi:
+    app: app.app
+    pythonBin: python3
+    packRequirements: false
   kendra:
     account: 294038372338
-  bucket:
-    scrapOrigin: awskrug.openkendra.${self:custom.stage}
+  dynamodb:
+    indexDB: kendra-buttons-index-${self:custom.stage}
   pythonRequirements:
     dockerizePip: true
     layer: true
@@ -13,66 +17,62 @@ custom:
 
 provider:
   name: aws
+  profile: everypython
   runtime: python3.8
   stage: dev
   region: us-west-2
   environment:
-    BUCKET: ${self:custom.bucket.scrapOrigin}
+    indexDB: ${self:custom.dynamodb.indexDB}
     PYPPETEER_HOME: '/tmp/'
   iamRoleStatements:
     - Effect: "Allow"
       Action:
         - "s3:*"
         - "sns:*"
+        - "dynamodb:*"
       Resource:
         - "*"
+
 package:
   exclude:
     - .venv/**
     - node_modules/**
   include:
     - bin/**
+    - app.py
     - parser/**
     - utils.py
 
 functions:
-  scrappy:
-    handler: handler.handler
+  graphql:
     memorySize: 512
+    handler: wsgi_handler.handler
     timeout: 600
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
-    events:
-      - sns: dispatch
 
 plugins:
   - serverless-python-requirements
-
+  - serverless-wsgi
 resources:
   Resources:
-    ScrapBucket:
-      Type: AWS::S3::Bucket
+    myDynamoDBTable: 
+      Type: AWS::DynamoDB::Table
       Properties:
-        BucketName: ${self:custom.bucket.scrapOrigin}
-    
-    SampleBucketPolicy: 
-      Type: AWS::S3::BucketPolicy
-      Properties: 
-        Bucket: 
-          Ref: "ScrapBucket"
-        PolicyDocument: 
-          Statement: 
-            - 
-              Action: 
-                - "s3:*"
-              Effect: "Allow"
-              Resource: 
-                Fn::Join: 
-                  - ""
-                  - 
-                    - "arn:aws:s3:::"
-                    - 
-                      Ref: "ScrapBucket"
-                    - "/*"
-              Principal:
-                AWS: "arn:aws:iam::${self:custom.kendra.account}:root"
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: "user"
+            AttributeType: "S"
+          - AttributeName: "site"
+            AttributeType: "S"
+        KeySchema: 
+          - 
+            AttributeName: "user"
+            KeyType: "HASH"
+          - 
+            AttributeName: "site"
+            KeyType: "RANGE"
+        TableName: "${self:custom.dynamodb.indexDB}"
