@@ -7,3 +7,4 @@ flask
 pynamodb
 graphene-pynamodb
 Flask-GraphQL
+flask-cors
