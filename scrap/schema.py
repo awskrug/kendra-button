@@ -1,4 +1,5 @@
 import os
+import random
 
 import graphene
 from graphene_pynamodb import PynamoObjectType
@@ -20,12 +21,20 @@ class Site(Model):
     url = UnicodeAttribute()
 
 
+class CrawlerStatus(graphene.ObjectType):
+    total = graphene.Int()
+    done = graphene.Int()
+
+
 class SiteNode(PynamoObjectType):
     class Meta:
         model = Site
         # interfaces = (graphene.Node,)
 
-    # @classmethod
+    crawler_status = graphene.Field(CrawlerStatus)
+
+    def resolve_crawler_status(self, info, ):
+        return CrawlerStatus(total=100, done=random.randrange(10, 100))
     # def get_node(cls, info, id):
     #     print(id)
     #     keys = id.split(':')
@@ -46,6 +55,11 @@ class SiteList(graphene.ObjectType):
 class Query(graphene.ObjectType):
     sites = graphene.List(SiteNode)
     sites_page_nation = graphene.Field(SiteList, page_size=graphene.Int(), last_key=graphene.String())
+
+    site = graphene.Field(SiteNode, site=graphene.String())
+
+    def resolve_site(self, info, site: str):
+        return Site.get('sample', site)
 
     def resolve_sites(self, info):
         return list(Site.query('sample'))
