@@ -50,8 +50,6 @@ const Content = (): ReactElement => {
             />
             {/* <div className="valid-feedback">Success! You"ve done it.</div> */}
           </div>
-        </div>
-        <div className={`p-3`}>
           <div className='form-group'>
             <label
               className='form-control-label font-weight-bold'
@@ -65,6 +63,9 @@ const Content = (): ReactElement => {
               <option value={`d`}>{`Daily`}</option>
               <option value={`h`}>{`Hourly`}</option>
             </select>
+          </div>
+          <div className={`d-flex justify-content-end`}>
+            <button className={`btn btn-primary shadow-sm`}>{`Crawl START`}</button>
           </div>
         </div>
         <hr className={`m-3`} />
