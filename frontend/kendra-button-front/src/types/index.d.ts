@@ -5,3 +5,10 @@ export interface User {
   phone_number_verified: boolean;
   sub: string;
 }
+
+export interface Site {
+  site: string;
+  user: string;
+  title: string;
+  url: string;
+}
