@@ -1,3 +1,4 @@
+import { API, Auth, graphqlOperation } from 'aws-amplify';
 import {
   Dispatch,
   MouseEventHandler,
@@ -8,12 +9,11 @@ import {
 } from 'react';
 import { faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { AmplifySignOut } from '@aws-amplify/ui-react';
-import { Auth } from 'aws-amplify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Projects } from './Projects';
-import { User } from '../types/user';
-import { onAuthUIStateChange } from '@aws-amplify/ui-components';
+import { User } from '../types';
+import { siteList } from '../graphql/queries'
 
 interface Props {
   user: {
@@ -26,9 +26,23 @@ const Sidebar = (props: Props): ReactElement => {
   const { user, setIsLoggedIn } = props;
 
   const [loggedInUser, setLoggedInUser] = useState(user?.attributes?.email);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sites, setSites] = useState([]);
 
   useEffect(() => {
     setLoggedInUser(user?.attributes?.email);
+    // call backend
+    const callGraphql = async ({ qry }): Promise<GraphQLResult<any>> => {
+      const res = await API.graphql(graphqlOperation(qry))
+      return res as GraphQLResult<any>
+    }
+    callGraphql({ qry: siteList }).then(res => {
+      setSites(res?.data?.sites)
+      setIsLoading(false);
+    }).catch(err => {
+      
+      setIsLoading(false);
+    })
   }, [user]);
 
   const signOut: MouseEventHandler = async () => {
@@ -54,7 +68,7 @@ const Sidebar = (props: Props): ReactElement => {
               <FontAwesomeIcon className={``} icon={faSignOutAlt} />
             </button>
           </div>
-          <Projects list={['CSE', 'MIT']} />
+          <Projects list={sites} isLoading={isLoading} />
         </div>
         <div className={`d-flex flex-column`}>
           <div className={`text-white btn btn-secondary`}>
