@@ -50,7 +50,11 @@ functions:
     timeout: 600
     events:
       - http: ANY /
+        cors: true
+
       - http: 'ANY {proxy+}'
+        cors: true
+
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
 

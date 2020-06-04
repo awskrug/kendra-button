@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_graphql import GraphQLView
 
 try:
@@ -7,6 +8,7 @@ except Exception as e:
     from schema import schema
 
 app = Flask(__name__)
+CORS(app)
 app.config['JSON_AS_ASCII'] = False
 
 
