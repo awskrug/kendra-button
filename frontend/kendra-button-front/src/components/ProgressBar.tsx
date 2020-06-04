@@ -1,19 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface Props {
   theme: string;
 }
 const ProgressBar = (props: Props) => {
   const { theme } = props || {};
-  const [percent, setPercent] = useState(0);
+  const [percent, setPercent] = useState(90);
 
   return (
     <div>
-      <div className={`align-items-center d-flex justify-content-between`}>
+      <div className={`align-items-center d-flex justify-content-between pb-1`}>
         <button
           className={`btn ` + ('btn-' + theme || '')}
-          onClick={(e) => setPercent(percent + 1)}
-        >{`INCREMENT`}</button>
+          onClick={(e) => {
+            if (percent < 100) {
+              setPercent(percent + 1)
+            }
+          }}
+        >{`INCREMENT(test)`}</button>
         <span>{percent} / 100</span>
       </div>
       <div className='progress'>
