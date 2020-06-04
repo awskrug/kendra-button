@@ -9,7 +9,7 @@ import Amplify from 'aws-amplify';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Layout from '../layout';
-import awsconfig from '../../aws-exports';
+import awsconfig from '../aws-exports';
 
 Amplify.configure(awsconfig);
 
