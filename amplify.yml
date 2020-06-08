@@ -5,6 +5,7 @@ frontend:
     build:
       commands:
         - cd frontend/kendra-button-front
+        - amplify pull
         - yarn
         - yarn build
   artifacts:
