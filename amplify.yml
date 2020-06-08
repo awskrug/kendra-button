@@ -5,7 +5,8 @@ frontend:
     build:
       commands:
         - cd frontend/kendra-button-front
-        - npm run build
+        - yarn
+        - yarn build
   artifacts:
     # IMPORTANT - Please verify your build output directory
     baseDirectory: frontend/kendra-button-front/src/out
