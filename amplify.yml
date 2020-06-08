@@ -1,12 +1,10 @@
 version: 0.1
 frontend:
   phases:
-    prebuild:
+    build:
       commands:
         - cd frontend/kendra-button-front
         - yarn
-    build:
-      commands:
         - amplifyPush --environment dev
         - yarn build
   artifacts:
