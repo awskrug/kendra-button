@@ -1,4 +1,4 @@
-import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
 import {
   Dispatch,
   MouseEventHandler,
@@ -32,15 +32,21 @@ const Sidebar = (props: Props): ReactElement => {
   useEffect(() => {
     setLoggedInUser(user?.attributes?.email);
     // call backend
-    const callGraphql = async ({ qry }): Promise<GraphQLResult<any>> => {
-      const res = await API.graphql(graphqlOperation(qry))
+    const callGraphql = async ({ query }): Promise<GraphQLResult<any>> => {
+      const res = await API.graphql({
+        query,
+        // @ts-ignore
+        authMode: 'AMAZON_COGNITO_USER_POOLS',
+      })
       return res as GraphQLResult<any>
     }
-    callGraphql({ qry: siteList }).then(res => {
+
+    callGraphql({ query: siteList }).then(res => {
+      console.log({ res })
       setSites(res?.data?.sites)
       setIsLoading(false);
     }).catch(err => {
-      
+      console.log({ err })
       setIsLoading(false);
     })
   }, [user]);
