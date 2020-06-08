@@ -4,6 +4,7 @@ frontend:
     # IMPORTANT - Please verify your build commands
     build:
       commands:
+        - cd frontend/kendra-button-front
         - npm run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
