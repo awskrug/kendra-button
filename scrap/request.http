@@ -1,0 +1,12 @@
+POST https://8pfums0mu7.execute-api.us-west-2.amazonaws.com/dev/graphql
+Content-Type: application/json
+X-REQUEST-TYPE: GraphQL
+Authorization: Bearer asdfasdfa
+
+query SiteList{
+	sites{
+      user
+      title
+      url
+  }  
+}

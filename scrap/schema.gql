@@ -1,0 +1,9 @@
+type SearchResult {
+    items:[Document]
+    page: Int!
+}
+
+
+type Query {
+ search(text:String!,site:String!) SearchResult! 
+}

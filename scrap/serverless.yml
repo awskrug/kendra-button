@@ -13,6 +13,10 @@ custom:
   pythonRequirements:
     dockerizePip: true
     layer: true
+  userPoolAuthorizer:
+    type: COGNITO_USER_POOLS
+    authorizerId:
+      Ref: CognitoAuthorizer
 
 
 provider:
@@ -47,14 +51,20 @@ functions:
   graphql:
     memorySize: 512
     handler: wsgi_handler.handler
-    timeout: 600
+    timeout: 30
     events:
       - http: ANY /
         cors: true
-
+        authorizer: 
+          type: COGNITO_USER_POOLS
+          authorizerId: 
+            Ref: CognitoAuthorizer
       - http: 'ANY {proxy+}'
         cors: true
-
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: 
+            Ref: CognitoAuthorizer
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
 
@@ -80,3 +90,13 @@ resources:
             AttributeName: "site"
             KeyType: "RANGE"
         TableName: "${self:custom.dynamodb.indexDB}"
+    CognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: KendraCongnito
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs: 
+          - arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_tJriOOf7L
+        IdentitySource: method.request.header.Authorization

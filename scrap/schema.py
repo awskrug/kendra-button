@@ -54,7 +54,7 @@ class SiteList(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     sites = graphene.List(SiteNode)
-    sites_page_nation = graphene.Field(SiteList, page_size=graphene.Int(), last_key=graphene.String())
+    sites_pagi_nation = graphene.Field(SiteList, page_size=graphene.Int(), last_key=graphene.String())
 
     site = graphene.Field(SiteNode, site=graphene.String())
 
