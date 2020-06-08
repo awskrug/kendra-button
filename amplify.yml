@@ -3,11 +3,10 @@ frontend:
   phases:
     prebuild:
       commands:
-        - amplifyPush --simple
     build:
       commands:
         - cd frontend/kendra-button-front
-        - amplify pull
+        - amplifyPush --simple
         - yarn
         - yarn build
   artifacts:
