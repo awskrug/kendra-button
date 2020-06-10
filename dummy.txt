@@ -1,0 +1,446 @@
+{
+    "FacetResults": [],
+    "QueryId": "0315e738-14e1-4b40-be24-8e8d9d0e9f93",
+    "ResponseMetadata": {
+        "HTTPHeaders": {
+            "content-length": "11999",
+            "content-type": "application/x-amz-json-1.1",
+            "date": "Wed, 10 Jun 2020 12:55:34 GMT",
+            "x-amzn-requestid": "a65c7f18-9e71-42c6-aeda-2664b227147e"
+        },
+        "HTTPStatusCode": 200,
+        "RequestId": "a65c7f18-9e71-42c6-aeda-2664b227147e",
+        "RetryAttempts": 0
+    },
+    "ResultItems": [
+        {
+            "AdditionalAttributes": [
+                {
+                    "Key": "AnswerText",
+                    "Value": {
+                        "TextWithHighlightsValue": {
+                            "Highlights": [
+                                {
+                                    "BeginOffset": 2,
+                                    "EndOffset": 140,
+                                    "TopAnswer": false
+                                },
+                                {
+                                    "BeginOffset": 2,
+                                    "EndOffset": 6,
+                                    "TopAnswer": false
+                                },
+                                {
+                                    "BeginOffset": 7,
+                                    "EndOffset": 10,
+                                    "TopAnswer": false
+                                }
+                            ],
+                            "Text": " Sung Kim is with the Department of Computer Science and Engineering, \nThe Hong Kong University of Science and Technology, Hong Kong, China. \nE-mail: hunkim@cse.ust.hk. \n\n\n Matt Staats conducted this work at the Interdisciplinary Centre for Securi-\nty, Reliability and Trust, University of Luxembourg, Luxembourg. He is \ncurrently employed by Google, Inc. E-mail: staatsm@gmail.com \n\n\nManuscript received (insert date of submission if desired). Please note that all \nacknowledgments should be placed at the end of the paper, before the bibliography. \n\n\nP \n\n\n\n\n\n\n\n0098-5589 (c) 2013 IEEE."
+                        }
+                    },
+                    "ValueType": "TEXT_WITH_HIGHLIGHTS_VALUE"
+                }
+            ],
+            "DocumentAttributes": [],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 0,
+                        "EndOffset": 300,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": " Sung Kim is with the Department of Computer Science and Engineering, \nThe Hong Kong University of Science and Technology, Hong Kong, China. \nE-mail: hunkim@cse.ust.hk. \n\n\n Matt Staats conducted this work at the Interdisciplinary Centre for Securi-\nty, Reliability and Trust, University of Luxembou"
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/papers/lee-tse2015.pdf",
+            "DocumentTitle": {
+                "Text": "lee-tse2015"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/papers/lee-tse2015.pdf",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-587cbc3b-951c-41ac-aff0-aa8e12c32042",
+            "Type": "ANSWER"
+        },
+        {
+            "AdditionalAttributes": [
+                {
+                    "Key": "AnswerText",
+                    "Value": {
+                        "TextWithHighlightsValue": {
+                            "Highlights": [
+                                {
+                                    "BeginOffset": 167,
+                                    "EndOffset": 251,
+                                    "TopAnswer": false
+                                },
+                                {
+                                    "BeginOffset": 54,
+                                    "EndOffset": 58,
+                                    "TopAnswer": false
+                                },
+                                {
+                                    "BeginOffset": 59,
+                                    "EndOffset": 62,
+                                    "TopAnswer": false
+                                },
+                                {
+                                    "BeginOffset": 167,
+                                    "EndOffset": 171,
+                                    "TopAnswer": false
+                                }
+                            ],
+                            "Text": "Send me your CV if you are interested.\n\n\n\n\n\t\t\t\n\n\n\n\n\n\n\nSung Kim\n\nDepartment of Computer Science and Engineering at the Hong Kong University of Science and Technology\n\n\nSung is an associate professor at the Hong Kong University of Science and Technology. He was a post-doc at the Program Analysis Group at MIT.\n\tHe received his Ph.D. (thesis: Adaptive Bug Prediction By Analyzing Software History) in the Computer Science Department at the University of California, Santa Cruz.\n\tHe has worked for Nara Vision Co. Ltd which is one of the leading Internet software companies in Korea for six years as a CTO."
+                        }
+                    },
+                    "ValueType": "TEXT_WITH_HIGHLIGHTS_VALUE"
+                }
+            ],
+            "DocumentAttributes": [],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 0,
+                        "EndOffset": 300,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "Send me your CV if you are interested.\n\n\n\n\n\t\t\t\n\n\n\n\n\n\n\nSung Kim\n\nDepartment of Computer Science and Engineering at the Hong Kong University of Science and Technology\n\n\nSung is an associate professor at the Hong Kong University of Science and Technology. He was a post-doc at the Program Analysis Group"
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/index.html",
+            "DocumentTitle": {
+                "Text": "Sung Kim's CSE Homepage"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/index.html",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-e417ec0b-a5f0-41ec-aab2-d937e7e3e215",
+            "Type": "ANSWER"
+        },
+        {
+            "AdditionalAttributes": [
+                {
+                    "Key": "AnswerText",
+                    "Value": {
+                        "TextWithHighlightsValue": {
+                            "Highlights": [
+                                {
+                                    "BeginOffset": 5,
+                                    "EndOffset": 9,
+                                    "TopAnswer": false
+                                },
+                                {
+                                    "BeginOffset": 10,
+                                    "EndOffset": 13,
+                                    "TopAnswer": false
+                                },
+                                {
+                                    "BeginOffset": 43,
+                                    "EndOffset": 46,
+                                    "TopAnswer": false
+                                }
+                            ],
+                            "Text": "From Sung Kim\n\n \n   Biography \n\n \n\tSunghun Kim is an Associate Professor of Computer Science at the Hong Kong University of Science and Technology. \n\t\tHe got his BS in Electrical Engineering at Daegu University, Korea in 1996.\n\t\tHe completed his Ph.D. in the Computer Science Department at the University of California, Santa Cruz in 2006. \n\t\tHe was a postdoctoral associate at Massachusetts Institute of Technology and a member of the Program Analysis Group. \n\t\tHe was a Chief Technical Officer (CTO), and led a 25-person team at the Nara Vision Co. Ltd, a leading Internet software company in Korea for six years."
+                        }
+                    },
+                    "ValueType": "TEXT_WITH_HIGHLIGHTS_VALUE"
+                }
+            ],
+            "DocumentAttributes": [],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 0,
+                        "EndOffset": 300,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "From Sung Kim\n\n \n   Biography \n\n \n\tSunghun Kim is an Associate Professor of Computer Science at the Hong Kong University of Science and Technology. \n\t\tHe got his BS in Electrical Engineering at Daegu University, Korea in 1996.\n\t\tHe completed his Ph.D. in the Computer Science Department at the Univer"
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/Bio.html",
+            "DocumentTitle": {
+                "Text": "Bio"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/Bio.html",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-29d6465d-8eb4-4eed-8cdc-8854d505851f",
+            "Type": "ANSWER"
+        },
+        {
+            "AdditionalAttributes": [],
+            "DocumentAttributes": [
+                {
+                    "Key": "_source_uri",
+                    "Value": {
+                        "StringValue": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/index.html"
+                    }
+                }
+            ],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 8,
+                        "EndOffset": 12,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 13,
+                        "EndOffset": 16,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "...From Sung Kim\n\n\n\t\t\t\n\n\n\n\nCurrently, I'm recruiting postdocs and graduate students who are interested in software engineering, deep learning, code generation..."
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/index.html",
+            "DocumentTitle": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 0,
+                        "EndOffset": 4,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 5,
+                        "EndOffset": 8,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "Sung Kim's CSE Homepage"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/index.html",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-f2acf627-b16f-4fea-8b91-58899b26a8bb",
+            "Type": "DOCUMENT"
+        },
+        {
+            "AdditionalAttributes": [],
+            "DocumentAttributes": [
+                {
+                    "Key": "_source_uri",
+                    "Value": {
+                        "StringValue": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/Bio.html"
+                    }
+                }
+            ],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 8,
+                        "EndOffset": 12,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 13,
+                        "EndOffset": 16,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 46,
+                        "EndOffset": 49,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "...From Sung Kim\n\n \n   Biography \n\n \n\tSunghun Kim is an Associate Professor of Computer Science at the Hong Kong University of Science and Technology. \n\t\tHe got his BS in..."
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/Bio.html",
+            "DocumentTitle": {
+                "Highlights": [],
+                "Text": "Bio"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/Bio.html",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-ef7f93c3-794a-41a9-bca3-08368d9d49b7",
+            "Type": "DOCUMENT"
+        },
+        {
+            "AdditionalAttributes": [],
+            "DocumentAttributes": [
+                {
+                    "Key": "_source_uri",
+                    "Value": {
+                        "StringValue": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/Contact.html"
+                    }
+                }
+            ],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 8,
+                        "EndOffset": 12,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 13,
+                        "EndOffset": 16,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 29,
+                        "EndOffset": 33,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 34,
+                        "EndOffset": 37,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 74,
+                        "EndOffset": 78,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 79,
+                        "EndOffset": 82,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "...From Sung Kim\n\n\n\t\t\t\n\n\t\t\t  Sung Kim's contact information \n\n\nAddress: \n\nSung Kim \n\nDepartment of Computer Science and Engineering \n\nThe Hong Kong University of Science and Technology \n\nClear Water Bay, Kowloon, Hong Kong..."
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/Contact.html",
+            "DocumentTitle": {
+                "Highlights": [],
+                "Text": "Contact"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/Contact.html",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-46c08fe4-e0ac-4252-b9d8-ef2c91c56c36",
+            "Type": "DOCUMENT"
+        },
+        {
+            "AdditionalAttributes": [],
+            "DocumentAttributes": [
+                {
+                    "Key": "_source_uri",
+                    "Value": {
+                        "StringValue": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/papers/lee-tse2015.pdf"
+                    }
+                }
+            ],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 3,
+                        "EndOffset": 7,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 8,
+                        "EndOffset": 11,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "...Sung Kim is with the Department of Computer Science and Engineering, \nThe Hong Kong University of Science and Technology, Hong Kong, China. \nE-mail..."
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/papers/lee-tse2015.pdf",
+            "DocumentTitle": {
+                "Highlights": [],
+                "Text": "lee-tse2015"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/papers/lee-tse2015.pdf",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-d0b9dd87-2fbf-439c-9c6b-ba7c0cf5001f",
+            "Type": "DOCUMENT"
+        },
+        {
+            "AdditionalAttributes": [],
+            "DocumentAttributes": [
+                {
+                    "Key": "_source_uri",
+                    "Value": {
+                        "StringValue": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/images/f/f5/Papers_pan2008esme.pdf"
+                    }
+                }
+            ],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 151,
+                        "EndOffset": 154,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "...1998. Kai's research interests include software evolution analysis, data mining, program analysis,\nand software configuration management.\n\n\nSunghun Kim is an Assistant Professor of Computer Science at the Hong Kong University of Science and\nTechnology. He completed his Ph.D. in the Computer Science..."
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/images/f/f5/Papers_pan2008esme.pdf",
+            "DocumentTitle": {
+                "Highlights": [],
+                "Text": "Papers_pan2008esme"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/images/f/f5/Papers_pan2008esme.pdf",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-30ffb71f-3578-49c3-b9d5-f08518e94386",
+            "Type": "DOCUMENT"
+        },
+        {
+            "AdditionalAttributes": [],
+            "DocumentAttributes": [
+                {
+                    "Key": "_source_uri",
+                    "Value": {
+                        "StringValue": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/images/5/51/Cer_comp104_fall2010.pdf"
+                    }
+                }
+            ],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 130,
+                        "EndOffset": 134,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 135,
+                        "EndOffset": 138,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "...What is good about the course?\n  1.  AMAZING LECTURER!!!Well organised materials, amusing lecture style, explicit explanation, Sung Kim is the best!!! How can\n\n\nthere be no options like \"Excellent\"?\n  2.  Basic c++ stuffs for me, a first timer c++\n  3.  Basic programming technique..."
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/images/5/51/Cer_comp104_fall2010.pdf",
+            "DocumentTitle": {
+                "Highlights": [],
+                "Text": "Cer_comp104_fall2010"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/images/5/51/Cer_comp104_fall2010.pdf",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-14139e29-85fc-4232-b803-0959d391a34b",
+            "Type": "DOCUMENT"
+        },
+        {
+            "AdditionalAttributes": [],
+            "DocumentAttributes": [
+                {
+                    "Key": "_source_uri",
+                    "Value": {
+                        "StringValue": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/Publications.html"
+                    }
+                }
+            ],
+            "DocumentExcerpt": {
+                "Highlights": [
+                    {
+                        "BeginOffset": 8,
+                        "EndOffset": 12,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 13,
+                        "EndOffset": 16,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 29,
+                        "EndOffset": 33,
+                        "TopAnswer": false
+                    },
+                    {
+                        "BeginOffset": 103,
+                        "EndOffset": 106,
+                        "TopAnswer": false
+                    }
+                ],
+                "Text": "...From Sung Kim\n\n\n\t\t\t\n\n\t\t\t  Sung's Publications \n\n\n\n  2016 \n\n\n\n\tT. Lee, Jaechang Nam, D. Han, Sunghun Kim, H. In,\n\n\"Developer Micro Interaction Metrics for Software..."
+            },
+            "DocumentId": "s3://kendra-button/www.cse.ust.hk/~hunkim/Publications.html",
+            "DocumentTitle": {
+                "Highlights": [],
+                "Text": "Publications"
+            },
+            "DocumentURI": "https://s3.us-west-2.amazonaws.com/kendra-button/www.cse.ust.hk/~hunkim/Publications.html",
+            "Id": "0315e738-14e1-4b40-be24-8e8d9d0e9f93-de4dac99-a9aa-44b5-8fe8-08e2a67dbfd2",
+            "Type": "DOCUMENT"
+        }
+    ],
+    "TotalNumberOfResults": 80
+}
