@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "kendrabuttona1efaed3_identitypool_a1efaed3",
+    "identityPoolName": "kendrabuttonhosting28eb127d_identitypool_28eb127d",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "kendraa1efaed3",
-    "userPoolName": "kendrabuttona1efaed3_userpool_a1efaed3",
+    "resourceNameTruncated": "kendra28eb127d",
+    "userPoolName": "kendrabuttonhosting28eb127d_userpool_28eb127d",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "kendraa1efaed3_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "kendra28eb127d_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "a1efaed3",
-    "resourceName": "kendrabuttona1efaed3",
+    "sharedId": "28eb127d",
+    "resourceName": "kendrabuttonhosting28eb127d",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
