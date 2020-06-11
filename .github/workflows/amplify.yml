@@ -28,7 +28,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: us-west-2
 
-    - name: install, build and test
+    - name: install package
       run: |
         cd frontend/kendra-button-front |
         yarn
@@ -38,7 +38,7 @@ jobs:
       with:
         amplify_command: publish
         amplify_env: dev
-        build_command: 'npm run build'
+        build_command: 'cd frontend/kendra-button-front && npm run build'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
