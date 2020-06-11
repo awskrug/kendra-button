@@ -9,9 +9,8 @@ custom:
   kendra:
     account: 294038372338
   dynamodb:
-    indexDB: kendra-buttons-index-${self:custom.stage}
+    indexDB: kendra-buttons-index-${self:custom.stage}-adf
   pythonRequirements:
-    dockerizePip: true
     layer: true
   userPoolAuthorizer:
     type: COGNITO_USER_POOLS
@@ -45,7 +44,11 @@ package:
     - bin/**
     - app.py
     - parser/**
+    - kendra.py
+    - site.py
+    - schema.py
     - utils.py
+    - __init__.py
 
 functions:
   graphql:
@@ -59,12 +62,15 @@ functions:
           type: COGNITO_USER_POOLS
           authorizerId: 
             Ref: CognitoAuthorizer
+      - http: 'ANY /noauth/{proxy+}'
+        cors: true
       - http: 'ANY {proxy+}'
         cors: true
         authorizer:
           type: COGNITO_USER_POOLS
           authorizerId: 
             Ref: CognitoAuthorizer
+      
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
 

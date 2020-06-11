@@ -96,6 +96,8 @@ class Query:
     
             doc_type = doc['Type']
             item = BaseDocument
+            # type (RequestedDocumentAttributes) 이 DOCUMENT, QUESTION_ANSWER, ANSWER 라고 나와있지만
+            # QUESTION_ANSWER 는 테스트 시 출력되는 상황 확인 된 적 없음 
             if doc_type == 'DOCUMENT':
                 item = DOCUMENT
             elif doc_type =='ANSWER':
