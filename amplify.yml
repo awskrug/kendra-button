@@ -1,11 +1,12 @@
 version: 0.1
 frontend:
   phases:
-    preBuild:
-      commands:
-        - amplify pull
+    # preBuild:
+    #   commands:
+    #     - amplify pull
     build:
       commands:
+        - find . -name "aws-exports.js"
         - cd frontend/kendra-button-front
         - yarn
         - yarn build
