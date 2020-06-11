@@ -3,9 +3,9 @@ frontend:
   phases:
     # preBuild:
     #   commands:
-    #     - amplify pull
     build:
       commands:
+        - aws s3 ls
         - find . -name "aws-exports.js"
         - cd frontend/kendra-button-front
         - yarn
