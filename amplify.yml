@@ -19,9 +19,9 @@ frontend:
           \"secretAccessKey\":\"$SECRET_ACCESS_KEY\",\
           \"region\":\"us-west-2\"\
           }"
-        - PROVIDERS="{\
+        - PROVIDERS={\
           \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG\
-          }"
+          }
         - amplify pull --amplify $AMPLIFY --providers $PROVIDERS --yes
         - find . -name "aws-exports.js"
         - cd frontend/kendra-button-front
