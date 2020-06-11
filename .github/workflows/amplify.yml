@@ -31,7 +31,8 @@ jobs:
     - name: install package
       run: |
         cd frontend/kendra-button-front |
-        yarn
+        yarn |
+        find . -name "aws-exports.js"
     
     - name: deploy
       uses: ambientlight/amplify-cli-action@0.2.1
