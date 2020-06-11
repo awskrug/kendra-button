@@ -6,21 +6,21 @@ frontend:
     build:
       commands:
         - AMPLIFY={
-          "projectName":"$PROJECT_NAME",
-          "appId":"$AWS_APP_ID",
-          "envName":"$ENV_NAME",
-          "defaultEditor":"code"
+          \"projectName\":\"$PROJECT_NAME\",
+          \"appId\":\"$AWS_APP_ID\",
+          \"envName\":\"$ENV_NAME\",
+          \"defaultEditor\":\"code\"
           }
           AWSCLOUDFORMATIONCONFIG={
-          "configLevel":"project",
-          "useProfile":false,
-          "profileName":"default",
-          "accessKeyId":"$ACCESS_KEY_ID",
-          "secretAccessKey":"$SECRET_ACCESS_KEY",
-          "region":"us-west-2"
+          \"configLevel\":\"project\",
+          \"useProfile\":false,
+          \"profileName\":\"default\",
+          \"accessKeyId\":\"$ACCESS_KEY_ID\",
+          \"secretAccessKey\":\"$SECRET_ACCESS_KEY\",
+          \"region\":\"us-west-2\"
           }
           PROVIDERS={
-          "awscloudformation":$AWSCLOUDFORMATIONCONFIG
+          \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG
           }
           amplify pull --amplify $AMPLIFY --providers $PROVIDERS --yes
         - find . -name "aws-exports.js"
