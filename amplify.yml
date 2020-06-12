@@ -1,36 +1,18 @@
-version: 0.1
-frontend:
-  phases:
-    # preBuild:
-    #   commands:
-    build:
-      commands:
-        - AMPLIFY="{\
-          \"projectName\":\"$PROJECT_NAME\",\
-          \"appId\":\"$AWS_APP_ID\",\
-          \"envName\":\"$ENV_NAME\",\
-          \"defaultEditor\":\"code\"\
-          }"
-        - AWSCLOUDFORMATIONCONFIG="{
-          \"configLevel\":\"project\",
-          \"useProfile\":false,
-          \"profileName\":\"default\",
-          \"accessKeyId\":\"$ACCESS_KEY_ID\",
-          \"secretAccessKey\":\"$SECRET_ACCESS_KEY\",
-          \"region\":\"us-west-2\"
-          }"
-        - PROVIDERS={
-          \"awscloudformation\":$AWSCLOUDFORMATIONCONFIG
-          }
-        - amplify pull --amplify $AMPLIFY --providers $PROVIDERS --yes
-        - find . -name "aws-exports.js"
-        - cd frontend/kendra-button-front
-        - yarn
-        - yarn build
-  artifacts:
-    # IMPORTANT - Please verify your build output directory
-    baseDirectory: frontend/kendra-button-front/src/out
-    files:
-      - '**/*'
-  cache:
-    paths: []
+version: 1
+applications:
+  - appRoot: /frontend/kendra-button-front
+    env:
+      variables: []
+    frontend:
+      phases:
+        build:
+          - find . -name "aws-exports.js"
+          - yarn
+          - yarn build
+      artifacts:
+        files:
+          - '**/*'
+        baseDirectory: /frontend/kendra-button-front/src/out
+      cache:
+        paths:
+          - node_modules
