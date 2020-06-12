@@ -1,8 +1,6 @@
 version: 1
 applications:
   - appRoot: /frontend/kendra-button-front
-    env:
-      variables: []
     frontend:
       phases:
         build:
