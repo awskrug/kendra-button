@@ -4,6 +4,7 @@
   "scripts": {
     "build": "next build src && cd src && next export",
     "start": "next src",
+    "prestart": "yarn tsc",
     "tsc": "cd src && tsc"
   },
   "dependencies": {
