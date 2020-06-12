@@ -8,6 +8,6 @@ ML은 더욱 많은 곳에서 필요로 하고 더욱 보편화 되고 있습니
 
 ![image](https://github.com/awskrug/kendra-button/blob/master/images/image.png)
 
-## git clone 받아 frontend 프로젝트 localhost에서 실행 해 보기
+## Frontend Testing
 
-[git clone 받아 frontend 프로젝트 localhost에서 실행 해 보기](https://github.com/awskrug/kendra-button/wiki/frontend-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-git-clone-%EB%B0%9B%EC%95%84-localhost%EC%97%90%EC%84%9C-%EC%8B%A4%ED%96%89-%ED%95%B4-%EB%B3%B4%EA%B8%B0)
+[git clone 받아 frontend 프로젝트 localhost에서 실행 해 보기](https://github.com/awskrug/kendra-button/wiki/git-clone-%EB%B0%9B%EC%95%84-frontend-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-localhost%EC%97%90%EC%84%9C-%EC%8B%A4%ED%96%89-%ED%95%B4-%EB%B3%B4%EA%B8%B0)
