@@ -1,0 +1,26 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-kendrabuttonhosting-dev-213422-authRole",
+            "UnauthRoleArn": "arn:aws:iam::213888382832:role/amplify-kendrabuttonhosting-dev-213422-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::213888382832:role/amplify-kendrabuttonhosting-dev-213422-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-kendrabuttonhosting-dev-213422-deployment",
+            "UnauthRoleName": "amplify-kendrabuttonhosting-dev-213422-unauthRole",
+            "StackName": "amplify-kendrabuttonhosting-dev-213422",
+            "StackId": "arn:aws:cloudformation:us-west-2:213888382832:stack/amplify-kendrabuttonhosting-dev-213422/e2d50750-abdf-11ea-9c3d-0a0a0dac92f4",
+            "AmplifyAppId": "dcj1fh5deo5r3"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "dcj1fh5deo5r3",
+                    "type": "cicd"
+                }
+            },
+            "auth": {
+                "kendrabuttonhosting28eb127d": {}
+            }
+        }
+    }
+}

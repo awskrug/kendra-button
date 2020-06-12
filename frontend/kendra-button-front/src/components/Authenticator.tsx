@@ -1,8 +1,4 @@
-import {
-  AmplifyAuthenticator,
-  AmplifySignIn,
-  AmplifySignUp,
-} from '@aws-amplify/ui-react';
+import { AmplifyAuthenticator, AmplifySignUp } from '@aws-amplify/ui-react';
 import { ReactElement, ReactNode, useEffect } from 'react';
 
 // https://github.com/aws-amplify/amplify-js/issues/5825#issuecomment-631759616
@@ -18,11 +14,11 @@ const Authenticator = (props: Props): ReactElement => {
 
   useEffect(() => {
     return onAuthUIStateChange((newAuthState, user) => {
-      onStateChange(newAuthState, user)
+      onStateChange(newAuthState, user);
     });
   }, []);
 
-  const bgClass = isLoggedIn ? `` : `bg-dark`
+  const bgClass = isLoggedIn ? `` : `bg-dark`;
   return (
     <div
       className={`fullscreen ${bgClass} d-flex justify-content-center align-items-center`}

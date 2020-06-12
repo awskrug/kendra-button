@@ -3,16 +3,25 @@
  */
 import * as React from 'react';
 
-import Amplify, { Auth } from 'aws-amplify';
 import { MainProvider, ModalProvider, Providers } from '../contexts';
 
+import Amplify from 'aws-amplify';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import Layout from '../layout';
-import awsconfig from '../../aws-exports';
-import { useMainContextImpls } from '../contexts';
+import awsconfig from '../aws-exports';
 
 Amplify.configure(awsconfig);
+
+/** 
+ * Using a non-AppSync GraphQL Server
+ * @tutorial https://docs.amplify.aws/lib/graphqlapi/create-or-re-use-existing-backend/q/platform/js#using-a-non-appsync-graphql-server amplify
+*/
+Amplify.configure({
+  API: {
+    graphql_endpoint: 'https://8pfums0mu7.execute-api.us-west-2.amazonaws.com/dev/graphql',
+  }
+})
 
 function App({ Component, pageProps }: AppProps) {
   return (

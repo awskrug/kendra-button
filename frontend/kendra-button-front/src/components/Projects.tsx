@@ -1,13 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Loader } from './Loader';
 import { ReactElement } from 'react';
+import { Site } from '../types'
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
-  list: string[];
+  list: Array<Site>;
+  isLoading: boolean;
 }
 
 const Projects = (props: Props): ReactElement => {
-  const { list } = props;
+  const { list, isLoading } = props;
 
   return (
     <>
@@ -19,15 +22,21 @@ const Projects = (props: Props): ReactElement => {
           </span>
         </div>
         <div className='list-group rounded-0'>
-          {list.map((item) => (
-            <a
-              key={item}
-              href='#'
-              className='list-group-item list-group-item-action'
-            >
-              {item}
-            </a>
-          ))}
+          {isLoading ? (
+            <div className={`d-flex justify-content-center p-3`}>
+              <Loader />
+            </div>
+          ) : (
+            list.map((item) => (
+              <a
+                key={item.site}
+                href='#'
+                className='list-group-item list-group-item-action'
+              >
+                {item.site}
+              </a>
+            ))
+          )}
         </div>
       </div>
       <style jsx>{`
