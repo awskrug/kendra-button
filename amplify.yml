@@ -1,6 +1,6 @@
 version: 1
 applications:
-  - appRoot: /frontend/kendra-button-front
+  - appRoot: frontend/kendra-button-front
     frontend:
       phases:
         build:
@@ -10,7 +10,4 @@ applications:
       artifacts:
         files:
           - '**/*'
-        baseDirectory: /frontend/kendra-button-front/src/out
-      cache:
-        paths:
-          - node_modules
+        baseDirectory: frontend/kendra-button-front/src/out
