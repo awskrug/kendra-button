@@ -1,13 +1,16 @@
-version: 1
-applications:
-  - appRoot: frontend/kendra-button-front
-    frontend:
-      phases:
-        build:
-          - find . -name "aws-exports.js"
-          - yarn
-          - yarn build
-      artifacts:
-        files:
-          - '**/*'
-        baseDirectory: frontend/kendra-button-front/src/out
+version: 0.1
+frontend:
+  phases:
+    build:
+      commands:
+        - cd frontend/kendra-button-front
+        - chmod +x amplify-pull.sh
+        - find . -name "aws-exports.js"
+        - yarn
+        - yarn build
+  artifacts:
+    baseDirectory: frontend/kendra-button-front/src/out
+    files:
+      - '**/*'
+  cache:
+    paths: []
