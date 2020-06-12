@@ -1,4 +1,4 @@
-name: 'Amplify Deploy'
+name: 'Amplify Deploy to S3/CloudFront/HTTPS'
 on: [push]
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
       with:
         amplify_command: publish
         amplify_env: dev
-        build_command: 'cd frontend/kendra-button-front && npm run build'
+        build_command: 'cd frontend/kendra-button-front && yarn build'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

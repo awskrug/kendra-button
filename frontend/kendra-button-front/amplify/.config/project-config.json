@@ -5,10 +5,10 @@
     "javascript": {
         "framework": "react",
         "config": {
-            "SourceDir": "frontend/kendra-button-front/src",
-            "DistributionDir": "frontend/kendra-button-front/src/out",
-            "BuildCommand": "cd frontend/kendra-button-front && yarn build",
-            "StartCommand": "cd frontend/kendra-button-front && yarn start"
+            "SourceDir": "src",
+            "DistributionDir": "src/out",
+            "BuildCommand": "yarn build",
+            "StartCommand": "yarn start"
         }
     },
     "providers": [
