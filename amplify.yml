@@ -5,6 +5,7 @@ frontend:
       commands:
         - cd frontend/kendra-button-front
         - chmod +x amplify-pull.sh
+        - ./amplify-pull.sh
     build:
       commands:
         - find . -name "aws-exports.js"
