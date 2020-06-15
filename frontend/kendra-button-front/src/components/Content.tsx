@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProgressBar } from './ProgressBar';
 import { ReactElement } from 'react';
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCode } from '@fortawesome/free-solid-svg-icons';
 
 const Content = (): ReactElement => {
   return (
@@ -10,10 +10,10 @@ const Content = (): ReactElement => {
         <div
           className={`d-flex justify-content-between align-items-center p-3`}
         >
-          <div className={`text-center text-danger`}>
+          <div className={`text-center text-danger`} role={'button'}>
             <FontAwesomeIcon
               className={`shadow-sm fa-2x rounded-circle`}
-              icon={faPlusCircle}
+              icon={faCode}
             />
             <div>{`EMBED`}</div>
           </div>
@@ -65,7 +65,9 @@ const Content = (): ReactElement => {
             </select>
           </div>
           <div className={`d-flex justify-content-end`}>
-            <button className={`btn btn-primary shadow-sm`}>{`Crawl START`}</button>
+            <button
+              className={`btn btn-primary shadow-sm`}
+            >{`Crawl START`}</button>
           </div>
         </div>
         <hr className={`m-3`} />
