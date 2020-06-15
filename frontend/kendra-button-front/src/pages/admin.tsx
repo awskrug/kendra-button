@@ -4,12 +4,15 @@ import { AuthState } from '@aws-amplify/ui-components';
 import { useState } from 'react';
 
 const Page = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
-  const onStateChange = (nextAuthState: AuthState, user: object | undefined | null) => {
-    setIsLoggedIn(nextAuthState === 'signedin')
-    setUser(user)
+  const onStateChange = (
+    nextAuthState: AuthState,
+    user: object | undefined | null,
+  ) => {
+    setIsLoggedIn(nextAuthState === 'signedin');
+    setUser(user);
   };
 
   return (
