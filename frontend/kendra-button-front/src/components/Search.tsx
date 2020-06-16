@@ -4,7 +4,7 @@ const Search = () => {
 
   const [inputValue, setInputValue] = useState("");
 
-  const [keyword, setKeywords] = useState([""]);
+  const [keyword, setKeywords] = useState("");
 
 
   const onChangeHandler = e => {
@@ -12,7 +12,7 @@ const Search = () => {
   }
 
   const searchHandler = () => {
-    setKeywords(this.inputValue)
+    setKeywords(inputValue)
   }
 
   return (
@@ -22,7 +22,7 @@ const Search = () => {
           type='text'
           className='form-control mr-sm-2 w-75'
           id='search-input'
-          placeholder={`What is Amazon Kendra?`}
+          placeholder={`ex) What is Amazon Kendra?`}
           value={inputValue}
           onChange={onChangeHandler}
         />
@@ -32,7 +32,10 @@ const Search = () => {
           onClick={searchHandler}
         >{`Search`}</button>
       </form>
-      <SearchResult result={keyword} />
+
+      {keyword.length > 0 &&
+        <SearchResult searchInput={keyword} />
+      }
     </div>
   );
 };
