@@ -35,8 +35,6 @@ const SiteCreateModal = (): ReactElement => {
   });
   const {
     type,
-    cancelBtn,
-    children,
     display,
     blockExitOutside,
     positionTop,

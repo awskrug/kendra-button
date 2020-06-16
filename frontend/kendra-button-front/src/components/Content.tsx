@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useEffect } from 'react';
 import { faCode, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProgressBar } from './ProgressBar';
 
 const Content = (): ReactElement => {
-  const { states, dispatch } = useMainContextImpls();
+  const { states } = useMainContextImpls();
   const { setModalConfig } = useModalContextImpls();
   const { title, url, term, crawlerStatus } = states.selectedSite || {};
   const { total, done } = crawlerStatus || {};

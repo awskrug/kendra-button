@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 interface Props {
   theme: string;
   total: number;
