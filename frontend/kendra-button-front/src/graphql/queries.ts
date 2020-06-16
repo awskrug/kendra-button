@@ -33,3 +33,18 @@ export const siteList = `query SiteList{
     }
   }
 }`;
+
+export const siteItem = `query SiteItem(
+  $site: String!
+){
+	site(site: $site) {
+    site
+    user
+    title
+    url
+    crawlerStatus {
+      total
+      done
+    }
+  }
+}`;

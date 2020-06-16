@@ -1,9 +1,18 @@
+import { ReactElement, useEffect, useState } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProgressBar } from './ProgressBar';
-import { ReactElement } from 'react';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
+import { useMainContextImpls } from '../contexts';
 
 const Content = (): ReactElement => {
+  const { states, dispatch } = useMainContextImpls();
+  const [site, setSite] = useState(null);
+
+  useEffect(() => {
+    console.log('Content site', states.selectedSite);
+  }, [states.selectedSite]);
+
   return (
     <>
       <div className={`content`}>
@@ -22,42 +31,42 @@ const Content = (): ReactElement => {
             <button className={`btn btn-warning shadow-sm`}>{`SAVE`}</button>
           </div>
         </div>
-        <h3 className={`px-3`}>{`Configuration`}</h3>
+        <h3 className={`px-3`}>{site || `Configuration`}</h3>
         <div className={`p-3`}>
-          <div className='form-group'>
+          <div className="form-group">
             <label
-              className='form-control-label font-weight-bold'
-              htmlFor='input-title'
+              className="form-control-label font-weight-bold"
+              htmlFor="input-title"
             >{`Title`}</label>
             <input
-              type='text'
-              className='form-control'
-              id='input-title'
+              type="text"
+              className="form-control"
+              id="input-title"
               placeholder={`input title`}
             />
             {/* <div className="valid-feedback">Success! You"ve done it.</div> */}
           </div>
-          <div className='form-group'>
+          <div className="form-group">
             <label
-              className='form-control-label font-weight-bold'
-              htmlFor='input-url'
+              className="form-control-label font-weight-bold"
+              htmlFor="input-url"
             >{`Url to crawl`}</label>
             <input
-              type='text'
-              className='form-control'
-              id='input-url'
+              type="text"
+              className="form-control"
+              id="input-url"
               placeholder={`input url`}
             />
             {/* <div className="valid-feedback">Success! You"ve done it.</div> */}
           </div>
-          <div className='form-group'>
+          <div className="form-group">
             <label
-              className='form-control-label font-weight-bold'
-              htmlFor='select-term'
+              className="form-control-label font-weight-bold"
+              htmlFor="select-term"
             >{`Crawl/index term`}</label>
             <select
-              className='custom-select'
-              id='select-term'
+              className="custom-select"
+              id="select-term"
               defaultValue={`d`}
             >
               <option value={`d`}>{`Daily`}</option>
@@ -73,9 +82,9 @@ const Content = (): ReactElement => {
         <hr className={`m-3`} />
         <h3 className={`px-3`}>{`Info`}</h3>
         <div className={`p-3`}>
-          <label className='form-control-label font-weight-bold'>{`Crawling`}</label>
+          <label className="form-control-label font-weight-bold">{`Crawling`}</label>
           <ProgressBar theme={`success`} />
-          <label className='form-control-label font-weight-bold'>{`Indexing`}</label>
+          <label className="form-control-label font-weight-bold">{`Indexing`}</label>
           <ProgressBar theme={`danger`} />
         </div>
       </div>
