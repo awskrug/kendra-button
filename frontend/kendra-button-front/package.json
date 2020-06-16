@@ -14,9 +14,11 @@
     "@fortawesome/react-fontawesome": "^0.1.9",
     "aws-amplify": "^3.0.13",
     "cors": "2.8.5",
+    "formik": "^2.1.4",
     "next": "latest",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "yup": "^0.29.1"
   },
   "license": "ISC",
   "devDependencies": {
