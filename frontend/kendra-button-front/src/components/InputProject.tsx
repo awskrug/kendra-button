@@ -42,12 +42,11 @@ const InputProject = (props: Props): ReactElement => {
       variables: {
         site: siteName.current,
         title: siteName.current,
-        url: ' ', // TODO: 페이지 흐름 다시 재고해 보아야
+        url: ' ',
       },
     });
     console.log('result', res);
     if (res.errors) {
-      // TODO: error처리
       return;
     }
     setIsNewItem(false);
@@ -65,24 +64,24 @@ const InputProject = (props: Props): ReactElement => {
   };
   return (
     <>
-      <div className='list-group-item list-group-item-action d-flex align-items-center justify-content-between p-2'>
+      <div className="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-2">
         <input
-          type='text'
-          className='form-control'
-          id='input-url'
+          type="text"
+          className="form-control"
+          id="input-url"
           placeholder={`input site name`}
           onChange={onChangeSiteName}
         />
         <FontAwesomeIcon
           className={`ml-2 fa-lg`}
           icon={faCheckCircle}
-          role='button'
+          role="button"
           onClick={addProject}
         />
         <FontAwesomeIcon
           className={`ml-2 fa-lg`}
           icon={faTimesCircle}
-          role='button'
+          role="button"
           onClick={cancelAddProject}
         />
       </div>
