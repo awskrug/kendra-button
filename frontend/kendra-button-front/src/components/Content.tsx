@@ -24,6 +24,25 @@ const Content = (): ReactElement => {
     });
   };
 
+  if (!states.selectedSite) {
+    return (
+      <>
+        <div
+          className={`content d-flex justify-content-center align-items-center fa-lg`}
+        >
+          <div>Select Site</div>
+        </div>
+        <style jsx>{`
+          .content {
+            padding-left: 30%;
+            width: 100vw;
+            height: 100vh;
+          }
+        `}</style>
+      </>
+    );
+  }
+
   return (
     <>
       <div className={`content`}>

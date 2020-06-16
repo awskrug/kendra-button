@@ -26,6 +26,7 @@ const Sidebar = (props: Props): ReactElement => {
   const [loggedInUser, setLoggedInUser] = useState(user?.attributes?.email);
 
   useEffect(() => {
+    console.log({ user });
     if (!user) return;
     setLoggedInUser(user?.attributes?.email);
   }, [user]);
@@ -53,7 +54,7 @@ const Sidebar = (props: Props): ReactElement => {
               <FontAwesomeIcon className={``} icon={faSignOutAlt} />
             </button>
           </div>
-          <Projects />
+          {user && <Projects />}
         </div>
         <div className={`d-flex flex-column`}>
           <div className={`text-white btn btn-secondary`}>
