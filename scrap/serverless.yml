@@ -9,10 +9,13 @@ custom:
   kendra:
     account: 294038372338
   dynamodb:
-    indexDB: kendra-buttons-index-${self:custom.stage}
+    indexDB: kendra-buttons-index-${self:custom.stage}-adf
   pythonRequirements:
-    dockerizePip: true
     layer: true
+  userPoolAuthorizer:
+    type: COGNITO_USER_POOLS
+    authorizerId:
+      Ref: CognitoAuthorizer
 
 
 provider:
@@ -41,20 +44,33 @@ package:
     - bin/**
     - app.py
     - parser/**
+    - kendra.py
+    - site.py
+    - schema.py
     - utils.py
+    - __init__.py
 
 functions:
   graphql:
     memorySize: 512
     handler: wsgi_handler.handler
-    timeout: 600
+    timeout: 30
     events:
       - http: ANY /
         cors: true
-
+        authorizer: 
+          type: COGNITO_USER_POOLS
+          authorizerId: 
+            Ref: CognitoAuthorizer
+      - http: 'ANY /noauth/{proxy+}'
+        cors: true
       - http: 'ANY {proxy+}'
         cors: true
-
+        authorizer:
+          type: COGNITO_USER_POOLS
+          authorizerId: 
+            Ref: CognitoAuthorizer
+      
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
 
@@ -80,3 +96,13 @@ resources:
             AttributeName: "site"
             KeyType: "RANGE"
         TableName: "${self:custom.dynamodb.indexDB}"
+    CognitoAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: KendraCongnito
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs: 
+          - arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_XT1s3RtPp
+        IdentitySource: method.request.header.Authorization

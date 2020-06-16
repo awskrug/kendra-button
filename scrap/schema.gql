@@ -1,0 +1,71 @@
+
+type QUESTION_ANSWER{
+    
+}
+
+type Highlight{
+    start:Int!
+    end:Int!
+    topAnswer:Boolean!
+}
+# start -> BeginOffset
+# end -> EndOffset
+# topAnswer -> topAnswer
+type HighlightText{
+    text:String!
+    highlights:[Highlight]
+    highlightText:String! # 서버에서 <strong> 추가
+}
+
+interface BaseDocument {
+    url: String!
+    title: HighlightText
+    excerpt: HighlightText
+}
+
+
+type ANSWER implements BaseDocument {
+    answers:[HighlightText] # only show  AdditionalAttributes AnswerText Key   
+}
+
+# url -> DocumentURI
+
+type DOCUMENT implements BaseDocument{
+    
+}
+#  -> DocumentExcerpt -> Highlights
+#  -> Title
+# url -> DocumentURI
+
+Enum DocumentType{
+    DOCUMENT
+    QUESTION_ANSWER
+    ANSWER
+}
+
+
+type SearchResult {
+    items:[Document]
+    total: Int!
+}
+
+# total -> TotalNumberOfResults
+# items -> ResultItems
+
+
+
+type Query {
+ search(
+     text:String!,
+     site:String!,
+     size:Int,
+     page:Int,
+     type: DocumentType
+     ) SearchResult! 
+}
+
+# text -> QueryText
+# site -> attribute query
+# page -> PageNumber
+# size -> PageSize max 100
+# type -> RequestedDocumentAttributes Enum
