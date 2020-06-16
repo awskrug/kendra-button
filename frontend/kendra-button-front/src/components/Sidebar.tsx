@@ -42,11 +42,11 @@ const Sidebar = (props: Props): ReactElement => {
       >
         <div className={`d-flex flex-column`}>
           <div className={`btn-group my-3`}>
-            <button type='button' className={`btn btn-danger`}>
+            <button type="button" className={`btn btn-danger`}>
               {loggedInUser}
             </button>
             <button
-              type='button'
+              type="button"
               className={`btn btn-outline-danger`}
               onClick={signOut}
             >
@@ -70,6 +70,7 @@ const Sidebar = (props: Props): ReactElement => {
           left: 0;
           width: 30%;
           height: 100vh;
+          box-shadow: 2px 0px 5px 0px #848484;
         }
       `}</style>
     </>

@@ -36,7 +36,6 @@ const Projects = (props: Props): ReactElement => {
   }, [states.reloadSite]);
 
   const addSite = (): void => {
-    // setIsNewItem(true);
     setModalConfig({
       type: 'site-create',
       display: true,
