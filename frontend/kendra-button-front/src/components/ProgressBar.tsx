@@ -1,9 +1,11 @@
+import { ReactElement } from 'react';
+
 interface Props {
   theme: string;
   total: number;
   done: number;
 }
-const ProgressBar = (props: Props) => {
+const ProgressBar = (props: Props): ReactElement => {
   const { theme, total = 100, done = 0 } = props || {};
   // const [percent, setPercent] = useState(90);
 

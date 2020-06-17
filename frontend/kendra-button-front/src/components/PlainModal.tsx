@@ -30,8 +30,8 @@ const PlainModal = (): ReactElement => {
     }));
   };
   const okBtnInlineFn = (e) => {
-    if (state && okaction) {
-      okaction(state, hideModal);
+    if (okaction) {
+      okaction({ state, hideModal });
     } else {
       hideModal();
     }
