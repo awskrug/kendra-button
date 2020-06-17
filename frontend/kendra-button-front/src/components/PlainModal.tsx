@@ -95,7 +95,7 @@ const PlainModal = (): ReactElement => {
                     className="btn btn-primary w-100"
                     onClick={okBtnInlineFn}
                   >
-                    확인
+                    OK
                   </button>
                 </>
               )}
@@ -106,14 +106,14 @@ const PlainModal = (): ReactElement => {
                     className="btn btn-primary"
                     onClick={okBtnInlineFn}
                   >
-                    확인
+                    OK
                   </button>
                   <button
                     type="button"
                     className="btn btn-secondary"
                     onClick={cancelBtnInlineFn}
                   >
-                    취소
+                    Cancel
                   </button>
                 </>
               )}
