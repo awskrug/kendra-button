@@ -6,3 +6,4 @@ export * from './Loader';
 export * from './InputProject';
 export * from './PlainModal';
 export * from './SiteCreateModal';
+export * from './TitleEdit';

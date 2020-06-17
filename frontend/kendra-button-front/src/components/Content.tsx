@@ -1,9 +1,11 @@
-import { ReactElement, useEffect } from 'react';
 import { faCode, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProgressBar } from './ProgressBar';
+import { ReactElement } from 'react';
+import { TitleEdit } from './TitleEdit';
+import { callGraphql } from '../utils';
 
 const Content = (): ReactElement => {
   const { states } = useMainContextImpls();
@@ -11,16 +13,17 @@ const Content = (): ReactElement => {
   const { title, url, term, crawlerStatus } = states.selectedSite || {};
   const { total, done } = crawlerStatus || {};
 
-  useEffect(() => {
-    console.log('Content site', states.selectedSite);
-  }, [states.selectedSite]);
-
   const askToDelete = (): void => {
     setModalConfig({
       type: 'plain',
       display: true,
       title: 'Are you sure?',
       content: `Are you really going to delete this site "${title}"?`,
+      okaction: async ({ hideModal }) => {
+        // TODO: call graphql that exec DELETE
+        // callGraphql({ query: })
+        console.log('delete!');
+      },
     });
   };
 
@@ -59,16 +62,7 @@ const Content = (): ReactElement => {
             {/* <button className={`btn btn-warning shadow-sm`}>{`SAVE`}</button> */}
           </div>
         </div>
-        <div
-          className={`h3 px-3 d-flex justify-content-between align-items-center`}
-        >
-          {title || `Site`}
-          <FontAwesomeIcon
-            className={`shadow-sm rounded-circle`}
-            icon={faEdit}
-            role={'button'}
-          />
-        </div>
+        <TitleEdit title={title} />
         <div className={`p-3`}>
           <div className="form-group">
             <label
@@ -103,10 +97,8 @@ const Content = (): ReactElement => {
         <hr className={`m-3`} />
         <h3 className={`px-3`}>{`Info`}</h3>
         <div className={`p-3`}>
-          <label className="form-control-label font-weight-bold">{`Crawling`}</label>
+          <label className="form-control-label font-weight-bold">{`Crawling & Indexing`}</label>
           <ProgressBar theme={`success`} done={done} total={total} />
-          <label className="form-control-label font-weight-bold">{`Indexing`}</label>
-          <ProgressBar theme={`danger`} done={done} total={total} />
         </div>
       </div>
       <style jsx>{`
