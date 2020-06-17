@@ -23,10 +23,10 @@ const Authenticator = (props: Props): ReactElement => {
     <div
       className={`fullscreen ${bgClass} d-flex justify-content-center align-items-center`}
     >
-      <AmplifyAuthenticator usernameAlias='email'>
+      <AmplifyAuthenticator usernameAlias="email">
         <AmplifySignUp
-          slot='sign-up'
-          usernameAlias='email'
+          slot="sign-up"
+          usernameAlias="email"
           formFields={[
             {
               type: 'email',
@@ -39,12 +39,6 @@ const Authenticator = (props: Props): ReactElement => {
               label: 'Custom Password Label',
               placeholder: 'custom password placeholder',
               required: true,
-            },
-            {
-              type: 'phone_number',
-              label: 'Custom Phone Label',
-              placeholder: 'custom Phone placeholder',
-              required: false,
             },
           ]}
         />
