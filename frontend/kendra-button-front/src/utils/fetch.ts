@@ -1,5 +1,6 @@
 import { API } from 'aws-amplify';
 import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { useMainContextImpls } from '../contexts';
 
 interface Props {
   query: string;

@@ -49,6 +49,12 @@ const Projects = (props: Props): ReactElement => {
   ): Promise<void> => {
     const target = e.target as HTMLDivElement;
 
+    dispatch({
+      type: 'change-loading-flag',
+      payload: {
+        loadingFlag: false,
+      },
+    });
     const res = await callGraphql({
       query: siteItem,
       variables: { site: target.innerText },
@@ -57,6 +63,12 @@ const Projects = (props: Props): ReactElement => {
       type: 'change-site',
       payload: {
         selectedSite: res.data.site,
+      },
+    });
+    dispatch({
+      type: 'change-loading-flag',
+      payload: {
+        loadingFlag: true,
       },
     });
   };

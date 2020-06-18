@@ -1,14 +1,25 @@
 import { MainContext, ModalContext } from './Context';
 import React, { useContext, useMemo, useReducer, useState } from 'react';
 
-export type ReducerType = 'reload-site' | 'change-site' | 'change-theme';
+export type ReducerType =
+  | 'reload-site'
+  | 'change-site'
+  | 'change-theme'
+  | 'change-loading-flag';
 export interface State {
   theme?: string;
   selectedSite?: string;
-  reloadSite?: boolean;
+  reloadSite: boolean;
+  loadingFlag: boolean;
 }
 export type Action = { type: ReducerType; payload: State };
 export type Reducer = (state: State, action: Action) => State;
+
+const initialState: State = {
+  theme: 'sandstone',
+  reloadSite: true,
+  loadingFlag: false,
+};
 
 const reducer: Reducer = (state, action) => {
   const { type, payload } = action;
@@ -28,15 +39,17 @@ const reducer: Reducer = (state, action) => {
         ...state,
         theme: payload.theme,
       };
+    case 'change-loading-flag':
+      return {
+        ...state,
+        loadingFlag: payload.loadingFlag,
+      };
     default:
       return state;
   }
 };
 const MainProvider = (props) => {
-  const [states, dispatch] = useReducer<Reducer>(reducer, {
-    theme: 'sandstone',
-    reloadSite: true,
-  });
+  const [states, dispatch] = useReducer<Reducer>(reducer, initialState);
 
   return (
     <MainContext.Provider value={{ states, dispatch }}>
