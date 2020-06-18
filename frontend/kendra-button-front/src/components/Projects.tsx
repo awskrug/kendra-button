@@ -1,40 +1,90 @@
+import { MouseEvent, ReactElement, useEffect, useState } from 'react';
+import { siteItem, siteList } from '../graphql/queries';
+import { useMainContextImpls, useModalContextImpls } from '../contexts';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Loader } from './Loader';
-import { ReactElement } from 'react';
-import { Site } from '../types'
+import { callGraphql } from '../utils';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-interface Props {
-  list: Array<Site>;
-  isLoading: boolean;
-}
+interface Props {}
 
 const Projects = (props: Props): ReactElement => {
-  const { list, isLoading } = props;
+  const [sites, setSites] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { states, dispatch } = useMainContextImpls();
+  const { setModalConfig } = useModalContextImpls();
+
+  useEffect(() => {
+    console.log('projects states', states);
+    if (!states.reloadSite) return;
+    callGraphql({ query: siteList })
+      .then((res) => {
+        console.log('200', JSON.stringify(res, null, 2));
+        setSites(res?.data?.sites);
+        setIsLoading(false);
+        dispatch({
+          type: 'reload-site',
+          payload: {
+            reloadSite: false,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log('400', JSON.stringify(err, null, 2));
+        setIsLoading(false);
+      });
+  }, [states.reloadSite]);
+
+  const addSite = (): void => {
+    setModalConfig({
+      type: 'site-create',
+      display: true,
+      title: 'Create new site',
+    });
+  };
+
+  const setSelectedSite = async (
+    e: MouseEvent<HTMLDivElement>,
+  ): Promise<void> => {
+    const target = e.target as HTMLDivElement;
+
+    const res = await callGraphql({
+      query: siteItem,
+      variables: { site: target.innerText },
+    });
+    dispatch({
+      type: 'change-site',
+      payload: {
+        selectedSite: res.data.site,
+      },
+    });
+  };
 
   return (
     <>
-      <div className='projects text-white bg-primary mb-3 rounded overflow-auto'>
-        <div className='align-items-center d-flex justify-content-between bg-dark'>
+      <div className="projects text-white bg-primary mb-3 rounded overflow-auto">
+        <div className="align-items-center d-flex justify-content-between bg-dark">
           <span className={`py-2 px-3`}>Sites</span>
-          <span className={`plusbtn btn btn-secondary`}>
+          <span className={`plusbtn btn btn-secondary`} onClick={addSite}>
             <FontAwesomeIcon icon={faPlus} />
           </span>
         </div>
-        <div className='list-group rounded-0'>
+        <div className="kendra-site-list list-group rounded-0 overflow-auto">
           {isLoading ? (
             <div className={`d-flex justify-content-center p-3`}>
               <Loader />
             </div>
           ) : (
-            list.map((item) => (
-              <a
+            sites.map((item) => (
+              <div
                 key={item.site}
-                href='#'
-                className='list-group-item list-group-item-action'
+                className={`list-group-item list-group-item-action`}
+                role={`button`}
+                onClick={setSelectedSite}
               >
                 {item.site}
-              </a>
+              </div>
             ))
           )}
         </div>
@@ -42,6 +92,9 @@ const Projects = (props: Props): ReactElement => {
       <style jsx>{`
         .projects {
           box-shadow: 2px 2px 5px 0px grey;
+        }
+        .kendra-site-list {
+          max-height: 90vh;
         }
       `}</style>
     </>

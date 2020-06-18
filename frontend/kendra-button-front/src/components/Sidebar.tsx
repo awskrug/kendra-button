@@ -1,4 +1,3 @@
-import { API, Auth } from 'aws-amplify';
 import {
   Dispatch,
   MouseEventHandler,
@@ -9,11 +8,10 @@ import {
 } from 'react';
 import { faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
+import { Auth } from 'aws-amplify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Projects } from './Projects';
 import { User } from '../types';
-import { siteList } from '../graphql/queries'
 
 interface Props {
   user: {
@@ -26,29 +24,11 @@ const Sidebar = (props: Props): ReactElement => {
   const { user, setIsLoggedIn } = props;
 
   const [loggedInUser, setLoggedInUser] = useState(user?.attributes?.email);
-  const [isLoading, setIsLoading] = useState(true);
-  const [sites, setSites] = useState([]);
 
   useEffect(() => {
+    console.log({ user });
+    if (!user) return;
     setLoggedInUser(user?.attributes?.email);
-    // call backend
-    const callGraphql = async ({ query }): Promise<GraphQLResult<any>> => {
-      const res = await API.graphql({
-        query,
-        // @ts-ignore
-        authMode: 'AMAZON_COGNITO_USER_POOLS',
-      })
-      return res as GraphQLResult<any>
-    }
-
-    callGraphql({ query: siteList }).then(res => {
-      console.log({ res })
-      setSites(res?.data?.sites)
-      setIsLoading(false);
-    }).catch(err => {
-      console.log({ err })
-      setIsLoading(false);
-    })
   }, [user]);
 
   const signOut: MouseEventHandler = async () => {
@@ -59,22 +39,22 @@ const Sidebar = (props: Props): ReactElement => {
   return (
     <>
       <div
-        className={`bg-primary d-flex flex-column justify-content-between align-items-stretch align-items-center p-3 sidebar`}
+        className={`bg-primary d-flex flex-column justify-content-between align-items-stretch align-items-center p-3 sidebar overflow-auto`}
       >
         <div className={`d-flex flex-column`}>
           <div className={`btn-group my-3`}>
-            <button type='button' className={`btn btn-danger`}>
+            <button type="button" className={`btn btn-danger`}>
               {loggedInUser}
             </button>
             <button
-              type='button'
+              type="button"
               className={`btn btn-outline-danger`}
               onClick={signOut}
             >
               <FontAwesomeIcon className={``} icon={faSignOutAlt} />
             </button>
           </div>
-          <Projects list={sites} isLoading={isLoading} />
+          {user && <Projects />}
         </div>
         <div className={`d-flex flex-column`}>
           <div className={`text-white btn btn-secondary`}>
@@ -91,6 +71,7 @@ const Sidebar = (props: Props): ReactElement => {
           left: 0;
           width: 30%;
           height: 100vh;
+          box-shadow: 2px 0px 5px 0px #848484;
         }
       `}</style>
     </>
