@@ -11,6 +11,7 @@ export interface Site {
   user: string;
   title: string;
   url: string;
+  term: string;
   crawlerStatus: {
     total: number;
     done: number;

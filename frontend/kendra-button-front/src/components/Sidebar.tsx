@@ -1,6 +1,5 @@
 import {
   Dispatch,
-  MouseEventHandler,
   ReactElement,
   SetStateAction,
   useEffect,
@@ -12,6 +11,7 @@ import { Auth } from 'aws-amplify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Projects } from './Projects';
 import { User } from '../types';
+import { useMainContextImpls } from '../contexts';
 
 interface Props {
   user: {
@@ -22,7 +22,7 @@ interface Props {
 
 const Sidebar = (props: Props): ReactElement => {
   const { user, setIsLoggedIn } = props;
-
+  const { dispatch } = useMainContextImpls();
   const [loggedInUser, setLoggedInUser] = useState(user?.attributes?.email);
 
   useEffect(() => {
@@ -31,9 +31,18 @@ const Sidebar = (props: Props): ReactElement => {
     setLoggedInUser(user?.attributes?.email);
   }, [user]);
 
-  const signOut: MouseEventHandler = async () => {
+  const signOut = async (): Promise<void> => {
     await Auth.signOut();
     setIsLoggedIn(false);
+  };
+
+  const goToSettingsPage = (): void => {
+    dispatch({
+      type: 'change-content',
+      payload: {
+        content: 'settings',
+      },
+    });
   };
 
   return (
@@ -56,7 +65,7 @@ const Sidebar = (props: Props): ReactElement => {
           </div>
           {user && <Projects />}
         </div>
-        <div className={`d-flex flex-column`}>
+        <div className={`d-flex flex-column`} onClick={goToSettingsPage}>
           <div className={`text-white btn btn-secondary`}>
             <FontAwesomeIcon className={`mr-2`} icon={faCog} />
             SETTINGS

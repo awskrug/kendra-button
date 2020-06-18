@@ -8,8 +8,10 @@ interface Props {
 }
 
 const PageLoader = (props: Props) => {
-  const { width, height, hide = true } = props;
-  if (hide) {
+  const { width, height, hide = false } = props;
+
+  console.log('PageLoader', { hide });
+  if (!hide) {
     return null;
   }
   return (

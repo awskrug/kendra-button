@@ -1,17 +1,18 @@
-import { useMainContextImpls, useModalContextImpls } from '../contexts';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProgressBar } from './ProgressBar';
 import { ReactElement } from 'react';
+import { Site } from '../types';
 import { TitleEdit } from './TitleEdit';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
+import { useModalContextImpls } from '../contexts';
 
 // import { callGraphql } from '../utils';
-
-const SiteMain = (): ReactElement => {
-  const { states } = useMainContextImpls();
+interface Props {
+  siteInfo?: Site;
+}
+const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
-  const { title, url, term, crawlerStatus } = states.selectedSite || {};
+  const { title, url, term, crawlerStatus } = props.siteInfo || {};
   const { total, done } = crawlerStatus || {};
 
   const askToDelete = (): void => {
@@ -27,25 +28,6 @@ const SiteMain = (): ReactElement => {
       },
     });
   };
-
-  if (!states.selectedSite) {
-    return (
-      <>
-        <div
-          className={`content d-flex justify-content-center align-items-center fa-lg`}
-        >
-          <div>Select Site</div>
-        </div>
-        <style jsx>{`
-          .content {
-            padding-left: 30%;
-            width: 100vw;
-            height: 100vh;
-          }
-        `}</style>
-      </>
-    );
-  }
 
   return (
     <>
@@ -100,13 +82,7 @@ const SiteMain = (): ReactElement => {
         <label className="form-control-label font-weight-bold">{`Crawling & Indexing`}</label>
         <ProgressBar theme={`success`} done={done} total={total} />
       </div>
-      <style jsx>{`
-        .content {
-          padding-left: 30%;
-          width: 100vw;
-          height: 100vh;
-        }
-      `}</style>
+      <style jsx>{``}</style>
     </>
   );
 };

@@ -52,7 +52,7 @@ const Projects = (props: Props): ReactElement => {
     dispatch({
       type: 'change-loading-flag',
       payload: {
-        loadingFlag: false,
+        loadingFlag: true,
       },
     });
     const res = await callGraphql({
@@ -63,12 +63,6 @@ const Projects = (props: Props): ReactElement => {
       type: 'change-site',
       payload: {
         selectedSite: res.data.site,
-      },
-    });
-    dispatch({
-      type: 'change-loading-flag',
-      payload: {
-        loadingFlag: true,
       },
     });
   };

@@ -1,46 +1,33 @@
 import { ReactElement } from 'react';
 
-interface Props {
-  theme: string;
-  total: number;
-  done: number;
-}
+interface Props {}
 const Settings = (props: Props): ReactElement => {
-  const { theme, total = 100, done = 0 } = props || {};
-  // const [percent, setPercent] = useState(90);
-
   return (
-    <div>
-      <div className={`align-items-center d-flex justify-content-between pb-1`}>
-        {/* <button
-          className={`btn ` + ('btn-' + theme || '')}
-          onClick={(e) => {
-            if (percent < 100) {
-              setPercent(percent + 1)
-            }
-          }}
-        >{`INCREMENT(test)`}</button> */}
-        <span>
-          {done} / {total}
-        </span>
+    <>
+      <div
+        className={`align-items-center d-flex justify-content-between pb-1 p-3`}
+      >
+        <div className="card text-white bg-primary mb-3">
+          <div className="card-header">계정 정보 수정</div>
+          <div className="card-body">
+            <h4 className="card-title">계정 정보 수정</h4>
+            <p className="card-text">계정 정보 수정</p>
+          </div>
+        </div>
       </div>
-      <div className="progress">
-        <div
-          className={`progress-bar progress-bar-striped progress-bar-animated ${
-            'bg-' + theme || ''
-          }`}
-          role={`progressbar`}
-          aria-valuenow={done}
-          aria-valuemin={0}
-          aria-valuemax={total}
-        ></div>
-        <style jsx>{`
-          .progress .progress-bar {
-            width: ${(done / total) * 100}%;
-          }
-        `}</style>
+      <div
+        className={`align-items-center d-flex justify-content-between pb-1 p-3`}
+      >
+        <div className="card text-white bg-secondary mb-3">
+          <div className="card-header">계정 탈퇴</div>
+          <div className="card-body">
+            <h4 className="card-title">계정 탈퇴</h4>
+            <p className="card-text">정말? 가게?</p>
+          </div>
+        </div>
       </div>
-    </div>
+      <style jsx>{``}</style>
+    </>
   );
 };
 

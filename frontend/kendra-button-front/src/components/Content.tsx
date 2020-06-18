@@ -1,35 +1,30 @@
 import { PageLoader } from './PageLoader';
 import { ReactElement } from 'react';
+import { Settings } from './Settings';
 import { SiteMain } from './SiteMain';
 import { useMainContextImpls } from '../contexts';
 
 const Content = (): ReactElement => {
   const { states } = useMainContextImpls();
+  const { selectedSite, loadingFlag, content } = states;
 
-  if (!states.selectedSite) {
-    return (
-      <>
-        <div
-          className={`content d-flex justify-content-center align-items-center fa-lg`}
-        >
-          <div>Select Site</div>
-        </div>
-        <style jsx>{`
-          .content {
-            padding-left: 30%;
-            width: 100vw;
-            height: 100vh;
-          }
-        `}</style>
-      </>
-    );
-  }
+  console.log({ content, loadingFlag });
 
   return (
     <>
-      <PageLoader hide={states.loadingFlag} />
+      <PageLoader hide={loadingFlag} />
       <div className={`content`}>
-        <SiteMain />
+        {!content ? (
+          <div
+            className={`w-100 h-100 d-flex justify-content-center align-items-center fa-lg`}
+          >
+            <div>Select Site</div>
+          </div>
+        ) : content === 'site' ? (
+          <SiteMain siteInfo={selectedSite} />
+        ) : content === 'settings' ? (
+          <Settings />
+        ) : null}
       </div>
       <style jsx>{`
         .content {
