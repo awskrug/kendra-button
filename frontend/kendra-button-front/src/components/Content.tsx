@@ -1,34 +1,10 @@
-import { useMainContextImpls, useModalContextImpls } from '../contexts';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PageLoader } from './PageLoader';
-import { ProgressBar } from './ProgressBar';
 import { ReactElement } from 'react';
 import { SiteMain } from './SiteMain';
-import { TitleEdit } from './TitleEdit';
-import { faCode } from '@fortawesome/free-solid-svg-icons';
-
-// import { callGraphql } from '../utils';
+import { useMainContextImpls } from '../contexts';
 
 const Content = (): ReactElement => {
   const { states } = useMainContextImpls();
-  const { setModalConfig } = useModalContextImpls();
-  const { title, url, term, crawlerStatus } = states.selectedSite || {};
-  const { total, done } = crawlerStatus || {};
-
-  const askToDelete = (): void => {
-    setModalConfig({
-      type: 'plain',
-      display: true,
-      title: 'Are you sure?',
-      content: `Are you really going to delete this site "${title}"?`,
-      okaction: async ({ hideModal }) => {
-        // TODO: call graphql that exec DELETE
-        // callGraphql({ query: })
-        console.log('delete!');
-      },
-    });
-  };
 
   if (!states.selectedSite) {
     return (

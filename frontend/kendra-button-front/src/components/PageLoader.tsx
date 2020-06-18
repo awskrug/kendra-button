@@ -1,8 +1,14 @@
 import { Loader } from './Loader';
 import React from 'react';
 
+interface Props {
+  width?: string;
+  height?: string;
+  hide: boolean;
+}
+
 const PageLoader = (props: Props) => {
-  const { width, height, hide } = props;
+  const { width, height, hide = true } = props;
   if (hide) {
     return null;
   }
