@@ -1,11 +1,12 @@
-import { faCode, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProgressBar } from './ProgressBar';
 import { ReactElement } from 'react';
 import { TitleEdit } from './TitleEdit';
-import { callGraphql } from '../utils';
+import { faCode } from '@fortawesome/free-solid-svg-icons';
+
+// import { callGraphql } from '../utils';
 
 const Content = (): ReactElement => {
   const { states } = useMainContextImpls();

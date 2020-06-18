@@ -1,9 +1,9 @@
 // import * as Yup from 'yup';
 
-import { ReactElement, useState } from 'react';
+import { ReactElement } from 'react';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 // import { useFormik } from 'formik';
 
@@ -12,7 +12,7 @@ interface Props {
 }
 const TitleEdit = (props: Props): ReactElement => {
   const { title = 'Site' } = props || {};
-  const [isEditMode, setIsEditMode] = useState(false);
+  // const [isEditMode, setIsEditMode] = useState(false);
 
   // const formik = useFormik({
   //   initialValues: {
