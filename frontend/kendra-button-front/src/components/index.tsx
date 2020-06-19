@@ -7,6 +7,6 @@ export * from './PageLoader';
 export * from './InputProject';
 export * from './PlainModal';
 export * from './SiteCreateModal';
-export * from './TitleEdit';
+export * from './SiteEdit';
 export * from './SiteMain';
 export * from './Settings';

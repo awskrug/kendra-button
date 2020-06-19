@@ -41,6 +41,7 @@ const Projects = (props: Props): ReactElement => {
       type: 'site-create',
       display: true,
       title: 'Create new site',
+      positionTop: '10%',
     });
   };
 

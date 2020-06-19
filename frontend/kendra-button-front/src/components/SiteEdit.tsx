@@ -8,18 +8,18 @@ import { ReactElement } from 'react';
 // import { useFormik } from 'formik';
 
 interface Props {
-  title: string;
+  site: string;
 }
-const TitleEdit = (props: Props): ReactElement => {
-  const { title = 'Site' } = props || {};
+const SiteEdit = (props: Props): ReactElement => {
+  const { site = 'Site' } = props || {};
   // const [isEditMode, setIsEditMode] = useState(false);
 
   // const formik = useFormik({
   //   initialValues: {
-  //     title: '',
+  //     site: '',
   //   },
   //   validationSchema: Yup.object({
-  //     title: Yup.string().required(`"Title"은 필수 입력 항목입니다.`),
+  //     site: Yup.string().required(`"Title"은 필수 입력 항목입니다.`),
   //   }),
   //   onSubmit: () => {},
   // });
@@ -31,16 +31,16 @@ const TitleEdit = (props: Props): ReactElement => {
       <div
         className={`h3 px-3 d-flex justify-content-between align-items-center`}
       >
-        {title}
+        {site}
         {/* {isEditMode ? (
-          title
+          site
         ) : (
           // <input
           //   type="text"
           //   className="form-control"
-          //   id="input-title"
-          //   placeholder={`input title`}
-          //   defaultValue={title}
+          //   id="input-site"
+          //   placeholder={`input site`}
+          //   defaultValue={site}
           //   disabled
           // />
         )} */}
@@ -56,4 +56,4 @@ const TitleEdit = (props: Props): ReactElement => {
   );
 };
 
-export { TitleEdit };
+export { SiteEdit };

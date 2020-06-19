@@ -9,8 +9,8 @@ export interface User {
 export interface Site {
   site: string;
   user: string;
-  title: string;
-  url: string;
+  domain: string;
+  scrapEndpoint: string;
   term: string;
   crawlerStatus: {
     total: number;

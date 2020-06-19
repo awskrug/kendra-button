@@ -20,16 +20,18 @@ const SiteCreateModal = (): ReactElement => {
 
   const formik = useFormik({
     initialValues: {
-      title: '',
+      site: '',
       url: '',
+      domain: '',
       term: 'd',
     },
     validationSchema: Yup.object({
-      title: Yup.string().required(`"Title"은 필수 입력 항목입니다.`),
+      site: Yup.string().required(`"Title"은 필수 입력 항목입니다.`),
       url: Yup.string()
         .url(`올바르지 않은 "url"입니다.`)
         .required(`"url"은 필수 입력 항목입니다.`),
-      term: Yup.string().required(`"team"은 필수 입력 항목입니다.`),
+      domain: Yup.string().required(`"domain"은 필수 입력 항목입니다.`),
+      term: Yup.string().required(`"term"은 필수 입력 항목입니다.`),
     }),
     onSubmit: () => {},
   });
@@ -65,12 +67,14 @@ const SiteCreateModal = (): ReactElement => {
     const res: GraphQLResult<ResCreateSite> = await callGraphql({
       query: createSite,
       variables: {
-        site: formik.values.title,
-        title: formik.values.title,
-        url: formik.values.url,
+        site: formik.values.site,
+        scrapEndpoint: formik.values.url,
+        domain: formik.values.domain,
         term: formik.values.term,
       },
     });
+
+    formik.resetForm();
 
     console.log({ res });
     dispatch({
@@ -127,24 +131,24 @@ const SiteCreateModal = (): ReactElement => {
               <div className="form-group">
                 <label
                   className="form-control-label font-weight-bold"
-                  htmlFor="input-title"
-                >{`Title`}</label>
+                  htmlFor="input-site"
+                >{`Site Name`}</label>
                 <input
                   type="text"
                   className={`form-control ${
-                    formik.touched.title && formik.errors.title
+                    formik.touched.site && formik.errors.site
                       ? 'is-invalid'
                       : ''
                   }`}
-                  id="input-title"
-                  name="title"
-                  placeholder={`input title`}
-                  value={formik.values.title}
+                  id="input-site"
+                  name="site"
+                  placeholder={`input site`}
+                  value={formik.values.site}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
                 />
-                {formik.touched.title && formik.errors.title && (
-                  <div className="invalid-feedback">{formik.errors.title}</div>
+                {formik.touched.site && formik.errors.site && (
+                  <div className="invalid-feedback">{formik.errors.site}</div>
                 )}
               </div>
               <div className="form-group">
@@ -166,6 +170,29 @@ const SiteCreateModal = (): ReactElement => {
                 />
                 {formik.touched.url && formik.errors.url && (
                   <div className="invalid-feedback">{formik.errors.url}</div>
+                )}
+              </div>
+              <div className="form-group">
+                <label
+                  className="form-control-label font-weight-bold"
+                  htmlFor="input-domain"
+                >{`Domain`}</label>
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.domain && formik.errors.domain
+                      ? 'is-invalid'
+                      : ''
+                  }`}
+                  id="input-domain"
+                  name="domain"
+                  placeholder={`input domain`}
+                  value={formik.values.domain}
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                />
+                {formik.touched.domain && formik.errors.domain && (
+                  <div className="invalid-feedback">{formik.errors.domain}</div>
                 )}
               </div>
               <div className="form-group">
