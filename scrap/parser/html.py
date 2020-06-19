@@ -7,7 +7,7 @@ import boto3
 try:
     from .utils import AsyncCutBrowserSession, make_obj_name, make_simple_obj_name
 except Exception as e:
-    from utils import AsyncCutBrowserSession
+    from utils import AsyncCutBrowserSession, make_obj_name, make_simple_obj_name
 
 BUCKET = os.environ.get('BUCKET', 'kendra-button')
 

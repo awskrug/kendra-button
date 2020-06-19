@@ -9,7 +9,8 @@ custom:
   kendra:
     account: 294038372338
   dynamodb:
-    indexDB: kendra-buttons-index-${self:custom.stage}-adf
+    siteDB: kendra-buttons-site-${self:custom.stage}
+    pageDB: kendra-buttons-index-${self:custom.stage}
   pythonRequirements:
     layer: true
   userPoolAuthorizer:
@@ -25,7 +26,8 @@ provider:
   stage: dev
   region: us-west-2
   environment:
-    indexDB: ${self:custom.dynamodb.indexDB}
+    siteDB: ${self:custom.dynamodb.siteDB}
+    pageDB: ${self:custom.dynamodb.pageDB}
     PYPPETEER_HOME: '/tmp/'
   iamRoleStatements:
     - Effect: "Allow"
@@ -79,7 +81,16 @@ plugins:
   - serverless-wsgi
 resources:
   Resources:
-    myDynamoDBTable: 
+    GatewayResponseDefault4XX:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+    SiteTable: 
       Type: AWS::DynamoDB::Table
       Properties:
         BillingMode: PAY_PER_REQUEST
@@ -95,14 +106,32 @@ resources:
           - 
             AttributeName: "site"
             KeyType: "RANGE"
-        TableName: "${self:custom.dynamodb.indexDB}"
+        TableName: "${self:custom.dynamodb.siteDB}"
+    PageIndexTable: 
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: "site"
+            AttributeType: "S"
+          - AttributeName: "url"
+            AttributeType: "S"
+        KeySchema: 
+          - 
+            AttributeName: "site"
+            KeyType: "HASH"
+          - 
+            AttributeName: "url"
+            KeyType: "RANGE"
+        TableName: "${self:custom.dynamodb.pageDB}"
     CognitoAuthorizer:
       Type: AWS::ApiGateway::Authorizer
       Properties:
-        Name: KendraCongnito
+        Name: KendraCongnitoAuth
         RestApiId:
           Ref: ApiGatewayRestApi
         Type: COGNITO_USER_POOLS
         ProviderARNs: 
           - arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_XT1s3RtPp
         IdentitySource: method.request.header.Authorization
+    
