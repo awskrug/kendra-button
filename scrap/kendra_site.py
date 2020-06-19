@@ -99,6 +99,25 @@ class SiteCreate(graphene.Mutation):
         data.save()
         return SiteCreate(site=data)
 
+class SiteUpdate(graphene.Mutation):
+    class Arguments:
+        site = graphene.String(required=True)
+        domain = graphene.String(required=False)
+
+    site = graphene.Field(SiteNode)
+
+    def mutate(self, info, site, domain=None):
+        user = get_user()            
+        try:
+            item = Site.get(user, site)
+        except Exception as e:
+            raise Exception('there is no site')
+        actions = []
+        if domain:
+            actions.append(Site.domain.set(domain))
+        if actions:
+            item.update(actions=actions)
+        return SiteUpdate(site=item)
 
 class SiteDelete(graphene.Mutation):
     class Arguments:
