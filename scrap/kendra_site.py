@@ -136,4 +136,5 @@ class SiteDelete(graphene.Mutation):
 
 class Mutation:
     create_site = SiteCreate.Field()
+    update_site = SiteUpdate.Field()
     delete_site = SiteDelete.Field()
