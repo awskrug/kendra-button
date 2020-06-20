@@ -1,5 +1,6 @@
+import { Dispatch, ReactElement, SetStateAction } from 'react';
+
 import { PageLoader } from './PageLoader';
-import { ReactElement } from 'react';
 import { Settings } from './Settings';
 import { SiteMain } from './SiteMain';
 import { User } from '../types';
@@ -7,11 +8,12 @@ import { useMainContextImpls } from '../contexts';
 
 interface Props {
   user: User;
+  setIsLoggedIn?: Dispatch<SetStateAction<boolean>>;
 }
 
 const Content = (props: Props): ReactElement => {
   const { states } = useMainContextImpls();
-  const { user } = props;
+  const { user, setIsLoggedIn } = props;
   const { selectedSite, loadingFlag, content } = states;
 
   return (
@@ -27,7 +29,7 @@ const Content = (props: Props): ReactElement => {
         ) : content === 'site' ? (
           <SiteMain siteInfo={selectedSite} />
         ) : content === 'settings' ? (
-          <Settings user={user} />
+          <Settings user={user} setIsLoggedIn={setIsLoggedIn} />
         ) : null}
       </div>
       <style jsx>{`

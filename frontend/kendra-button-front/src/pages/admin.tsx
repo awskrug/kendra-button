@@ -19,7 +19,7 @@ const Page = () => {
       <Authenticator onStateChange={onStateChange} isLoggedIn={isLoggedIn}>
         <>
           <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
-          <Content user={user} />
+          <Content user={user} setIsLoggedIn={setIsLoggedIn} />
         </>
       </Authenticator>
     </>
