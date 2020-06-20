@@ -16,7 +16,6 @@ const Projects = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
 
   useEffect(() => {
-    console.log('projects states', states);
     if (!states.reloadSite) return;
     callGraphql({ query: siteList })
       .then((res) => {

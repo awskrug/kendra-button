@@ -2,13 +2,17 @@ import { PageLoader } from './PageLoader';
 import { ReactElement } from 'react';
 import { Settings } from './Settings';
 import { SiteMain } from './SiteMain';
+import { User } from '../types';
 import { useMainContextImpls } from '../contexts';
 
-const Content = (): ReactElement => {
-  const { states } = useMainContextImpls();
-  const { selectedSite, loadingFlag, content } = states;
+interface Props {
+  user: User;
+}
 
-  console.log({ content, loadingFlag });
+const Content = (props: Props): ReactElement => {
+  const { states } = useMainContextImpls();
+  const { user } = props;
+  const { selectedSite, loadingFlag, content } = states;
 
   return (
     <>
@@ -23,7 +27,7 @@ const Content = (): ReactElement => {
         ) : content === 'site' ? (
           <SiteMain siteInfo={selectedSite} />
         ) : content === 'settings' ? (
-          <Settings />
+          <Settings user={user} />
         ) : null}
       </div>
       <style jsx>{`

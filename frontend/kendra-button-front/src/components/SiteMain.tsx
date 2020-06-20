@@ -12,8 +12,7 @@ interface Props {
 }
 const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
-  const { site, scrapEndpoint, domain, term, crawlerStatus } =
-    props.siteInfo || {};
+  const { site, scrapEndpoint, term, crawlerStatus } = props.siteInfo || {};
   const { total, done } = crawlerStatus || {};
 
   const callEmbed = (): void => {
@@ -34,7 +33,7 @@ const SiteMain = (props: Props): ReactElement => {
       type: 'plain',
       display: true,
       title: 'Are you sure?',
-      content: `Are you really going to delete this site "${title}"?`,
+      content: `Are you really going to delete this site "${site}"?`,
       okaction: async ({ hideModal }) => {
         // TODO: call graphql that exec DELETE
         // callGraphql({ query: })
