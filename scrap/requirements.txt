@@ -1,5 +1,5 @@
 scrapy==2.1.0
-lxml==4.5.1
+lxml
 shortuuid
 boto3
 requests_html
@@ -8,3 +8,4 @@ pynamodb
 graphene-pynamodb
 Flask-GraphQL
 flask-cors
+beautifulsoup4
