@@ -11,31 +11,38 @@ const SearchResult = (props: Props) => {
   const { searchInput } = props || {};
   const [result, setResult] = useState([]);
 
-  // const [results, setResults] = useState(['haha']);
-
   // async & await 허용 안함
   useEffect(() => {
     callGraphql({ query: search, keyword: searchInput })
       .then(
         data => {
-          console.log('왜', data.data)
+          console.log('result', data.data)
           // 안전
           if (data.data.search && data.data.search.items) {
             setResult(data.data.search.items)
+            let resultSet = data.data.search.items
+            console.log(data.data.search.items[0].excerpt.highlights[0].start)
+            console.log(data.data.search.items[0].excerpt.highlights[0].end)
+            console.log('length...', resultSet.length)
+
           }
         }
       )
-
   }, []);
 
   return (
-    <div>
+    <div className="container">
+      <p className={`lead`}>Seach result for "{searchInput}"</p>
       {result.map((item, idx) => {
-        console.log('itme?', item.excerpt.text)
+
         if (idx <= 5) {
-          //jsx라서
+
           return (
-            <li>{item.excerpt.text}</li>
+            <div className={`my-1`} key={idx}>
+              <p className={`badge badge-pill badge-success`}> {idx + 1}</p>
+              <p> {item.title.text}</p>
+              <p> {item.excerpt.text}</p>
+            </div>
           )
         }
       })

@@ -13,11 +13,12 @@ const Search = () => {
 
   const searchHandler = () => {
     setKeywords(inputValue)
+    setInputValue('')
   }
 
   return (
     <div>
-      <form className='form-inline'>
+      <form className={`form-inline mb-4`}>
         <input
           type='text'
           className='form-control mr-sm-2 w-75'
