@@ -1,10 +1,17 @@
-import { useState } from 'react';
+import { useState, ReactElement } from 'react';
 import { SearchResult } from './SearchResult';
-const Search = () => {
+
+interface Props {
+  site: string;
+}
+
+const Search = (props: Props): ReactElement => {
 
   const [inputValue, setInputValue] = useState("");
 
   const [keyword, setKeywords] = useState("");
+
+  const { site } = props
 
 
   const onChangeHandler = e => {
@@ -35,7 +42,7 @@ const Search = () => {
       </form>
 
       {keyword.length > 0 &&
-        <SearchResult searchInput={keyword} />
+        <SearchResult site={site} searchInput={keyword} />
       }
     </div>
   );

@@ -93,3 +93,30 @@ export const siteItem = `query SiteItem(
     }
   }
 }`;
+
+export const search = `query($keyword:String!, $site: String!){
+  search(text: $keyword site:$site){
+    items{
+      url
+      title{
+        text
+        highlights{
+          start
+          end
+          topAnswer
+        }
+      }
+      excerpt{
+        text
+        highlights{
+          start
+          end
+          topAnswer
+        }
+        
+      }
+    }
+    
+    total
+  }
+}`;

@@ -2,30 +2,30 @@ import { useEffect, useState } from 'react';
 import { callGraphql } from '../utils';
 import { search } from '../graphql/queries';
 
-
 interface Props {
   searchInput: string;
+  site: string;
 }
 
 const SearchResult = (props: Props) => {
-  const { searchInput } = props || {};
+  const { searchInput, site } = props || {};
   const [result, setResult] = useState([]);
 
   // async & await 허용 안함
   useEffect(() => {
-    callGraphql({ query: search, keyword: searchInput })
+    callGraphql({
+      query: search,
+      variables: {
+        site,
+        keyword: searchInput
+      }
+    })
       .then(
         data => {
           console.log('result', data.data)
           // 안전
           if (data.data.search && data.data.search.items) {
             setResult(data.data.search.items)
-            const resultSet = data.data.search.items
-            console.log('length...', resultSet.length)
-
-            console.log(data.data.search.items[0].excerpt.highlights[0].start)
-            console.log(data.data.search.items[0].excerpt.highlights[0].end)
-
           }
         }
       )
