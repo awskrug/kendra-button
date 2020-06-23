@@ -5,6 +5,7 @@ import { Site } from '../types';
 import { SiteEdit } from './SiteEdit';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { useModalContextImpls } from '../contexts';
+import { Search } from './Search';
 
 // import { callGraphql } from '../utils';
 interface Props {
@@ -99,6 +100,11 @@ const SiteMain = (props: Props): ReactElement => {
         <label className="form-control-label font-weight-bold">{`Crawling & Indexing`}</label>
         <ProgressBar theme={`success`} done={done} total={total} />
       </div>
+
+      <div className={`p-3`}>
+        <Search site={site} />
+      </div>
+
       <style jsx>{``}</style>
     </>
   );
