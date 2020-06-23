@@ -30,14 +30,14 @@ const Authenticator = (props: Props): ReactElement => {
           formFields={[
             {
               type: 'email',
-              label: 'Custom email Label',
-              placeholder: 'custom email placeholder',
+              label: 'Email',
+              placeholder: 'input email',
               required: true,
             },
             {
               type: 'password',
-              label: 'Custom Password Label',
-              placeholder: 'custom password placeholder',
+              label: 'Password',
+              placeholder: 'input password',
               required: true,
             },
           ]}

@@ -1,14 +1,41 @@
 import { MainContext, ModalContext } from './Context';
-import React, { useContext, useMemo, useReducer, useState } from 'react';
+import React, {
+  Dispatch,
+  ReducerAction,
+  useContext,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 
-export type ReducerType = 'reload-site' | 'change-site' | 'change-theme';
+import { Site } from '../types';
+
+export type ReducerType =
+  | 'reload-site'
+  | 'change-site'
+  | 'change-theme'
+  | 'change-loading-flag'
+  | 'change-content';
 export interface State {
   theme?: string;
-  selectedSite?: string;
+  selectedSite?: Site;
   reloadSite?: boolean;
+  loadingFlag?: boolean;
+  content?: 'site' | 'settings';
 }
 export type Action = { type: ReducerType; payload: State };
 export type Reducer = (state: State, action: Action) => State;
+
+interface MainConsumer {
+  states: State;
+  dispatch: Dispatch<ReducerAction<Reducer>>;
+}
+
+const initialState: State = {
+  theme: 'sandstone',
+  reloadSite: true,
+  loadingFlag: false,
+};
 
 const reducer: Reducer = (state, action) => {
   const { type, payload } = action;
@@ -22,21 +49,31 @@ const reducer: Reducer = (state, action) => {
       return {
         ...state,
         selectedSite: payload.selectedSite,
+        loadingFlag: false,
+        content: 'site',
       };
     case 'change-theme':
       return {
         ...state,
         theme: payload.theme,
       };
+    case 'change-loading-flag':
+      return {
+        ...state,
+        loadingFlag: payload.loadingFlag,
+      };
+    case 'change-content':
+      return {
+        ...state,
+        content: payload.content,
+      };
     default:
       return state;
   }
 };
 const MainProvider = (props) => {
-  const [states, dispatch] = useReducer<Reducer>(reducer, {
-    theme: 'sandstone',
-    reloadSite: true,
-  });
+  const [states, dispatch] = useReducer<Reducer>(reducer, initialState);
+  // const provider: MainConsumer = { states, dispatch };
 
   return (
     <MainContext.Provider value={{ states, dispatch }}>
@@ -90,7 +127,7 @@ const ModalProvider = (props) => {
   );
 };
 
-const useMainContextImpls = () => useContext(MainContext);
+const useMainContextImpls = (): MainConsumer => useContext(MainContext);
 const useModalContextImpls = () => useContext(ModalContext);
 
 const Providers = ({ contexts, children }) =>

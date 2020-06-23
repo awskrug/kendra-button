@@ -14,8 +14,8 @@ import awsconfig from '../aws-exports';
 Amplify.configure(awsconfig);
 
 const url =
-  'https://8pfums0mu7.execute-api.us-west-2.amazonaws.com/dev/graphql'; // dev
-// const url = 'https://8pfums0mu7.execute-api.us-west-2.amazonaws.com/dev/noauth/graphql', // noauth
+  'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/graphql'; // dev
+// const url = 'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/noauth/graphql', // noauth
 
 /**
  * Using a non-AppSync GraphQL Server

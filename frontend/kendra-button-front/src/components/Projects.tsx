@@ -16,7 +16,6 @@ const Projects = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
 
   useEffect(() => {
-    console.log('projects states', states);
     if (!states.reloadSite) return;
     callGraphql({ query: siteList })
       .then((res) => {
@@ -41,6 +40,7 @@ const Projects = (props: Props): ReactElement => {
       type: 'site-create',
       display: true,
       title: 'Create new site',
+      positionTop: '10%',
     });
   };
 
@@ -49,6 +49,12 @@ const Projects = (props: Props): ReactElement => {
   ): Promise<void> => {
     const target = e.target as HTMLDivElement;
 
+    dispatch({
+      type: 'change-loading-flag',
+      payload: {
+        loadingFlag: true,
+      },
+    });
     const res = await callGraphql({
       query: siteItem,
       variables: { site: target.innerText },
