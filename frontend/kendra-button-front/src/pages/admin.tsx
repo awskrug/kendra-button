@@ -7,16 +7,25 @@ import { useState } from 'react';
 const Page = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [isSignInScreen, setIsSignInScreen] = useState(false);
 
   const onStateChange = (nextAuthState: AuthState, user: User) => {
-    console.log('onStateChange user', user);
     setIsLoggedIn(nextAuthState === 'signedin');
     setUser(user);
+    if (nextAuthState === 'signin') {
+      setIsSignInScreen(true);
+    } else {
+      setIsSignInScreen(false);
+    }
   };
 
   return (
     <>
-      <Authenticator onStateChange={onStateChange} isLoggedIn={isLoggedIn}>
+      <Authenticator
+        onStateChange={onStateChange}
+        isLoggedIn={isLoggedIn}
+        isSignInScreen={isSignInScreen}
+      >
         <>
           <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
           <Content user={user} setIsLoggedIn={setIsLoggedIn} />
