@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import sampledata from '../sampledata.json';
+
 // import { callGraphql } from '../utils';
 // import { search } from '../graphql/queries';
 
@@ -10,16 +12,17 @@ interface Props {
 
 const getFromNextApi = async (): Promise<any> => {
   // const res = await fetch('/api/search');
-  const res = await fetch(
-    'https://temp-by-geoseong.s3.ap-northeast-2.amazonaws.com/sampledata.json',
-  );
-  const data = await res.json();
+  // const res = await fetch(
+  //   'https://temp-by-geoseong.s3.ap-northeast-2.amazonaws.com/sampledata.json',
+  // );
+  // console.log('res:', res);
+  // const data = await res.json();
 
-  if (res.status !== 200) {
-    throw new Error(data.message);
-  }
-
-  return data;
+  // if (res.status !== 200) {
+  //   throw new Error(data.message);
+  // }
+  // return data;
+  return sampledata;
 };
 const SearchResult = (props: Props) => {
   const { searchInput, site } = props || {};
