@@ -1,18 +1,23 @@
+import { Site, User } from '../types';
+import { useMainContextImpls, useModalContextImpls } from '../contexts';
+
+import { EmbedInstruction } from './EmbedInstruction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ProgressBar } from './ProgressBar';
 import { ReactElement } from 'react';
-import { Site } from '../types';
-import { SiteEdit } from './SiteEdit';
-import { faCode } from '@fortawesome/free-solid-svg-icons';
-import { useModalContextImpls } from '../contexts';
 import { Search } from './Search';
+import { SiteEdit } from './SiteEdit';
+import { callGraphql } from '../utils';
+import { deleteSite } from '../graphql/queries';
+import { faCode } from '@fortawesome/free-solid-svg-icons';
 
-// import { callGraphql } from '../utils';
 interface Props {
+  user?: User;
   siteInfo?: Site;
 }
 const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
+  const { dispatch } = useMainContextImpls();
   const { site, scrapEndpoint, term, crawlerStatus } = props.siteInfo || {};
   const { total, done } = crawlerStatus || {};
 
@@ -20,13 +25,8 @@ const SiteMain = (props: Props): ReactElement => {
     setModalConfig({
       type: 'plain',
       display: true,
-      title: 'EMBED',
-      content: `user id / instruction / input target id or class / input callback url / embed code`,
-      okaction: async ({ hideModal }) => {
-        // TODO: call graphql that exec DELETE
-        // callGraphql({ query: })
-        console.log('embed!');
-      },
+      title: 'Embed kendra-button to your website',
+      content: <EmbedInstruction site={site} scrapEndpoint={scrapEndpoint} />,
     });
   };
   const askToDelete = (): void => {
@@ -36,9 +36,21 @@ const SiteMain = (props: Props): ReactElement => {
       title: 'Are you sure?',
       content: `Are you really going to delete this site "${site}"?`,
       okaction: async ({ hideModal }) => {
-        // TODO: call graphql that exec DELETE
-        // callGraphql({ query: })
-        console.log('delete!');
+        try {
+          const res = await callGraphql({
+            query: deleteSite,
+            variables: {
+              site,
+            },
+          });
+        } catch (e) {
+          console.log('catch e', e);
+        } finally {
+          dispatch({
+            type: 'delete-site',
+          });
+          hideModal();
+        }
       },
     });
   };

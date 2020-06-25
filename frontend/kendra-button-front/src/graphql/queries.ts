@@ -42,6 +42,16 @@ export const updateSite = `mutation Update(
   }
 }`;
 
+export const deleteSite = `mutation Delete(
+  $site: String!
+) {
+  deleteSite(
+    site: $site
+  ) {
+    ok
+  }
+}`;
+
 export const siteList = `query SiteList{
 	sites{
     user

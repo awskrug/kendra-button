@@ -27,7 +27,7 @@ const Content = (props: Props): ReactElement => {
             <div>Select Site</div>
           </div>
         ) : content === 'site' ? (
-          <SiteMain siteInfo={selectedSite} />
+          <SiteMain user={user} siteInfo={selectedSite} />
         ) : content === 'settings' ? (
           <Settings user={user} setIsLoggedIn={setIsLoggedIn} />
         ) : null}

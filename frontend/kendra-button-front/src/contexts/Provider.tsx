@@ -52,6 +52,12 @@ const reducer: Reducer = (state, action) => {
         loadingFlag: false,
         content: 'site',
       };
+    case 'delete-site':
+      return {
+        ...state,
+        content: null,
+        reloadSite: true,
+      };
     case 'change-theme':
       return {
         ...state,
@@ -67,6 +73,7 @@ const reducer: Reducer = (state, action) => {
         ...state,
         content: payload.content,
       };
+
     default:
       return state;
   }
