@@ -17,7 +17,8 @@ const Sidebar = (props: Props): ReactElement => {
   const { dispatch } = useMainContextImpls();
 
   const signOut = async (): Promise<void> => {
-    await Auth.signOut();
+    const user = await Auth.signOut();
+    console.log('Signed out user ~?', user)
     setIsLoggedIn(false);
   };
 

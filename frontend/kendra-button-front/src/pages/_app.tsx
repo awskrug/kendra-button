@@ -8,6 +8,7 @@ import { MainProvider, ModalProvider, Providers } from '../contexts';
 import { PlainModal, SiteCreateModal } from '../components';
 
 import { AppProps } from 'next/app';
+
 import Layout from '../layout';
 import awsconfig from '../aws-exports';
 
@@ -30,7 +31,7 @@ Amplify.configure({
   },
 });
 
-function App({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Providers contexts={[MainProvider, ModalProvider]}>
@@ -44,4 +45,29 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default App;
+MyApp.getInitialProps = async (props) => {
+  const { ctx } = props || {};
+
+  console.log('process.env.NODE_ENV', process.env.NODE_ENV)
+  // solution: https://stackoverflow.com/a/60747333/8026431
+  if (process.env.NODE_ENV === 'development') {
+    const pathAndQueryDivided = ctx.req.url.split('?');
+    console.log('pathAndQueryDivided:', pathAndQueryDivided)
+    if (pathAndQueryDivided[0] !== '/' && pathAndQueryDivided[0].endsWith('/')) {
+      const urlWithoutEndingSlash = pathAndQueryDivided[0].replace(/\/*$/gim, '');
+
+      ctx.res.writeHead(301, {
+        Location:
+          urlWithoutEndingSlash +
+          (pathAndQueryDivided.length > 1 ? `?${pathAndQueryDivided[1]}` : ''),
+      });
+      ctx.res.end();
+      return {};
+    }
+  }
+
+  return {};
+};
+
+
+export default MyApp;

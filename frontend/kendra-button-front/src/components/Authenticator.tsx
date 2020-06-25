@@ -4,6 +4,8 @@ import { ReactElement, ReactNode, useEffect } from 'react';
 // https://github.com/aws-amplify/amplify-js/issues/5825#issuecomment-631759616
 import { onAuthUIStateChange } from '@aws-amplify/ui-components';
 
+import { Auth } from 'aws-amplify';
+
 interface Props {
   children: ReactNode;
   onStateChange?: any;
@@ -17,7 +19,24 @@ const Authenticator = (props: Props): ReactElement => {
     return onAuthUIStateChange((newAuthState, user) => {
       onStateChange(newAuthState, user);
     });
+
   }, []);
+
+  const googleSocialClick = () => {
+    // https://www.youtube.com/watch?v=eqDUSY9KHYE&t=319s
+    // @ts-ignore
+    Auth.federatedSignIn({ provider: 'Google' });
+  }
+  const facebookSocialClick = () => {
+    // https://www.youtube.com/watch?v=F6ZPTKiEJx4
+    // @ts-ignore
+    Auth.federatedSignIn({ provider: 'Facebook' });
+  }
+
+  const socialClick = () => {
+    Auth.federatedSignIn();
+  }
+
 
   const bgClass = isLoggedIn ? `` : `bg-dark`;
   return (
@@ -52,8 +71,9 @@ const Authenticator = (props: Props): ReactElement => {
           <div
             className={`auth-custom bg-white p-3 w-100 position-absolute rounded-bottom`}
           >
-            <div>Google</div>
-            <div>Facebook</div>
+            <div className={`btn btn-warning d-block mb-1`} onClick={googleSocialClick}>Sign in with Google</div>
+            <div className={`btn btn-primary d-block mb-1`} onClick={facebookSocialClick}>Sign in with Facebook</div>
+            <div className={`btn d-block`} onClick={socialClick}>Go to Hosted UI Login Page</div>
           </div>
         )}
       </div>
@@ -66,10 +86,11 @@ const Authenticator = (props: Props): ReactElement => {
           z-index: 1;
         }
         .auth-wrapper .auth-custom {
-          bottom: -1rem;
+          bottom: -3rem;
           left: 0;
           z-index: 999;
         }
+
       `}</style>
     </div>
   );

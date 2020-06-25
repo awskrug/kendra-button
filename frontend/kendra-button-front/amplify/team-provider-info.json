@@ -19,7 +19,9 @@
                 }
             },
             "auth": {
-                "kendrabuttonhosting28eb127d": {}
+                "kendrabuttonhosting28eb127d": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"617455608864309\",\"client_secret\":\"5da4d125944bd8ca5634d1708a422acb\"},{\"ProviderName\":\"Google\",\"client_id\":\"142628492668-1v65r5o99aturd4dvgmmslkh78bi3fr7.apps.googleusercontent.com\",\"client_secret\":\"dXtADx0tR-94q-ETdL_naf8J\"}]"
+                }
             }
         }
     }
