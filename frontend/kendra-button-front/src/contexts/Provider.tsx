@@ -24,7 +24,7 @@ export interface State {
   loadingFlag?: boolean;
   content?: 'site' | 'settings';
 }
-export type Action = { type: ReducerType; payload: State };
+export type Action = { type: ReducerType; payload?: State };
 export type Reducer = (state: State, action: Action) => State;
 
 interface MainConsumer {
