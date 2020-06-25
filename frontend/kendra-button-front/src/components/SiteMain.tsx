@@ -43,6 +43,7 @@ const SiteMain = (props: Props): ReactElement => {
               site,
             },
           });
+          console.log('delete res', res);
         } catch (e) {
           console.log('catch e', e);
         } finally {

@@ -13,6 +13,7 @@ import { Site } from '../types';
 export type ReducerType =
   | 'reload-site'
   | 'change-site'
+  | 'delete-site'
   | 'change-theme'
   | 'change-loading-flag'
   | 'change-content';
