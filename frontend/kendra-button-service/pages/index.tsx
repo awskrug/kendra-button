@@ -1,13 +1,21 @@
 import Head from 'next/head';
 import { Search } from '../components/Search';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-export default function Home() {
+interface Props {}
+
+export default function Home(props: Props) {
+  const router = useRouter();
   useEffect(() => {
-    let localStorage = JSON.parse(
-      window.localStorage.getItem('ally-supports-cache'),
-    );
-    console.log({ localStorage });
+    console.log({ props });
+    // pathname, query
+    console.log('router', router.query);
+    // let localStorage = JSON.parse(
+    //   window.localStorage.getItem('ally-supports-cache'),
+    // );
+    // console.log({ localStorage });
+    console.log('localStorage:', window.localStorage);
   }, []);
   return (
     <div className="">
@@ -22,6 +30,14 @@ export default function Home() {
 
       <main>
         <Search site={'site'} />
+        <div
+          className={'btn btn-primary'}
+          onClick={(e) => {
+            console.log('router', router.query);
+          }}
+        >
+          check
+        </div>
       </main>
 
       <footer></footer>
