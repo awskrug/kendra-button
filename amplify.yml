@@ -8,11 +8,11 @@ frontend:
         - ./amplify-pull.sh
     build:
       commands:
-        - find . -name "aws-exports.js"
+        - cd /frontend/kendra-button-service
         - yarn
         - yarn build
   artifacts:
-    baseDirectory: frontend/kendra-button-front/src/out
+    baseDirectory: frontend/kendra-button-service/out
     files:
       - '**/*'
   cache:
