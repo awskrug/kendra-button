@@ -16,7 +16,7 @@ import Layout from '../layout';
 
 // const url =
 //   'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/graphql'; // dev
-// const url = 'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/noauth/graphql', // noauth
+// // const url = 'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/noauth/graphql', // noauth
 
 // /**
 //  * Using a non-AppSync GraphQL Server
@@ -31,7 +31,7 @@ import Layout from '../layout';
 //   },
 // });
 
-function MyApp({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Providers contexts={[MainProvider, ModalProvider]}>
@@ -45,40 +45,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-// MyApp.getInitialProps = async (props) => {
-//   const { Component, ctx } = props || {};
-//   console.log(Component)
-//   console.log('process.env.NODE_ENV', process.env.NODE_ENV)
-//   // solution: https://stackoverflow.com/a/60747333/8026431
-
-//   if (process.env.NODE_ENV === 'development') {
-
-//     if (!ctx.req) return {}
-
-//     const pathAndQueryDivided = ctx.req.url.split('?');
-//     console.log('pathAndQueryDivided:', pathAndQueryDivided)
-//     if (pathAndQueryDivided[0] !== '/' && pathAndQueryDivided[0].endsWith('/')) {
-//       const urlWithoutEndingSlash = pathAndQueryDivided[0].replace(/\/*$/gim, '');
-
-//       console.log('pathAndQueryDivided:', pathAndQueryDivided)
-//       console.log('urlWithoutEndingSlash:', urlWithoutEndingSlash)
-
-//       const location = urlWithoutEndingSlash +
-//         (pathAndQueryDivided.length > 1 ? `?${pathAndQueryDivided[1]}` : '')
-
-//       console.log('location:', location)
-
-//       ctx.res.writeHead(301, {
-//         Location: urlWithoutEndingSlash +
-//           (pathAndQueryDivided.length > 1 ? `?${pathAndQueryDivided[1]}` : ''),
-//       });
-//       ctx.res.end();
-//       return {};
-//     }
-//   }
-
-//   return {};
-// };
-
-
-export default MyApp;
+export default App;

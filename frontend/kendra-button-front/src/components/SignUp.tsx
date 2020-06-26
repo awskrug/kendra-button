@@ -2,21 +2,24 @@ import { AmplifyButton, AmplifyFormField, AmplifyPasswordField } from '@aws-ampl
 import { ReactElement, useRef, useState } from 'react'
 import { Auth } from 'aws-amplify';
 
-import { useModalContextImpls } from '../contexts';
-
 interface Props {
 
 }
-
 
 const SignUp = (props: Props): ReactElement => {
 
   const email = useRef('');
   const password = useRef('');
-  const passwordConfirm = useRef('');
-
+  const [displayAcc, setDisplayAcc] = useState<boolean>(false);
   const [signupAccSuccess, setSignupAccSuccess] = useState<string>('');
   const [signupAccErr, setSignupAccErr] = useState<string>('');
+
+
+  const toggleDisplay = (): void => {
+    setDisplayAcc(!displayAcc);
+    setSignupAccErr('');
+    setSignupAccSuccess('');
+  };
 
 
   const onEmailChange = (e): void => {
@@ -27,9 +30,6 @@ const SignUp = (props: Props): ReactElement => {
     password.current = e.target.value;
   };
 
-  const onPasswordConfirmChange = (e): void => {
-    passwordConfirm.current = e.target.value;
-  };
 
   const onSubmit = async (e): Promise<void> => {
     let errors = []
@@ -39,15 +39,6 @@ const SignUp = (props: Props): ReactElement => {
     if (password.current.length === 0) {
       errors.push('"Password" 필드를 입력 해 주세요.');
     }
-    if (passwordConfirm.current.length === 0) {
-      errors.push('"Password confirmation" 필드를 입력 해 주세요.');
-    }
-
-    if (password.current !== passwordConfirm.current) {
-      errors.push('비밀번호를 확인 해 주세요.')
-    }
-
-
     if (errors.length > 0) {
       setSignupAccErr(errors.join(' / '));
       return;
@@ -84,10 +75,64 @@ const SignUp = (props: Props): ReactElement => {
         errormsg =
           '단기간에 너무 많은 시도가 있었습니다. 잠시 후에 다시 시도 해 주세요.';
       }
-
+      setSignupAccErr(errormsg);
     }
     return;
-  }
+  };
+
+  return (
+    <>
+      <div
+        className={`align-items-center d-flex justify-content-between pb-1 p-3`}
+      >
+        <div className="card w-100">
+          <div className="">
+            <div
+              className={
+                'd-flex justify-content-between align-items-center btn btn-light p-3'
+              }
+              onClick={toggleDisplay}
+            >
+              <div className={`fa-lg`}>Create a new account </div>
+            </div>
+            <div className={displayAcc ? 'p-4' : 'd-none'}>
+              {signupAccErr && (
+                <div className="alert alert-dismissible alert-warning">
+                  <p className="mb-0">{signupAccErr}</p>
+                </div>
+              )}
+              {signupAccSuccess && (
+                <div className="alert alert-dismissible alert-success">
+                  <p className="mb-0">{signupAccSuccess}</p>
+                </div>
+              )}
+              <AmplifyFormField
+                fieldId={'email'}
+                handleInputChange={onEmailChange}
+                label={'Email'}
+                inputProps={{
+                  placeholder: 'Input email',
+                }}
+                required={true}
+                value={null}
+              />
+              <AmplifyPasswordField
+                fieldId={'password'}
+                handleInputChange={onPasswordChange}
+                label={'Password'}
+                inputProps={{
+                  placeholder: 'Input password',
+                }}
+                required={true}
+                value={null}
+              />
+              <AmplifyButton handleButtonClick={onSubmit}>Create Account</AmplifyButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
 
 
 }

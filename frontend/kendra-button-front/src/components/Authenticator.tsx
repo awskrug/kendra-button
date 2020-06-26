@@ -7,12 +7,10 @@ import {
   useState,
 } from 'react';
 
-import { Auth } from 'aws-amplify';
+import { Auth, Hub } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
 import { SignUp } from '../components';
-
-// import { User } from '../types';
 
 interface Props {
   setUser: Dispatch<SetStateAction<any>>;
@@ -20,7 +18,7 @@ interface Props {
   isLoggedIn: boolean;
 }
 const Authenticator = (props: Props): ReactElement => {
-  const { children, setUser, isLoggedIn } = props;
+  const { children, setUser } = props;
   const [screen, setScreen] = useState(AuthState.SignIn);
 
   const checkUser = async (retry, tryCnt = 1): Promise<void> => {
@@ -43,6 +41,24 @@ const Authenticator = (props: Props): ReactElement => {
 
   useEffect(() => {
     checkUser(true);
+    // intermittently failure
+    // issue that describes same symptoms: https://github.com/aws-amplify/amplify-js/issues/6155#issue-644662860
+    // only error occurs in development
+    Hub.listen('auth', (data) => {
+      console.log('[Hub] data', data);
+      switch (data.payload.event) {
+        case 'signIn':
+          setScreen(AuthState.SignedIn);
+          // setUser(data.payload.event);
+          checkUser(false);
+          break;
+        case 'signIn_failure':
+          console.log('[Hub] signIn_failure');
+          break;
+        default:
+          break;
+      }
+    });
   }, []);
 
   const toSignUp = (): void => {
@@ -56,7 +72,6 @@ const Authenticator = (props: Props): ReactElement => {
       setUser(res);
     } catch (e) {
       console.log('[error in google]', e);
-      await checkUser(true);
     }
   };
   const toSignInFacebook = async (): Promise<void> => {
@@ -67,7 +82,6 @@ const Authenticator = (props: Props): ReactElement => {
       setUser(res);
     } catch (e) {
       console.log('[error in facebook]', e);
-      await checkUser(true);
     }
   };
 
@@ -80,7 +94,7 @@ const Authenticator = (props: Props): ReactElement => {
     console.log('signout');
   };
 
-  const bgClass = isLoggedIn ? `` : `bg-dark`;
+  const bgClass = screen === AuthState.SignIn ? `` : `bg-dark`;
   return (
     <div
       className={`fullscreen ${bgClass} d-flex justify-content-center align-items-center`}
