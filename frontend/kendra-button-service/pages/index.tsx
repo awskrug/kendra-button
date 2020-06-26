@@ -18,7 +18,7 @@ export default function Home(props: Props) {
     console.log('localStorage:', window.localStorage);
   }, []);
   return (
-    <div className="">
+    <div className="p-1">
       <Head>
         <title>Kendra-Button</title>
         <link rel="icon" href="/favicon.ico" />

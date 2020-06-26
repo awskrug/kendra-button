@@ -14,13 +14,15 @@
     console.log('id received', splittedPath[1]);
 
     var params = splittedPath[1].split('&');
-    var id, target;
+    var id, target, _src;
     for (var i = 0; i < params.length; i++) {
       if (!params[i]) continue;
       if (params[i].indexOf('id=') > -1) {
         id = params[i].replace('id=', '');
       } else if (params[i].indexOf('target=') > -1) {
         target = params[i].replace('target=', '');
+      } else if (params[i].indexOf('src=') > -1) {
+        _src = params[i].replace('src=', '');
       }
     }
     console.log({ id, target });
@@ -35,7 +37,12 @@
       window.localStorage.setItem('kendra-serviceId', id);
     }
 
-    var src = 'https://button.kendra.fun';
+    _src =
+      'https://feature-frontend-service.dcj1fh5deo5r3.amplifyapp.com/?id=' +
+      id +
+      '&domain=' +
+      location.origin; // temp
+    var src = _src || 'https://button.kendra.fun';
     var root = document.getElementById(kendraWrapperId);
     root.innerHTML +=
       '<iframe id="' +
