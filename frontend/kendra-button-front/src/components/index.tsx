@@ -10,3 +10,4 @@ export * from './SiteCreateModal';
 export * from './SiteEdit';
 export * from './SiteMain';
 export * from './Settings';
+export * from './SignUp';
