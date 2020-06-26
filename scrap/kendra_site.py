@@ -130,8 +130,8 @@ class SiteDelete(graphene.Mutation):
             data = Site(get_user(), site).delete()
         except Exception as e:
             print(e)
-            return SiteCreate(ok=False)
-        return SiteCreate(ok=True)
+            return SiteDelete(ok=False)
+        return SiteDelete(ok=True)
 
 
 class Mutation:
