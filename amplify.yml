@@ -3,12 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
-        - cd frontend/kendra-button-front
+        - cd frontend/kendra-button-service
         - chmod +x amplify-pull.sh
         - ./amplify-pull.sh
     build:
       commands:
-        - cd /frontend/kendra-button-service
         - yarn
         - yarn build
   artifacts:
