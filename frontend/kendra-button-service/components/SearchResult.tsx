@@ -57,7 +57,7 @@ const SearchResult = (props: Props) => {
   }, []);
 
   return (
-    <div className="container">
+    <div className="px-3">
       <p className={`lead`}>Seach result for "{searchInput}"</p>
       {result.map((item, idx) => {
         if (idx <= 5) {

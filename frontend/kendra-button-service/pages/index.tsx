@@ -10,9 +10,9 @@ export default function Home() {
     console.log({ localStorage });
   }, []);
   return (
-    <div className="container">
+    <div className="">
       <Head>
-        <title>Create Next App</title>
+        <title>Kendra-Button</title>
         <link rel="icon" href="/favicon.ico" />
         <link
           rel="stylesheet"

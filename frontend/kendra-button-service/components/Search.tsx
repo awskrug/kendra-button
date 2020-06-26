@@ -23,25 +23,29 @@ const Search = (props: Props): ReactElement => {
   };
 
   return (
-    <div>
+    <>
       <form className={`form-inline mb-4`}>
-        <input
-          type="text"
-          className="form-control mr-sm-2 w-75"
-          id="search-input"
-          placeholder={`ex) What is Amazon Kendra?`}
-          value={inputValue}
-          onChange={onChangeHandler}
-        />
-        <button
-          type="button"
-          className={`btn btn-info shadow-sm`}
-          onClick={searchHandler}
-        >{`Search`}</button>
+        <div className={`col-10`}>
+          <input
+            type="text"
+            className="form-control w-100"
+            id="search-input"
+            placeholder={`ex) What is Amazon Kendra?`}
+            value={inputValue}
+            onChange={onChangeHandler}
+          />
+        </div>
+        <div className={`col-2`}>
+          <button
+            type="button"
+            className={`btn btn-info shadow-sm w-100`}
+            onClick={searchHandler}
+          >{`Search`}</button>
+        </div>
       </form>
 
       {keyword.length > 0 && <SearchResult site={site} searchInput={keyword} />}
-    </div>
+    </>
   );
 };
 
