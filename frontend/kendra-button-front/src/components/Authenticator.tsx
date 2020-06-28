@@ -85,15 +85,6 @@ const Authenticator = (props: Props): ReactElement => {
     }
   };
 
-  const checkUserEvt = async (): Promise<void> => {
-    await checkUser(false);
-  };
-
-  const toSignOut = (): void => {
-    Auth.signOut();
-    console.log('signout');
-  };
-
   const bgClass = screen === AuthState.SignIn ? `` : `bg-dark`;
   return (
     <div
@@ -102,23 +93,17 @@ const Authenticator = (props: Props): ReactElement => {
       {screen === AuthState.SignedIn ? (
         children
       ) : screen === AuthState.SignUp ? (
-        <div> <SignUp /> </div>
+        <div> <SignUp setScreen={setScreen} /> </div>
       ) : (
             <>
               <div className={`btn btn-info`} onClick={toSignUp}>
                 signup
             </div>
               <div className={`btn btn-danger`} onClick={toSignInGoogle}>
-                signin(google)
+                Sign in with Google
             </div>
               <div className={`btn btn-primary`} onClick={toSignInFacebook}>
-                signin(facebook)
-            </div>
-              <div className={`btn btn-dark`} onClick={checkUserEvt}>
-                check user in console
-            </div>
-              <div className={`btn btn-warning`} onClick={toSignOut}>
-                signout
+                Sign in with Faceebook
             </div>
             </>
           )}

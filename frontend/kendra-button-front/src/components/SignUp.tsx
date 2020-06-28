@@ -1,13 +1,14 @@
 import { AmplifyButton, AmplifyFormField, AmplifyPasswordField } from '@aws-amplify/ui-react';
-import { ReactElement, useRef, useState } from 'react'
+import { ReactElement, useRef, useState, Dispatch, SetStateAction } from 'react'
 import { Auth } from 'aws-amplify';
+import { AuthState } from '@aws-amplify/ui-components';
 
 interface Props {
-
+  setScreen?: Dispatch<SetStateAction<string>>;
 }
 
 const SignUp = (props: Props): ReactElement => {
-
+  const { setScreen } = props;
   const email = useRef('');
   const password = useRef('');
   const [displayAcc, setDisplayAcc] = useState<boolean>(false);
@@ -30,14 +31,17 @@ const SignUp = (props: Props): ReactElement => {
     password.current = e.target.value;
   };
 
+  const toSignIn = () => {
+    setScreen(AuthState.SignIn)
+  }
 
   const onSubmit = async (e): Promise<void> => {
     let errors = []
     if (email.current.length === 0) {
-      errors.push('"Email" 필드를 입력 해 주세요.');
+      errors.push('Please enter your email');
     }
     if (password.current.length === 0) {
-      errors.push('"Password" 필드를 입력 해 주세요.');
+      errors.push('Please enter your password');
     }
     if (errors.length > 0) {
       setSignupAccErr(errors.join(' / '));
@@ -49,10 +53,9 @@ const SignUp = (props: Props): ReactElement => {
         email.current,
         password.current
       );
-
       if (res) {
         setSignupAccErr('');
-        setSignupAccSuccess('회원 가입이 완료 되었습니다.')
+        setSignupAccSuccess('Sign Up Completed!')
       }
 
     } catch (e) {
@@ -60,20 +63,10 @@ const SignUp = (props: Props): ReactElement => {
       let errormsg;
       if (e.code === 'InvalidParameterException') {
         let errors = [];
-        if (e.message.indexOf('previousPassword') > -1) {
-          errors.push('"Your Current Password" 입력이 잘못 되었습니다.');
+        if (e.message.indexOf('password') > -1) {
+          errors.push('Password must contain the following: \n - Minimum length, which must be at least 6 characters but fewer than 99 characters. \n - Require numbers. \n - Require uppercase letters. \n - Require lowercase letters.')
         }
-        if (e.message.indexOf('proposedPassword') > -1) {
-          errors.push(
-            '"Your New Password" 입력이 잘못 되었습니다. (최소 6글자 이상)',
-          );
-        }
-        errormsg = errors.join(' / ');
-      } else if (e.code === 'NotAuthorizedException') {
-        errormsg = '유효하지 않은 "Password" 입니다.';
-      } else if (e.code === 'LimitExceededException') {
-        errormsg =
-          '단기간에 너무 많은 시도가 있었습니다. 잠시 후에 다시 시도 해 주세요.';
+        errormsg = errors.join('\n');
       }
       setSignupAccErr(errormsg);
     }
@@ -98,12 +91,15 @@ const SignUp = (props: Props): ReactElement => {
             <div className={displayAcc ? 'p-4' : 'd-none'}>
               {signupAccErr && (
                 <div className="alert alert-dismissible alert-warning">
-                  <p className="mb-0">{signupAccErr}</p>
+                  <div className="mb-0">{signupAccErr.split('\n').map(line => {
+                    return (<span>{line}<br /></span>)
+                  })}</div>
                 </div>
               )}
               {signupAccSuccess && (
-                <div className="alert alert-dismissible alert-success">
+                <div className="alert alert-dismissible alert-success signUpSuccess" onClick={toSignIn}>
                   <p className="mb-0">{signupAccSuccess}</p>
+                  <p className="mb-0 small">Click here to Sign In </p>
                 </div>
               )}
               <AmplifyFormField
@@ -126,11 +122,29 @@ const SignUp = (props: Props): ReactElement => {
                 required={true}
                 value={null}
               />
-              <AmplifyButton handleButtonClick={onSubmit}>Create Account</AmplifyButton>
+              <AmplifyButton
+                handleButtonClick={onSubmit}
+              >Create Account</AmplifyButton>
+              <div className={`mt-3`}>Have an account?
+                <span
+                  className={`backToSignIn btn`}
+                  onClick={toSignIn}
+                > Sign In</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <style global jsx>{`
+      .backToSignIn{
+        color: #ff9900;
+        font-size: 0.9rem;
+      }
+      .signUpSuccess:hover{
+        cursor: pointer;
+        background-color: #b9e082;
+      }
+      `}</style>
     </>
   )
 
