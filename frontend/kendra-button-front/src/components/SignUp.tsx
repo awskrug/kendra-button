@@ -147,8 +147,6 @@ const SignUp = (props: Props): ReactElement => {
       `}</style>
     </>
   )
-
-
 }
 
 export { SignUp };

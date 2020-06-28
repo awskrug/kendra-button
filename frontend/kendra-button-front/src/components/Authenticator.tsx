@@ -103,7 +103,7 @@ const Authenticator = (props: Props): ReactElement => {
                 Sign in with Google
             </div>
               <div className={`btn btn-primary`} onClick={toSignInFacebook}>
-                Sign in with Faceebook
+                Sign in with Facebook
             </div>
             </>
           )}
