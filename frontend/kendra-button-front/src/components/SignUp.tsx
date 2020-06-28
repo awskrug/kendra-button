@@ -11,17 +11,8 @@ const SignUp = (props: Props): ReactElement => {
   const { setScreen } = props;
   const email = useRef('');
   const password = useRef('');
-  const [displayAcc, setDisplayAcc] = useState<boolean>(false);
   const [signupAccSuccess, setSignupAccSuccess] = useState<string>('');
   const [signupAccErr, setSignupAccErr] = useState<string>('');
-
-
-  const toggleDisplay = (): void => {
-    setDisplayAcc(!displayAcc);
-    setSignupAccErr('');
-    setSignupAccSuccess('');
-  };
-
 
   const onEmailChange = (e): void => {
     email.current = e.target.value;
@@ -82,13 +73,12 @@ const SignUp = (props: Props): ReactElement => {
           <div className="">
             <div
               className={
-                'd-flex justify-content-between align-items-center btn btn-light p-3'
+                'd-flex justify-content-between align-items-center bg-light p-3'
               }
-              onClick={toggleDisplay}
             >
               <div className={`fa-lg`}>Create a new account </div>
             </div>
-            <div className={displayAcc ? 'p-4' : 'd-none'}>
+            <div>
               {signupAccErr && (
                 <div className="alert alert-dismissible alert-warning">
                   <div className="mb-0">{signupAccErr.split('\n').map(line => {

@@ -49,7 +49,6 @@ const Authenticator = (props: Props): ReactElement => {
       switch (data.payload.event) {
         case 'signIn':
           setScreen(AuthState.SignedIn);
-          // setUser(data.payload.event);
           checkUser(false);
           break;
         case 'signIn_failure':
