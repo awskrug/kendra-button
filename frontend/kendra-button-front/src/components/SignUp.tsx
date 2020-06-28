@@ -35,7 +35,7 @@ const SignUp = (props: Props): ReactElement => {
       errors.push('Please enter your password');
     }
     if (errors.length > 0) {
-      setSignupAccErr(errors.join(' / '));
+      setSignupAccErr(errors.join('\n'));
       return;
     }
 
@@ -55,7 +55,7 @@ const SignUp = (props: Props): ReactElement => {
       if (e.code === 'InvalidParameterException') {
         let errors = [];
         if (e.message.indexOf('password') > -1) {
-          errors.push('Password must contain the following: \n - Minimum length, which must be at least 6 characters but fewer than 99 characters. \n - Require numbers. \n - Require uppercase letters. \n - Require lowercase letters.')
+          errors.push('Password must contain the following: \n\n - Minimum length, which must be at least 6 characters but fewer than 99 characters. \n - Require numbers. \n - Require uppercase letters. \n - Require lowercase letters.')
         }
         errormsg = errors.join('\n');
       }

@@ -46,6 +46,7 @@ const Authenticator = (props: Props): ReactElement => {
     // only error occurs in development
     Hub.listen('auth', (data) => {
       console.log('[Hub] data', data);
+
       switch (data.payload.event) {
         case 'signIn':
           setScreen(AuthState.SignedIn);
@@ -60,6 +61,7 @@ const Authenticator = (props: Props): ReactElement => {
     });
   }, []);
 
+
   const toSignUp = (): void => {
     setScreen(AuthState.SignUp);
   };
@@ -69,6 +71,7 @@ const Authenticator = (props: Props): ReactElement => {
       const res = await Auth.federatedSignIn({ provider: 'Google' });
       console.log('res', res);
       setUser(res);
+
     } catch (e) {
       console.log('[error in google]', e);
     }
@@ -79,10 +82,17 @@ const Authenticator = (props: Props): ReactElement => {
       const res = await Auth.federatedSignIn({ provider: 'Facebook' });
       console.log('res', res);
       setUser(res);
+      if (typeof res !== "undefined") {
+        setUser(res);
+      } else {
+        alert('Invalid Facebook account. \nPlease check the email address on your Facebook account.')
+      }
     } catch (e) {
       console.log('[error in facebook]', e);
     }
+
   };
+
 
   const bgClass = screen === AuthState.SignIn ? `` : `bg-dark`;
   return (
