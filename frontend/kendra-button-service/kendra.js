@@ -37,12 +37,10 @@
       window.localStorage.setItem('kendra-serviceId', id);
     }
 
+    var params = '?id=' + id + '&domain=' + location.origin;
     _src =
-      'https://feature-frontend-service.dcj1fh5deo5r3.amplifyapp.com/?id=' +
-      id +
-      '&domain=' +
-      location.origin; // temp
-    var src = _src || 'https://button.kendra.fun';
+      'https://feature-frontend-service.dcj1fh5deo5r3.amplifyapp.com/' + params; // temp
+    var src = _src || 'https://button.kendra.fun' + params;
     var root = document.getElementById(kendraWrapperId);
     root.innerHTML +=
       '<iframe id="' +
