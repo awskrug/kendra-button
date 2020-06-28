@@ -66,66 +66,59 @@ const SignUp = (props: Props): ReactElement => {
 
   return (
     <>
-      <div
-        className={`align-items-center d-flex justify-content-between pb-1 p-3`}
-      >
-        <div className="card w-100">
-          <div className="">
-            <div
-              className={
-                'd-flex justify-content-between align-items-center bg-light p-3'
-              }
-            >
-              <div className={`fa-lg`}>Create a new account </div>
+      <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
+        <div></div>
+        <div className={`signUpTitle`}>Create a new account </div>
+        <div>
+          {signupAccErr && (
+            <div className="alert alert-dismissible alert-warning">
+              <div className="mb-0">{signupAccErr.split('\n').map(line => {
+                return (<span>{line}<br /></span>)
+              })}</div>
             </div>
-            <div>
-              {signupAccErr && (
-                <div className="alert alert-dismissible alert-warning">
-                  <div className="mb-0">{signupAccErr.split('\n').map(line => {
-                    return (<span>{line}<br /></span>)
-                  })}</div>
-                </div>
-              )}
-              {signupAccSuccess && (
-                <div className="alert alert-dismissible alert-success signUpSuccess" onClick={toSignIn}>
-                  <p className="mb-0">{signupAccSuccess}</p>
-                  <p className="mb-0 small">Click here to Sign In </p>
-                </div>
-              )}
-              <AmplifyFormField
-                fieldId={'email'}
-                handleInputChange={onEmailChange}
-                label={'Email'}
-                inputProps={{
-                  placeholder: 'Input email',
-                }}
-                required={true}
-                value={null}
-              />
-              <AmplifyPasswordField
-                fieldId={'password'}
-                handleInputChange={onPasswordChange}
-                label={'Password'}
-                inputProps={{
-                  placeholder: 'Input password',
-                }}
-                required={true}
-                value={null}
-              />
-              <AmplifyButton
-                handleButtonClick={onSubmit}
-              >Create Account</AmplifyButton>
-              <div className={`mt-3`}>Have an account?
+          )}
+          {signupAccSuccess && (
+            <div className="alert alert-dismissible alert-success signUpSuccess" onClick={toSignIn}>
+              <p className="mb-0">{signupAccSuccess}</p>
+              <p className="mb-0 small">Click here to Sign In </p>
+            </div>
+          )}
+          <AmplifyFormField
+            fieldId={'email'}
+            handleInputChange={onEmailChange}
+            label={'Email'}
+            inputProps={{
+              placeholder: 'Input email',
+            }}
+            required={true}
+            value={null}
+          />
+          <AmplifyPasswordField
+            fieldId={'password'}
+            handleInputChange={onPasswordChange}
+            label={'Password'}
+            inputProps={{
+              placeholder: 'Input password',
+            }}
+            required={true}
+            value={null}
+          />
+          <AmplifyButton
+            handleButtonClick={onSubmit}
+          >Create Account</AmplifyButton>
+          <div className={`mt-3`}>Have an account?
                 <span
-                  className={`backToSignIn btn`}
-                  onClick={toSignIn}
-                > Sign In</span>
-              </div>
-            </div>
+              className={`backToSignIn btn`}
+              onClick={toSignIn}
+            > Sign In</span>
           </div>
         </div>
+        <div></div>
       </div>
       <style global jsx>{`
+      .signUpTitle{
+        font-size: 1.8rem;
+      }
       .backToSignIn{
         color: #ff9900;
         font-size: 0.9rem;

@@ -92,7 +92,7 @@ const Authenticator = (props: Props): ReactElement => {
       {screen === AuthState.SignedIn ? (
         children
       ) : screen === AuthState.SignUp ? (
-        <div> <SignUp setScreen={setScreen} /> </div>
+        <> <SignUp setScreen={setScreen} /> </>
       ) : (
             <>
               <div className={`btn btn-info`} onClick={toSignUp}>
