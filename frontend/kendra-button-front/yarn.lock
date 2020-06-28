@@ -186,19 +186,19 @@
     events "^3.1.0"
     sinon "^7.5.0"
 
-"@aws-amplify/ui-components@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@aws-amplify/ui-components/-/ui-components-0.5.0.tgz#61faac4e2e63fd6bb946f574d8c0bef0bf94ad46"
-  integrity sha512-cFV18j6RGdZQp+9j7z7XcEoaUc2OGKxTSVRGfG6039Ix1hQel1w9bZjbkXpfsPAtDjDXFmAn92Pwl/CPmmXINw==
+"@aws-amplify/ui-components@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@aws-amplify/ui-components/-/ui-components-0.5.2.tgz#4b4b06c19cd7124f95e8aa25b80b54afebb835a2"
+  integrity sha512-70WNqaQwZWv6pFUD21l9EN2LcV0PxKMLpcC3crL9ugw8ShIFsFzNXmvX7ort27Nf+heWq3LFDP0Q9+hpcVwODg==
   dependencies:
     qrcode "^1.4.4"
 
-"@aws-amplify/ui-react@^0.2.7":
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/@aws-amplify/ui-react/-/ui-react-0.2.7.tgz#41589056e30919ed023b7bf44d35b2cbac54b6de"
-  integrity sha512-PRQO5FiHh37Xwrve4bGv5M/xIAgs9/LNxrFsObGHyYDGG7YR7fuCwFd0a0t9nj5XFbVhZp8cOAMbPg8hHbzGrA==
+"@aws-amplify/ui-react@^0.2.9":
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/@aws-amplify/ui-react/-/ui-react-0.2.9.tgz#f5e1f81f99728d1b2a359cd1435d32402fe9fe9b"
+  integrity sha512-Mnlwgz+GdX498FxL3z+vGzmvHz7bCjhbSJ6LviSmCVPpHd35/9/fT6Y6WSaFHbS3byyInA+LKJEHjPzP7+Azkg==
   dependencies:
-    "@aws-amplify/ui-components" "^0.5.0"
+    "@aws-amplify/ui-components" "^0.5.2"
 
 "@aws-amplify/ui@^2.0.2":
   version "2.0.2"

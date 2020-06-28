@@ -1,14 +1,55 @@
-import Link from 'next/link';
+import Amplify, { Auth } from 'aws-amplify';
+import { Authenticator, Content, Sidebar } from '../components';
 
-const Index = (props) => {
+import awsconfig from '../aws-exports';
+import { useState } from 'react';
+
+const oauthConfig = awsconfig.oauth
+  ? {
+    ...awsconfig.oauth,
+    redirectSignIn:
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000/'
+        : awsconfig.oauth.redirectSignIn
+          .split(',')
+          .filter((url) => !url.includes('localhost'))[0],
+    redirectSignOut:
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000/'
+        : awsconfig.oauth.redirectSignOut
+          .split(',')
+          .filter((url) => !url.includes('localhost'))[0],
+  }
+  : {};
+const url =
+  'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/graphql';
+Amplify.configure({
+  ...awsconfig,
+  oauth: oauthConfig,
+  API: {
+    graphql_endpoint: url,
+    graphql_headers: async () => ({
+      Authorization: (await Auth.currentSession()).getIdToken().getJwtToken(),
+    }),
+  },
+});
+
+const Page = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+
+  console.log({ isLoggedIn });
+
   return (
-    <div className={`p-3`}>
-      <h1>Kendra-Frontend</h1>
-      <Link href='/admin'>
-        <a className={`btn btn-primary`}>Go To Admin Page</a>
-      </Link>
-    </div>
+    <>
+      <Authenticator setUser={setUser} isLoggedIn={isLoggedIn}>
+        <>
+          <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
+          <Content user={user} setIsLoggedIn={setIsLoggedIn} />
+        </>
+      </Authenticator>
+    </>
   );
 };
 
-export default Index;
+export default Page;

@@ -7,6 +7,7 @@ export interface User extends CognitoUser {
     email_verified: boolean;
     phone_number: string;
     phone_number_verified: boolean;
+    identities: string;
     sub: string;
   };
 }
