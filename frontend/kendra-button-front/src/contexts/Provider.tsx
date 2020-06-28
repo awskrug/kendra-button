@@ -13,6 +13,7 @@ import { Site } from '../types';
 export type ReducerType =
   | 'reload-site'
   | 'change-site'
+  | 'delete-site'
   | 'change-theme'
   | 'change-loading-flag'
   | 'change-content';
@@ -23,7 +24,7 @@ export interface State {
   loadingFlag?: boolean;
   content?: 'site' | 'settings';
 }
-export type Action = { type: ReducerType; payload: State };
+export type Action = { type: ReducerType; payload?: State };
 export type Reducer = (state: State, action: Action) => State;
 
 interface MainConsumer {
@@ -52,6 +53,12 @@ const reducer: Reducer = (state, action) => {
         loadingFlag: false,
         content: 'site',
       };
+    case 'delete-site':
+      return {
+        ...state,
+        content: null,
+        reloadSite: true,
+      };
     case 'change-theme':
       return {
         ...state,
@@ -67,6 +74,7 @@ const reducer: Reducer = (state, action) => {
         ...state,
         content: payload.content,
       };
+
     default:
       return state;
   }

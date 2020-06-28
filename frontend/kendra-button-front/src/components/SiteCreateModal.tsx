@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { MouseEvent, ReactElement } from 'react';
+import { MouseEvent, ReactElement, useState } from 'react';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { GraphQLResult } from '@aws-amplify/api-graphql';
@@ -17,6 +17,8 @@ interface ResCreateSite {
 const SiteCreateModal = (): ReactElement => {
   const { modalConfig, setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
+
+  const [loading, setLoading] = useState(null);
 
   const formik = useFormik({
     initialValues: {
@@ -59,10 +61,13 @@ const SiteCreateModal = (): ReactElement => {
   };
 
   const onSubmit = async (): Promise<void> => {
+    if (loading) return;
     formik.submitForm();
     if (!formik.isValid) {
       return;
     }
+
+    setLoading(true);
 
     const res: GraphQLResult<ResCreateSite> = await callGraphql({
       query: createSite,
@@ -87,6 +92,7 @@ const SiteCreateModal = (): ReactElement => {
     if (okaction) {
       okaction(state);
     }
+    setLoading(false);
     hideModal();
   };
 
@@ -215,7 +221,9 @@ const SiteCreateModal = (): ReactElement => {
                 <button
                   className={`btn btn-primary shadow-sm`}
                   onClick={onSubmit}
-                >{`Create Site`}</button>
+                >
+                  {loading ? `loading...` : `Create Site`}
+                </button>
               </div>
             </div>
           )}
