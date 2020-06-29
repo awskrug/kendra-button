@@ -11,6 +11,7 @@ import { Auth, Hub } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
 import { SignUp } from '../components';
+import { useRouter } from 'next/router';
 
 interface Props {
   setUser: Dispatch<SetStateAction<any>>;
@@ -39,8 +40,21 @@ const Authenticator = (props: Props): ReactElement => {
     }
   };
 
+  const router = useRouter()
+
   useEffect(() => {
-    checkUser(false);
+
+    const query = router.asPath
+    const errorDescription = query || ''
+    if (errorDescription.includes('attributes+required')
+      && errorDescription.includes('email')) {
+      alert('Please check the email address on your Facebook account.')
+      setScreen(AuthState.SignUp)
+    } else {
+      checkUser(false);
+    }
+
+
     // intermittently failure
     // issue that describes same symptoms: https://github.com/aws-amplify/amplify-js/issues/6155#issue-644662860
     // only error occurs in development
@@ -60,31 +74,30 @@ const Authenticator = (props: Props): ReactElement => {
     });
   }, []);
 
+
   const toSignUp = (): void => {
     setScreen(AuthState.SignUp);
   };
   const toSignInGoogle = async (): Promise<void> => {
     try {
       //@ts-ignore
-      const res = await Auth.federatedSignIn({ provider: 'Google' });
-      console.log('res', res);
-      setUser(res);
+      await Auth.federatedSignIn({ provider: 'Google' });
     } catch (e) {
       console.log('[error in google]', e);
     }
   };
-  const toSignInFacebook = async (): Promise<void> => {
+  const toSignInFacebook = async (e): Promise<void> => {
     try {
       //@ts-ignore
-      const res = await Auth.federatedSignIn({ provider: 'Facebook' });
-      console.log('res', res);
-      setUser(res);
+      await Auth.federatedSignIn({ provider: 'Facebook' });
     } catch (e) {
       console.log('[error in facebook]', e);
     }
+
   };
 
-  const bgClass = screen === AuthState.SignIn ? `` : `bg-dark`;
+
+  const bgClass = screen === AuthState.SignIn || screen === AuthState.SignUp ? `bg-dark` : ``;
   return (
     <div
       className={`fullscreen ${bgClass} d-flex justify-content-center align-items-center`}

@@ -16,7 +16,7 @@ function App({ Component, pageProps }: AppProps) {
         <Layout>
           <PlainModal />
           <SiteCreateModal />
-          <Component {...pageProps} custom={'custom'} system={'system'} />
+          <Component {...pageProps} />
         </Layout>
       </Providers>
     </>

@@ -40,6 +40,7 @@ const Page = () => {
 
   console.log({ isLoggedIn });
 
+
   return (
     <>
       <Authenticator setUser={setUser} isLoggedIn={isLoggedIn}>
