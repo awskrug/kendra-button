@@ -17,10 +17,9 @@ interface Props {
   setUser: Dispatch<SetStateAction<any>>;
   children: ReactNode;
   isLoggedIn: boolean;
-  error?: string;
 }
 const Authenticator = (props: Props): ReactElement => {
-  const { children, setUser, error } = props;
+  const { children, setUser } = props;
   const [screen, setScreen] = useState(AuthState.SignIn);
 
   const logger = new Logger('foo')
@@ -48,13 +47,6 @@ const Authenticator = (props: Props): ReactElement => {
   useEffect(() => {
     //@ts-ignore
     // Logger.LOG_LEVEL = 'DEBUG';
-    if (error) {
-      alert(error)
-    } else {
-      checkUser(false);
-    }
-
-    console.log('router~~', router)
 
     const query = router.asPath
     const errorDescription = query || ''
@@ -62,6 +54,8 @@ const Authenticator = (props: Props): ReactElement => {
       && errorDescription.includes('email')) {
       alert('Please check the email address on your Facebook account.')
       setScreen(AuthState.SignUp)
+    } else {
+      checkUser(false);
     }
 
 

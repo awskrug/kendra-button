@@ -2,10 +2,7 @@ import Amplify, { Auth } from 'aws-amplify';
 import { Authenticator, Content, Sidebar } from '../components';
 
 import awsconfig from '../aws-exports';
-// import { useState, useEffect } from 'react';
 import { useState } from 'react';
-
-// import { useRouter } from 'next/router'
 
 const oauthConfig = awsconfig.oauth
   ? {
@@ -37,7 +34,7 @@ Amplify.configure({
   },
 });
 
-const Page = (props) => {
+const Page = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -46,7 +43,7 @@ const Page = (props) => {
 
   return (
     <>
-      <Authenticator error={props.error} setUser={setUser} isLoggedIn={isLoggedIn}>
+      <Authenticator setUser={setUser} isLoggedIn={isLoggedIn}>
         <>
           <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
           <Content user={user} setIsLoggedIn={setIsLoggedIn} />
