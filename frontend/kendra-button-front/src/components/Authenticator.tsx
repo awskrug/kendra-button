@@ -94,7 +94,7 @@ const Authenticator = (props: Props): ReactElement => {
   };
 
 
-  const bgClass = screen === AuthState.SignIn ? `` : `bg-dark`;
+  const bgClass = screen === AuthState.SignIn || AuthState.SignUp ? `bg-dark` : ``;
   return (
     <div
       className={`fullscreen ${bgClass} d-flex justify-content-center align-items-center`}
