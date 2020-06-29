@@ -34,7 +34,7 @@ Amplify.configure({
   },
 });
 
-const Page = () => {
+const Page = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -42,7 +42,7 @@ const Page = () => {
 
   return (
     <>
-      <Authenticator setUser={setUser} isLoggedIn={isLoggedIn}>
+      <Authenticator error={props.error} setUser={setUser} isLoggedIn={isLoggedIn}>
         <>
           <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
           <Content user={user} setIsLoggedIn={setIsLoggedIn} />
@@ -51,5 +51,14 @@ const Page = () => {
     </>
   );
 };
+
+Page.getInitialProps = async (props) => {
+  const { query } = props || {};
+  console.log('query', query)
+  if (query.error_description === 'attributes required: [email]') {
+    return { error: 'Invalid Facebook account. \nPlease check the email address on your Facebook account.' }
+  }
+  return {}
+}
 
 export default Page;

@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import { Auth, Hub } from 'aws-amplify';
+import { Auth, Hub, Logger } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
 import { SignUp } from '../components';
@@ -16,10 +16,13 @@ interface Props {
   setUser: Dispatch<SetStateAction<any>>;
   children: ReactNode;
   isLoggedIn: boolean;
+  error?: string;
 }
 const Authenticator = (props: Props): ReactElement => {
-  const { children, setUser } = props;
+  const { children, setUser, error } = props;
   const [screen, setScreen] = useState(AuthState.SignIn);
+
+  const logger = new Logger('foo')
 
   const checkUser = async (retry, tryCnt = 1): Promise<void> => {
     const tryLimit = 3;
@@ -40,13 +43,18 @@ const Authenticator = (props: Props): ReactElement => {
   };
 
   useEffect(() => {
-    checkUser(false);
+    //@ts-ignore
+    Logger.LOG_LEVEL = 'DEBUG';
+    if (error) {
+      alert(error)
+    } else {
+      checkUser(false);
+    }
     // intermittently failure
     // issue that describes same symptoms: https://github.com/aws-amplify/amplify-js/issues/6155#issue-644662860
     // only error occurs in development
     Hub.listen('auth', (data) => {
       console.log('[Hub] data', data);
-
       switch (data.payload.event) {
         case 'signIn':
           setScreen(AuthState.SignedIn);
@@ -70,23 +78,21 @@ const Authenticator = (props: Props): ReactElement => {
       //@ts-ignore
       const res = await Auth.federatedSignIn({ provider: 'Google' });
       console.log('res', res);
-      setUser(res);
-
+      if (logger.error) {
+      }
     } catch (e) {
       console.log('[error in google]', e);
     }
   };
-  const toSignInFacebook = async (): Promise<void> => {
+  const toSignInFacebook = async (e): Promise<void> => {
     try {
       //@ts-ignore
       const res = await Auth.federatedSignIn({ provider: 'Facebook' });
       console.log('res', res);
-      setUser(res);
-      if (typeof res !== "undefined") {
-        setUser(res);
-      } else {
-        alert('Invalid Facebook account. \nPlease check the email address on your Facebook account.')
-      }
+
+      // if (typeof res === "undefined") {
+      //   alert('Invalid Facebook account. \nPlease check the email address on your Facebook account.')
+      // }
     } catch (e) {
       console.log('[error in facebook]', e);
     }
@@ -94,7 +100,7 @@ const Authenticator = (props: Props): ReactElement => {
   };
 
 
-  const bgClass = screen === AuthState.SignIn || AuthState.SignUp ? `bg-dark` : ``;
+  const bgClass = screen === AuthState.SignIn || screen === AuthState.SignUp ? `bg-dark` : ``;
   return (
     <div
       className={`fullscreen ${bgClass} d-flex justify-content-center align-items-center`}
