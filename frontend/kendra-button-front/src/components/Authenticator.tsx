@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 
-import { Auth, Hub, Logger } from 'aws-amplify';
+import { Auth, Hub } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
 import { SignUp } from '../components';
@@ -21,8 +21,6 @@ interface Props {
 const Authenticator = (props: Props): ReactElement => {
   const { children, setUser } = props;
   const [screen, setScreen] = useState(AuthState.SignIn);
-
-  const logger = new Logger('foo')
 
   const checkUser = async (retry, tryCnt = 1): Promise<void> => {
     const tryLimit = 3;
@@ -45,8 +43,6 @@ const Authenticator = (props: Props): ReactElement => {
   const router = useRouter()
 
   useEffect(() => {
-    //@ts-ignore
-    // Logger.LOG_LEVEL = 'DEBUG';
 
     const query = router.asPath
     const errorDescription = query || ''
@@ -85,10 +81,7 @@ const Authenticator = (props: Props): ReactElement => {
   const toSignInGoogle = async (): Promise<void> => {
     try {
       //@ts-ignore
-      const res = await Auth.federatedSignIn({ provider: 'Google' });
-      console.log('res', res);
-      if (logger.error) {
-      }
+      await Auth.federatedSignIn({ provider: 'Google' });
     } catch (e) {
       console.log('[error in google]', e);
     }
