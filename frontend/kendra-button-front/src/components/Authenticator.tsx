@@ -48,18 +48,17 @@ const Authenticator = (props: Props): ReactElement => {
   useEffect(() => {
     //@ts-ignore
     // Logger.LOG_LEVEL = 'DEBUG';
-    console.log('error............', error)
     if (error) {
       alert(error)
     } else {
       checkUser(false);
     }
 
-    console.log('router`~~', router)
+    console.log('router~~', router)
 
-    const query = router.query
-    const errorDescription = query && query.error_description || ''
-    if (errorDescription.includes('attributes required')
+    const query = router.asPath
+    const errorDescription = query || ''
+    if (errorDescription.includes('attributes+required')
       && errorDescription.includes('email')) {
       alert('Please check the email address on your Facebook account.')
       setScreen(AuthState.SignUp)

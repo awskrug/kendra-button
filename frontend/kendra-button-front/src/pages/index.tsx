@@ -40,22 +40,9 @@ Amplify.configure({
 const Page = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  // const router = useRouter()
 
-  // console.log('router`~~', router)
-
-  console.log('Props!!!!', props)
   console.log({ isLoggedIn });
 
-
-  // useEffect(() => {
-  //   const query = router.query
-  //   const errorDescription = query && query.error_description || ''
-  //   if (errorDescription.includes('attributes required')
-  //     && errorDescription.includes('email')) {
-  //     alert('Please check the email address on your Facebook account.')
-  //   }
-  // }, [])
 
   return (
     <>
@@ -68,17 +55,5 @@ const Page = (props) => {
     </>
   );
 };
-
-// Page.getInitialProps = async (props) => {
-//   const { query } = props || {};
-//   console.log('query', query)
-//   const errorDescription = query && query.error_description || ''
-
-//   if (errorDescription.includes('attributes required')
-//     && errorDescription.includes('email')) {
-//     return { error: 'Invalid Facebook account. \nPlease check the email address on your Facebook account.', query }
-//   }
-//   return { query }
-// }
 
 export default Page;
