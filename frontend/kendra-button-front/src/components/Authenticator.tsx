@@ -44,7 +44,8 @@ const Authenticator = (props: Props): ReactElement => {
 
   useEffect(() => {
     //@ts-ignore
-    Logger.LOG_LEVEL = 'DEBUG';
+    // Logger.LOG_LEVEL = 'DEBUG';
+    console.log('error............', error)
     if (error) {
       alert(error)
     } else {

@@ -55,7 +55,10 @@ const Page = (props) => {
 Page.getInitialProps = async (props) => {
   const { query } = props || {};
   console.log('query', query)
-  if (query.error_description === 'attributes required: [email]') {
+  const errorDescription = query && query.error_description || ''
+
+  if (errorDescription.includes('attributes required')
+    && errorDescription.includes('email')) {
     return { error: 'Invalid Facebook account. \nPlease check the email address on your Facebook account.' }
   }
   return {}
