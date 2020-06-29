@@ -6,7 +6,8 @@ import * as React from 'react';
 import { MainProvider, ModalProvider, Providers } from '../contexts';
 import { PlainModal, SiteCreateModal } from '../components';
 
-import NextApp, { AppProps } from 'next/app';
+// import NextApp, { AppProps } from 'next/app';
+import { AppProps } from 'next/app';
 import Layout from '../layout';
 
 function App({ Component, pageProps }: AppProps) {
@@ -26,11 +27,17 @@ function App({ Component, pageProps }: AppProps) {
 
 App.getInitialProps = async (props) => {
 
-  // const { Component, ctx } = props || {};
-  const { ctx } = props || {};
-  if (!ctx.req) return {}
-  console.log('ctx', ctx.req.url)
-  const appProps = await NextApp.getInitialProps(props);
+  const { Component, ctx } = props || {};
+  let pageProps = {}
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx)
+  }
+
+
+  // const { ctx } = props || {};
+  // if (!ctx.req) return {}
+  // console.log('ctx', ctx.req.url)
+  // const appProps = await NextApp.getInitialProps(props);
 
 
   // console.log(Component)
@@ -63,7 +70,7 @@ App.getInitialProps = async (props) => {
   //   }
   // }
 
-  return { ...appProps };
+  return { pageProps };
 
 }
 

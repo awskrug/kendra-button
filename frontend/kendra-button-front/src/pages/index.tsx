@@ -38,6 +38,7 @@ const Page = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
+  console.log('Props!!!!', props)
   console.log({ isLoggedIn });
 
   return (
@@ -59,9 +60,9 @@ Page.getInitialProps = async (props) => {
 
   if (errorDescription.includes('attributes required')
     && errorDescription.includes('email')) {
-    return { error: 'Invalid Facebook account. \nPlease check the email address on your Facebook account.' }
+    return { error: 'Invalid Facebook account. \nPlease check the email address on your Facebook account.', query }
   }
-  return {}
+  return { query }
 }
 
 export default Page;
