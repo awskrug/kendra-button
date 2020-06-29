@@ -11,6 +11,7 @@ import { Auth, Hub, Logger } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
 import { SignUp } from '../components';
+import { useRouter } from 'next/router';
 
 interface Props {
   setUser: Dispatch<SetStateAction<any>>;
@@ -42,6 +43,8 @@ const Authenticator = (props: Props): ReactElement => {
     }
   };
 
+  const router = useRouter()
+
   useEffect(() => {
     //@ts-ignore
     // Logger.LOG_LEVEL = 'DEBUG';
@@ -51,6 +54,18 @@ const Authenticator = (props: Props): ReactElement => {
     } else {
       checkUser(false);
     }
+
+    console.log('router`~~', router)
+
+    const query = router.query
+    const errorDescription = query && query.error_description || ''
+    if (errorDescription.includes('attributes required')
+      && errorDescription.includes('email')) {
+      alert('Please check the email address on your Facebook account.')
+      setScreen(AuthState.SignUp)
+    }
+
+
     // intermittently failure
     // issue that describes same symptoms: https://github.com/aws-amplify/amplify-js/issues/6155#issue-644662860
     // only error occurs in development
@@ -88,12 +103,7 @@ const Authenticator = (props: Props): ReactElement => {
   const toSignInFacebook = async (e): Promise<void> => {
     try {
       //@ts-ignore
-      const res = await Auth.federatedSignIn({ provider: 'Facebook' });
-      console.log('res', res);
-
-      // if (typeof res === "undefined") {
-      //   alert('Invalid Facebook account. \nPlease check the email address on your Facebook account.')
-      // }
+      await Auth.federatedSignIn({ provider: 'Facebook' });
     } catch (e) {
       console.log('[error in facebook]', e);
     }
