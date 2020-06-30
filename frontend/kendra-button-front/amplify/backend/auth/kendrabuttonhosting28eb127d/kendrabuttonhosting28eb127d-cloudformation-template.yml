@@ -775,6 +775,8 @@ Outputs :
   IdentityPoolId:
     Value: !Ref 'IdentityPool'
     Description:  Id for the identity pool
+    Export:
+      Name: "kendraIdentityPoolId"
   IdentityPoolName:
     Value: !GetAtt IdentityPool.Name 
   

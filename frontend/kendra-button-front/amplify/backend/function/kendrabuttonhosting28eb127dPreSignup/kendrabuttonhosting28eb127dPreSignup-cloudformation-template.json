@@ -109,7 +109,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "amplify-kendrabuttonhosting-dev-213422-deployment",
-					"S3Key": "amplify-builds/kendrabuttonhosting28eb127dPreSignup-646e566745624d665538-build.zip"
+					"S3Key": "amplify-builds/kendrabuttonhosting28eb127dPreSignup-2b77656142474274634e-build.zip"
 				}
 			}
 		},
@@ -195,11 +195,12 @@
 							"Effect": "Allow",
 							"Action": [
 								"cognito-idp:ListUsers",
-								"cognito-idp:AdminLinkProviderForUser"
+								"cognito-idp:AdminLinkProviderForUser",
+								"cognito-idp:AdminDisableProviderForUser"
 							],
 							"Resource": {
 								"Fn::Sub": [
-									"arn:aws:cognito-idp:${region}:${account}:userpool/${userpool}",
+									"arn:aws:cognito-idp:${region}:${account}:userpool/${userpoolid}",
 									{
 										"region": {
 											"Ref": "AWS::Region"
@@ -207,7 +208,7 @@
 										"account": {
 											"Ref": "AWS::AccountId"
 										},
-										"userpool": {
+										"userpoolid": {
 											"Fn::ImportValue": "kendraUserpoolId"
 										}
 									}
