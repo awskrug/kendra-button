@@ -27,7 +27,7 @@ const Authenticator = (props: Props): ReactElement => {
     console.log('[checkUser retryflag]', retry);
     try {
       const user = await Auth.currentAuthenticatedUser();
-      console.log('[user:Auth]', user);
+      console.log('[user:Auth]', user); // 여기
       setScreen(AuthState.SignedIn);
       setUser(user);
     } catch (e) {
