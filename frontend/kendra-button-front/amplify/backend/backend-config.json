@@ -13,8 +13,25 @@
         "kendrabuttonhosting28eb127d": {
             "service": "Cognito",
             "providerPlugin": "awscloudformation",
-            "dependsOn": [],
+            "dependsOn": [
+                {
+                    "category": "function",
+                    "resourceName": "kendrabuttonhosting28eb127dPreSignup",
+                    "triggerProvider": "Cognito",
+                    "attributes": [
+                        "Arn",
+                        "Name"
+                    ]
+                }
+            ],
             "customAuth": false
+        }
+    },
+    "function": {
+        "kendrabuttonhosting28eb127dPreSignup": {
+            "build": true,
+            "providerPlugin": "awscloudformation",
+            "service": "Lambda"
         }
     }
 }
