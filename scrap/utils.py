@@ -4,7 +4,7 @@ import pyppeteer
 import shortuuid
 from requests_html import AsyncHTMLSession
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CHROMIUM = os.path.join(BASE_DIR, 'bin', 'headless-chromium')
 
 
