@@ -5,13 +5,13 @@ import { AuthState } from '@aws-amplify/ui-components';
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
+  setUsername?: Dispatch<SetStateAction<string>>;
 }
 
 const SignUp = (props: Props): ReactElement => {
-  const { setScreen } = props;
+  const { setScreen, setUsername } = props;
   const email = useRef('');
   const password = useRef('');
-  const [signupAccSuccess, setSignupAccSuccess] = useState<string>('');
   const [signupAccErr, setSignupAccErr] = useState<string>('');
 
   const onEmailChange = (e): void => {
@@ -46,9 +46,9 @@ const SignUp = (props: Props): ReactElement => {
       );
       if (res) {
         setSignupAccErr('');
-        setSignupAccSuccess('Sign Up Completed!')
+        setUsername(email.current)
+        setScreen(AuthState.ConfirmSignUp)
       }
-
     } catch (e) {
       console.log('error e ', e);
       let errormsg;
@@ -75,12 +75,6 @@ const SignUp = (props: Props): ReactElement => {
               <div className="mb-0">{signupAccErr.split('\n').map(line => {
                 return (<span>{line}<br /></span>)
               })}</div>
-            </div>
-          )}
-          {signupAccSuccess && (
-            <div className="alert alert-dismissible alert-success signUpSuccess" onClick={toSignIn}>
-              <p className="mb-0">{signupAccSuccess}</p>
-              <p className="mb-0 small">Click here to Sign In </p>
             </div>
           )}
           <AmplifyFormField

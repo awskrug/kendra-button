@@ -5,13 +5,16 @@ import { AuthState } from '@aws-amplify/ui-components';
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
+  setUsername?: Dispatch<SetStateAction<string>>;
+
 }
 
 
 const SignIn = (props: Props): ReactElement => {
-  const { setScreen } = props;
+  const { setScreen, setUsername } = props;
   const email = useRef('');
   const password = useRef('');
+  const [confirmRequired, setconfirmRequired] = useState<boolean>(false);
   const [emailErr, setEmailErr] = useState<string>('');
   const [passwordErr, setPasswordErr] = useState<string>('');
   const [signinAccErr, setSigninAccErr] = useState<string>('');
@@ -47,13 +50,26 @@ const SignIn = (props: Props): ReactElement => {
       }
     } catch (e) {
       console.log('error e', e);
-      setSigninAccErr(e)
+      setEmailErr('');
+      setPasswordErr('');
+
+      if (e.code === 'UserNotConfirmedException') {
+        setSigninAccErr('Please confirm your email before sign in.')
+        setconfirmRequired(true)
+      } else {
+        setSigninAccErr(e.message)
+      }
     }
     return;
   };
 
   const toSignUp = (): void => {
     setScreen(AuthState.SignUp);
+  };
+
+  const toConfirm = (): void => {
+    setUsername(email.current)
+    setScreen(AuthState.ConfirmSignUp);
   };
 
 
@@ -75,8 +91,6 @@ const SignIn = (props: Props): ReactElement => {
 
   };
 
-
-
   return (
     <>
       <div className={`card col-sm-6 h-75  overflow-auto p-3 justify-content-between`}>
@@ -84,11 +98,13 @@ const SignIn = (props: Props): ReactElement => {
         <div className={`signUpTitle`}>Sign in to your account </div>
         {signinAccErr && (
           <div className="alert alert-dismissible alert-warning">
-            <div className="mb-0">{signinAccErr.split('\n').map(line => {
-              return (<span>{line}<br /></span>)
-            })}</div>
+            <div className="mb-0">{signinAccErr}</div>
           </div>
         )}
+        {confirmRequired && (
+          <div className="toConfirm btn mb-2" onClick={toConfirm}>Click here to confirm</div>
+        )}
+
         <AmplifyFormField
           fieldId={'email'}
           handleInputChange={onEmailChange}
@@ -143,7 +159,7 @@ const SignIn = (props: Props): ReactElement => {
       .signUpTitle{
         font-size: 1.8rem;
       }
-      .toSignUp{
+      .toSignUp, .toConfirm{
         color: #ff9900;
         font-size: 0.9rem;
       }

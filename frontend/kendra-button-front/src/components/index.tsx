@@ -11,3 +11,5 @@ export * from './SiteEdit';
 export * from './SiteMain';
 export * from './Settings';
 export * from './SignUp';
+export * from './SignIn';
+export * from './Confirmation';

@@ -56,6 +56,7 @@ const Confirmation = (props: Props): ReactElement => {
       <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
         <div></div>
         <div className={`confirmTitle`}>Confirm Sign Up </div>
+        <p className={`text-secondary small`}>We've sent you a confirmation code to your email.</p>
         <div>
           {signupAccSuccess && (
             <div className="alert alert-dismissible alert-success signUpSuccess" onClick={toSignIn}>
@@ -86,7 +87,7 @@ const Confirmation = (props: Props): ReactElement => {
         <div></div>
       </div>
       <style global jsx>{`
-  .signUpTitle{
+  .confirmTitle{
     font-size: 1.8rem;
   }
   .backToSignIn{
