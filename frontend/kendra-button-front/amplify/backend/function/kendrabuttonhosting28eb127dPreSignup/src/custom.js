@@ -1,5 +1,3 @@
-// import CognitoIdentityServiceProvider from 'aws-sdk/clients/cognitoidentityserviceprovider';
-
 const AWS = require('aws-sdk');
 const cognitoIdp = new AWS.CognitoIdentityServiceProvider();
 
@@ -11,11 +9,15 @@ const getUserByEmail = async (userPoolId, email) => {
   return cognitoIdp.listUsers(params).promise();
 };
 
-const linkProviderToUser = async (userPoolId, providerName, providerUserId) => {
+const linkProviderToUser = async ({
+  username,
+  userPoolId,
+  providerName,
+  providerUserId,
+}) => {
   const params = {
     DestinationUser: {
-      // ProviderAttributeValue: username, // native(sign up directly)_users
-      ProviderAttributeValue: providerUserId, // federated_users
+      ProviderAttributeValue: username,
       ProviderName: 'Cognito',
     },
     SourceUser: {
@@ -38,32 +40,6 @@ const linkProviderToUser = async (userPoolId, providerName, providerUserId) => {
   return result;
 };
 
-const disableProviderForUser = async (
-  userPoolId,
-  providerName,
-  providerUserId,
-) => {
-  const params = {
-    User: {
-      ProviderAttributeName: 'Cognito_Subject',
-      ProviderAttributeValue: providerUserId,
-      ProviderName: providerName,
-    },
-    UserPoolId: userPoolId,
-  };
-
-  const result = await new Promise((resolve, reject) => {
-    cognitoIdp.adminDisableProviderForUser(params, (err, data) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(data);
-    });
-  });
-  return result;
-};
-
 exports.handler = async (event, context, callback) => {
   const userRs = await getUserByEmail(
     event.userPoolId,
@@ -75,18 +51,22 @@ exports.handler = async (event, context, callback) => {
 
   if (userRs && userRs.Users.length > 0) {
     const user = userRs.Users[0];
+    const userStatus = user.UserStatus;
 
-    if (user.UserStatus !== 'EXTERNAL_PROVIDER') {
-      const [providerName, providerUserId] = event.userName.split('_'); // event userName example: "Facebook_12324325436"
-      await linkProviderToUser(event.userPoolId, providerName, providerUserId);
-    } else {
-      const [providerName, providerUserId] = user.Username.split('_'); // event userName example: "Facebook_12324325436"
-      await disableProviderForUser(
-        event.userPoolId,
-        providerName,
-        providerUserId,
-      );
-    }
+    const [providerName, providerUserId] = event.userName.split('_'); // event userName example: "Facebook_12324325436"
+
+    const username =
+      userStatus === 'EXTERNAL_PROVIDER' ? providerUserId : user.Username;
+
+    console.log('userStatus', userStatus);
+    console.log('username', username);
+
+    await linkProviderToUser({
+      username,
+      userPoolId: event.userPoolId,
+      providerName,
+      providerUserId,
+    });
   } else {
     console.log('user not found, skip.');
   }
