@@ -1,6 +1,8 @@
 import asyncio
 import os
 
+from .page import Page
+
 try:
     from .utils import AsyncCutBrowserSession
 except Exception as e:
@@ -29,17 +31,6 @@ def operator(request, context):
     # sqs에 작업 넣기
 
 
-def worker(request, context):
-    print('run worker')
-    print(request)
-
-    # 최대 10개의 url이 들어옴
-    # que에 담긴 수집 url을 이용하여 html일 가져오기
-    # html을 que에 담긴 메타와 함께 kendra에 넣기
-    # page index ddb에 해당 url 수집 완료 처리 및 인덱스ID도 같이 넣기
-    # html에 있는 url을 추출후 수집 정책에 부합한 url만 page index ddb에 추가
-
-
 async def get_page(url: str):
     session = AsyncCutBrowserSession()
     print(f'start scrap {url}')
@@ -50,6 +41,38 @@ async def get_page(url: str):
     print(result)
     return result
 
+
+def verify(pettern, url) -> bool:
+    return True
+
+
+async def handler(messages: list):
+    for msg in messages:
+        site = 'asdf'
+        url = "https://www.yna.co.kr/index?site=header_logo"
+        pattern = "*"
+        html = await get_page(url)
+        # save kendra
+        # get links
+        links = html.absolute_links
+        with Page.batch_write() as batch:
+            items = [Page(site, url) for link in links if verify(pattern, url)]
+            for item in items:
+                batch.save(item)
+
+
+def worker(request, context):
+    print('run worker')
+    print(request)
+    # request에서 메세시 파싱
+    messages = []
+    asyncio.get_event_loop().run_until_complete(handler(messages))
+
+    # 최대 10개의 url이 들어옴
+    # que에 담긴 수집 url을 이용하여 html일 가져오기
+    # html을 que에 담긴 메타와 함께 kendra에 넣기
+    # page index ddb에 해당 url 수집 완료 처리 및 인덱스ID도 같이 넣기
+    # html에 있는 url을 추출후 수집 정책에 부합한 url만 page index ddb에 추가
 
 
 if __name__ == '__main__':

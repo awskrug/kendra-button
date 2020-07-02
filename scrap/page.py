@@ -1,12 +1,9 @@
 import os
-import random
 
-import graphene
-from graphene_pynamodb import PynamoObjectType
-from pynamodb.attributes import UnicodeAttribute,BooleanAttribute
+from pynamodb.attributes import UnicodeAttribute, BooleanAttribute
 from pynamodb.models import Model
 
-DB = os.environ.get('pageDB', 'kendra-buttons-page-dev')
+DB = os.environ.get('pageDB', 'kendra-buttons-index-dev')
 SAMPLE_USER = 'sample'
 
 
@@ -19,4 +16,9 @@ class Page(Model):
     url = UnicodeAttribute(range_key=True)
     _type = UnicodeAttribute(attr_name="type")
     scraped = BooleanAttribute(default=False)
-    
+
+
+if __name__ == '__main__':
+    p = Page("asta", "https://www.yna.co.kr/index?site=header_logo", _type="html")
+
+    p.save()
