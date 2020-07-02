@@ -53,13 +53,17 @@ async def handler(messages: list):
     for msg in messages:
         site = msg['site']
         url = msg['url']
+        host = msg.get('host')
         pattern = "*"
         html = await get_page(url)
         # save kendra
+        print(html.raw_html)
+        p = Page.get(site, url)
+        p.update([Page.scraped.set(True)])
         # get links
-        links = html.absolute_links
+        links = [l for l in html.absolute_links if l != url]
         with Page.batch_write() as batch:
-            items = [Page(site, url,_type='html') for link in links if verify(pattern, url)]
+            items = [Page(site, link, _type='html') for link in links if verify(pattern, url)]
             for item in items:
                 batch.save(item)
 
@@ -79,5 +83,5 @@ def worker(request, context):
 
 
 if __name__ == '__main__':
-    msg = {"url":"https://github.com/serithemage/AWS_AI_Study/tree/master/DLonAWS","site":"abcd"}
+    msg = {"url": "https://github.com/pricing", "site": "abcd", "host": "https://github.com/"}
     asyncio.get_event_loop().run_until_complete(handler([msg]))
