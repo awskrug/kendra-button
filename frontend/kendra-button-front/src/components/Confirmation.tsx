@@ -28,7 +28,7 @@ const Confirmation = (props: Props): ReactElement => {
   const onSubmit = async (e): Promise<void> => {
 
     if (confirmCode.current.length === 0) {
-      setConfirmErr('Verification code required \nPlease check your email')
+      setConfirmErr('Verification code required. \nPlease check your email.')
       return;
     }
 
@@ -47,7 +47,9 @@ const Confirmation = (props: Props): ReactElement => {
       }
 
     } catch (e) {
+      setConfirmErr('')
       console.log('error e ', e);
+      setConfirmErr(e.message)
     }
     return;
   };
@@ -64,6 +66,12 @@ const Confirmation = (props: Props): ReactElement => {
               <p className="mb-0 small">Click here to Sign In </p>
             </div>
           )}
+          {confirmErr && (
+            <div className="alert alert-warning alert-dismissible" role="alert">
+              <div className="mb-0">{confirmErr}</div>
+            </div>
+          )}
+
           <AmplifyFormField
             fieldId={'code'}
             handleInputChange={onConfirmCodeChange}
@@ -74,12 +82,6 @@ const Confirmation = (props: Props): ReactElement => {
             required={true}
             value={null}
           />
-          {confirmErr && (
-            <div className="alert alert-dismissible alert-warning">
-              <div className="mb-0">{confirmErr}</div>
-            </div>
-          )}
-
           <AmplifyButton
             handleButtonClick={onSubmit}
           >Complete Sign Up</AmplifyButton>

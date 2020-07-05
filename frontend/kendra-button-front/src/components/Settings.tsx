@@ -139,12 +139,12 @@ const Settings = (props: Props): ReactElement => {
               {user.getUsername().includes('Google') ? (
                 <div>
                   <p className={`socialLoginUpdate`}>We are sorry!</p>
-                  <p className={`mb-0`}>You may not allowed to update your password if you logged in with Google.</p>
+                  <p className={`mb-0`}>You are not allowed to update your password if you logged in with Google.</p>
                 </div>
               ) : user.getUsername().includes('Facebook') ? (
                 <div>
                   <p className={`socialLoginUpdate`}>We are sorry!</p>
-                  <p className={`mb-0`}>You may not allowed to update your password if you logged in with Facebook.</p>
+                  <p className={`mb-0`}>You are not allowed to update your password if you logged in with Facebook.</p>
                 </div>
               ) :
                   (
