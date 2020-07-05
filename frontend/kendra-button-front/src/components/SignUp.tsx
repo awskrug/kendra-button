@@ -1,7 +1,8 @@
-import { AmplifyButton, AmplifyFormField, AmplifyPasswordField } from '@aws-amplify/ui-react';
-import { ReactElement, useRef, useState, Dispatch, SetStateAction } from 'react'
-import { Auth } from 'aws-amplify';
+import { ReactElement, Dispatch, SetStateAction, useState } from 'react'
 import { AuthState } from '@aws-amplify/ui-components';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Auth } from 'aws-amplify';
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
@@ -10,102 +11,116 @@ interface Props {
 
 const SignUp = (props: Props): ReactElement => {
   const { setScreen, setUsername } = props;
-  const email = useRef('');
-  const password = useRef('');
   const [signupAccErr, setSignupAccErr] = useState<string>('');
 
-  const onEmailChange = (e): void => {
-    email.current = e.target.value;
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .required("Please enter your email.")
+        .email("Invalid email address."),
+      password: Yup.string()
+        .required("Please enter your password")
+        .min(8, 'Password is too short - should be 8 characters minimum.')
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+        ),
+    }),
+    onSubmit: () => { },
+  });
 
-  const onPasswordChange = (e): void => {
-    password.current = e.target.value;
-  };
 
   const toSignIn = () => {
     setScreen(AuthState.SignIn)
   }
 
   const onSubmit = async (e): Promise<void> => {
-    let errors = []
-    if (email.current.length === 0) {
-      errors.push('Please enter your email');
-    }
-    if (password.current.length === 0) {
-      errors.push('Please enter your password');
-    }
-    if (errors.length > 0) {
-      setSignupAccErr(errors.join('\n'));
+    formik.submitForm();
+    if (!formik.isValid) {
       return;
     }
 
     try {
       const res = await Auth.signUp(
-        email.current,
-        password.current
+        formik.values.email,
+        formik.values.password
       );
+
       if (res) {
-        setSignupAccErr('');
-        setUsername(email.current)
+        setUsername(formik.values.email)
         setScreen(AuthState.ConfirmSignUp)
       }
+
     } catch (e) {
       console.log('error e ', e);
-      let errormsg;
-      if (e.code === 'InvalidParameterException') {
-        let errors = [];
-        if (e.message.indexOf('password') > -1) {
-          errors.push('Password must contain the following: \n\n - Minimum length, which must be at least 6 characters but fewer than 99 characters. \n - Require numbers. \n - Require uppercase letters. \n - Require lowercase letters.')
-        }
-        errormsg = errors.join('\n');
-      }
-      setSignupAccErr(errormsg);
+      setSignupAccErr(e.message)
     }
-    return;
-  };
+    formik.resetForm();
+  }
 
   return (
     <>
       <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
         <div></div>
         <div className={`signUpTitle`}>Create a new account </div>
-        <div>
-          {signupAccErr && (
-            <div className="alert alert-dismissible alert-warning">
-              <div className="mb-0">{signupAccErr.split('\n').map(line => {
-                return (<span>{line}<br /></span>)
-              })}</div>
-            </div>
-          )}
-          <AmplifyFormField
-            fieldId={'email'}
-            handleInputChange={onEmailChange}
-            label={'Email'}
-            inputProps={{
-              placeholder: 'Input email',
-            }}
-            required={true}
-            value={null}
-          />
-          <AmplifyPasswordField
-            fieldId={'password'}
-            handleInputChange={onPasswordChange}
-            label={'Password'}
-            inputProps={{
-              placeholder: 'Input password',
-            }}
-            required={true}
-            value={null}
-          />
-          <AmplifyButton
-            handleButtonClick={onSubmit}
-          >Create Account</AmplifyButton>
-          <div className={`mt-3`}>Have an account?
-                <span
-              className={`backToSignIn btn`}
-              onClick={toSignIn}
-            > Sign In</span>
+        {signupAccErr && (
+          <div className="alert alert-dismissible alert-warning">
+            <div className="mb-0">{signupAccErr.split('\n').map(line => {
+              return (<span>{line}<br /></span>)
+            })}</div>
           </div>
+        )}
+        <div className="form-group">
+          <label
+            className="form-control-label font-weight-bold"
+            htmlFor="email"
+          >{`Email`}</label>
+          <input
+            id="email"
+            name="email"
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            className={`form-control ${
+              formik.touched.email && formik.errors.email ? 'is-invalid' : ''
+              }`}
+          />
+          {formik.touched.email && formik.errors.email && (
+            <div className="invalid-feedback">{formik.errors.email}</div>
+          )}
+        </div>
+        <div className="form-group">
+          <label
+            className="form-control-label font-weight-bold"
+            htmlFor="password"
+          >{`Password`}</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+            className={`form-control ${
+              formik.touched.password && formik.errors.password ? 'is-invalid' : ''
+              }`}
+          />
+          {formik.touched.password && formik.errors.password && (
+            <div className="invalid-feedback">{formik.errors.password}</div>
+          )}
+        </div>
+        <button
+          className={`btn btn-success shadow-sm`}
+          onClick={onSubmit}
+        >Create Account</button>
+        <div className={`mt-3`}>Have an account?
+                <span
+            className={`backToSignIn btn`}
+            onClick={toSignIn}
+          > Sign In</span>
         </div>
         <div></div>
       </div>
