@@ -66,7 +66,7 @@ const SignUp = (props: Props): ReactElement => {
     <>
       <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
         <div></div>
-        <div className={`signUpTitle`}>Create a new account </div>
+        <div className={`signUpTitle mb-2`}>Create a new account </div>
         {signupAccErr && (
           <div className="alert alert-dismissible alert-warning">
             <div className="mb-0">{signupAccErr.split('\n').map(line => {
@@ -129,7 +129,7 @@ const SignUp = (props: Props): ReactElement => {
         font-size: 1.8rem;
       }
       .backToSignIn{
-        color: #ff9900;
+        color: #93c54c;
         font-size: 0.9rem;
       }
       .signUpSuccess:hover{

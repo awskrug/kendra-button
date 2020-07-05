@@ -95,7 +95,7 @@ const SignIn = (props: Props): ReactElement => {
     <>
       <div className={`card col-sm-6 h-75  overflow-auto p-3 justify-content-between`}>
         <div></div>
-        <div className={`signUpTitle`}>Sign in to your account </div>
+        <div className={`signUpTitle mb-3`}>Sign in to your account </div>
         {signinAccErr && (
           <div className="alert alert-dismissible alert-warning">
             <div className="mb-0">{signinAccErr}</div>
