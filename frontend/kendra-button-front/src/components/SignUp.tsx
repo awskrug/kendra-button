@@ -40,7 +40,7 @@ const SignUp = (props: Props): ReactElement => {
 
   const onSubmit = async (e): Promise<void> => {
     formik.submitForm();
-    if (!formik.isValid) {
+    if (!formik.isValid || !formik.values.email || !formik.values.password) {
       return;
     }
 
