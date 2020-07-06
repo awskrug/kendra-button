@@ -12,6 +12,12 @@ export interface User extends CognitoUser {
   };
 }
 
+export interface CognitoException<T> {
+  code: T;
+  message: string;
+  name: T;
+}
+
 export interface Site {
   site: string;
   user: string;
