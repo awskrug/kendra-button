@@ -54,7 +54,12 @@ exports.handler = async (event, context, callback) => {
     const userStatus = user.UserStatus;
 
     if (userStatus === 'EXTERNAL_PROVIDER') {
-      return callback('-email already exists');
+      return callback(
+        '-' +
+          JSON.stringify({
+            msg: 'email already exists',
+          }),
+      );
     }
 
     const [providerName, providerUserId] = event.userName.split('_'); // event userName example: "Facebook_12324325436"
