@@ -34,7 +34,7 @@ const Sidebar = (props: Props): ReactElement => {
   return (
     <>
       <div
-        className={`bg-primary d-flex flex-column justify-content-between align-items-stretch align-items-center p-3 sidebar overflow-auto`}
+        className={`bg-primary d-flex flex-column justify-content-between align-items-stretch align-items-center p-3 sidebar overflow-auto col-3`}
       >
         <div className={`d-flex flex-column`}>
           <div className={`btn-group my-3`}>
@@ -59,6 +59,7 @@ const Sidebar = (props: Props): ReactElement => {
         </div>
       </div>
       <style jsx>{`
+      @media screen and (min-width: 768px){
         .sidebar {
           position: fixed;
           z-index: 1;
@@ -68,6 +69,15 @@ const Sidebar = (props: Props): ReactElement => {
           height: 100vh;
           box-shadow: 2px 0px 5px 0px #848484;
         }
+      }
+      @media screen and (max-width: 768px){
+        .sidebar {
+          width: 100vw;
+          height: 50vh;
+          box-shadow: 2px 0px 5px 0px #848484;
+        }
+      }
+
       `}</style>
     </>
   );

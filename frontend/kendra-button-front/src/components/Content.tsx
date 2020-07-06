@@ -19,7 +19,7 @@ const Content = (props: Props): ReactElement => {
   return (
     <>
       <PageLoader hide={loadingFlag} />
-      <div className={`content`}>
+      <div className={`content col-9`}>
         {!content ? (
           <div
             className={`w-100 h-100 d-flex justify-content-center align-items-center fa-lg`}
@@ -33,6 +33,7 @@ const Content = (props: Props): ReactElement => {
         ) : null}
       </div>
       <style jsx>{`
+      @media screen and (min-width: 768px) {
         .content {
           padding-left: 30%;
           width: 100vw;
@@ -48,6 +49,20 @@ const Content = (props: Props): ReactElement => {
           z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
           opacity: 0.5;
         }
+      }
+      @media screen and (max-width: 768px){
+        .content {
+          width: 100vw;
+          height: 100vh;
+        }
+        .pageloader {
+          width: 100vw;
+          height: 100vh;
+          z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
+          opacity: 0.5;
+        }
+
+      }
       `}</style>
     </>
   );
