@@ -4,6 +4,8 @@ import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 
 import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
+import { CognitoException } from '../types';
+import { Loader } from './Loader';
 import { useFormik } from 'formik';
 
 interface Props {
@@ -12,19 +14,15 @@ interface Props {
 }
 
 // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html#API_SignUp_Errors
-enum CognitoErrorState {
+enum CognitoSignUpErrorState {
   UsernameExistsException = 'UsernameExistsException',
   UserLambdaValidationException = 'UserLambdaValidationException',
-}
-interface CognitoException {
-  code: CognitoErrorState;
-  message: string;
-  name: CognitoErrorState;
 }
 
 const SignUp = (props: Props): ReactElement => {
   const { setScreen, setUsername } = props;
   const [signupAccErr, setSignupAccErr] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const formik = useFormik({
     initialValues: {
@@ -51,8 +49,11 @@ const SignUp = (props: Props): ReactElement => {
   };
 
   const onSubmit = async (e): Promise<void> => {
+    if (isLoading) return;
+    setIsLoading(true);
     formik.submitForm();
     if (!formik.isValid || !formik.values.email || !formik.values.password) {
+      setIsLoading(false);
       return;
     }
 
@@ -68,9 +69,9 @@ const SignUp = (props: Props): ReactElement => {
       }
     } catch (e) {
       console.log('error e ', e);
-      const err: CognitoException = e;
+      const err: CognitoException<CognitoSignUpErrorState> = e;
       let errmsg = err.message;
-      if (err.code === CognitoErrorState.UserLambdaValidationException) {
+      if (err.code === CognitoSignUpErrorState.UserLambdaValidationException) {
         const splitedMsg = err.message.split('-');
         if (splitedMsg.length > 1) {
           try {
@@ -85,6 +86,7 @@ const SignUp = (props: Props): ReactElement => {
       setSignupAccErr(errmsg);
     }
     formik.resetForm();
+    setIsLoading(false);
   };
 
   return (
@@ -147,6 +149,7 @@ const SignUp = (props: Props): ReactElement => {
           )}
         </div>
         <button className={`btn btn-success shadow-sm`} onClick={onSubmit}>
+          {isLoading && <Loader className={'mr-2'} />}
           Create Account
         </button>
         <div className={`mt-3`}>
