@@ -67,7 +67,6 @@ const Settings = (props: Props): ReactElement => {
         setUpdateAccSuccess('비밀번호가 정상적으로 수정되었습니다.');
       }
     } catch (e) {
-      console.log('error e', e);
       let errormsg;
       if (e.code === 'InvalidParameterException') {
         let errors = [];
@@ -92,10 +91,8 @@ const Settings = (props: Props): ReactElement => {
   };
 
   const okaction = async ({ hideModal }): Promise<void> => {
-    console.log('okaction');
     const user = await Auth.currentAuthenticatedUser();
-    user.deleteUser((cb) => {
-      console.log('cb', cb);
+    user.deleteUser(() => {
       hideModal();
       Auth.signOut();
       setIsLoggedIn(false);

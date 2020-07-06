@@ -23,7 +23,6 @@ const Sidebar = (props: Props): ReactElement => {
 
   const signOut = async (): Promise<void> => {
     const user = await Auth.signOut();
-    console.log('Signed out user ~?', user)
     setIsLoggedIn(false);
   };
 
