@@ -10,17 +10,19 @@ import {
 import { Auth, Hub } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
-import { SignUp } from '../components';
+import { SignUp, SignIn, Confirmation } from '../components';
 import { useRouter } from 'next/router';
 
 interface Props {
   setUser: Dispatch<SetStateAction<any>>;
+  setIsLoggedIn: Dispatch<SetStateAction<any>>;
   children: ReactNode;
   isLoggedIn: boolean;
 }
 const Authenticator = (props: Props): ReactElement => {
-  const { children, setUser } = props;
+  const { children, setUser, isLoggedIn, setIsLoggedIn } = props;
   const [screen, setScreen] = useState(AuthState.SignIn);
+  const [username, setUsername] = useState<string>('');
 
   const checkUser = async (retry, tryCnt = 1): Promise<void> => {
     const tryLimit = 3;
@@ -43,6 +45,15 @@ const Authenticator = (props: Props): ReactElement => {
   const router = useRouter()
 
   useEffect(() => {
+    console.log('isLoggedIn? ', isLoggedIn)
+    if (!isLoggedIn) {
+      setScreen(AuthState.SignIn)
+    }
+
+  }, [isLoggedIn])
+
+
+  useEffect(() => {
 
     const query = router.asPath
     const errorDescription = query || ''
@@ -63,6 +74,7 @@ const Authenticator = (props: Props): ReactElement => {
       switch (data.payload.event) {
         case 'signIn':
           setScreen(AuthState.SignedIn);
+          setIsLoggedIn(true);
           checkUser(false);
           break;
         case 'signIn_failure':
@@ -75,50 +87,20 @@ const Authenticator = (props: Props): ReactElement => {
   }, []);
 
 
-  const toSignUp = (): void => {
-    setScreen(AuthState.SignUp);
-  };
-  const toSignInGoogle = async (): Promise<void> => {
-    try {
-      //@ts-ignore
-      await Auth.federatedSignIn({ provider: 'Google' });
-    } catch (e) {
-      console.log('[error in google]', e);
-    }
-  };
-  const toSignInFacebook = async (e): Promise<void> => {
-    try {
-      //@ts-ignore
-      await Auth.federatedSignIn({ provider: 'Facebook' });
-    } catch (e) {
-      console.log('[error in facebook]', e);
-    }
-
-  };
-
-
   const bgClass = screen === AuthState.SignIn || screen === AuthState.SignUp ? `bg-dark` : ``;
   return (
     <div
-      className={`fullscreen ${bgClass} d-flex justify-content-center align-items-center`}
+      className={`fullscreen ${bgClass} d-flex flex-column justify-content-center align-items-center`}
     >
       {screen === AuthState.SignedIn ? (
         children
       ) : screen === AuthState.SignUp ? (
-        <> <SignUp setScreen={setScreen} /> </>
+        <> <SignUp setScreen={setScreen} setUsername={setUsername} /> </>
+      ) : screen === AuthState.ConfirmSignUp ? (
+        <> <Confirmation setScreen={setScreen} username={username} /> </>
       ) : (
-            <>
-              <div className={`btn btn-info`} onClick={toSignUp}>
-                signup
-            </div>
-              <div className={`btn btn-danger`} onClick={toSignInGoogle}>
-                Sign in with Google
-            </div>
-              <div className={`btn btn-primary`} onClick={toSignInFacebook}>
-                Sign in with Facebook
-            </div>
-            </>
-          )}
+              <SignIn setScreen={setScreen} setUsername={setUsername} />
+            )}
       <style global jsx>{`
           .fullscreen {
             height: 100vh;
