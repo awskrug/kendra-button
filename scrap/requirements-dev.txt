@@ -1,0 +1,3 @@
+-r requirements.txt
+moto
+requests_mock

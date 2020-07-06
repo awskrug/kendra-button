@@ -3,7 +3,7 @@ service: scrap
 custom:
   stage:  ${opt:stage, 'dev'}
   wsgi:
-    app: app.app
+    app: manage.app
     pythonBin: python3
     packRequirements: false
   kendra:
@@ -50,10 +50,12 @@ package:
     - node_modules/**
   include:
     - bin/**
-    - app.py
+    - manage.py
     - parser/**
+    - page.py
+    - scrap.py
     - kendra.py
-    - site.py
+    - kendra_site.py
     - schema.py
     - utils.py
     - __init__.py
