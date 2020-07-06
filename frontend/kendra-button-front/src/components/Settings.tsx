@@ -93,7 +93,6 @@ const Settings = (props: Props): ReactElement => {
 
   const okaction = async ({ hideModal }): Promise<void> => {
     console.log('okaction');
-    // TODO: delete from cognito and extra
     const user = await Auth.currentAuthenticatedUser();
     user.deleteUser((cb) => {
       console.log('cb', cb);
