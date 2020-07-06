@@ -1,12 +1,25 @@
-import { ReactElement, Dispatch, SetStateAction, useState } from 'react'
+import * as Yup from 'yup';
+
+import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
+
+import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Auth } from 'aws-amplify';
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
   setUsername?: Dispatch<SetStateAction<string>>;
+}
+
+// https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html#API_SignUp_Errors
+enum CognitoErrorState {
+  UsernameExistsException = 'UsernameExistsException',
+  UserLambdaValidationException = 'UserLambdaValidationException',
+}
+interface CognitoException {
+  code: CognitoErrorState;
+  message: string;
+  name: CognitoErrorState;
 }
 
 const SignUp = (props: Props): ReactElement => {
@@ -20,23 +33,22 @@ const SignUp = (props: Props): ReactElement => {
     },
     validationSchema: Yup.object({
       email: Yup.string()
-        .required("Please enter your email.")
-        .email("Invalid email address."),
+        .required('Please enter your email.')
+        .email('Invalid email address.'),
       password: Yup.string()
-        .required("Please enter your password")
+        .required('Please enter your password')
         .min(8, 'Password is too short - should be 8 characters minimum.')
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+          'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character',
         ),
     }),
-    onSubmit: () => { },
+    onSubmit: () => {},
   });
 
-
   const toSignIn = () => {
-    setScreen(AuthState.SignIn)
-  }
+    setScreen(AuthState.SignIn);
+  };
 
   const onSubmit = async (e): Promise<void> => {
     formik.submitForm();
@@ -47,20 +59,33 @@ const SignUp = (props: Props): ReactElement => {
     try {
       const res = await Auth.signUp(
         formik.values.email,
-        formik.values.password
+        formik.values.password,
       );
 
       if (res) {
-        setUsername(formik.values.email)
-        setScreen(AuthState.ConfirmSignUp)
+        setUsername(formik.values.email);
+        setScreen(AuthState.ConfirmSignUp);
       }
-
     } catch (e) {
       console.log('error e ', e);
-      setSignupAccErr(e.message)
+      const err: CognitoException = e;
+      let errmsg = err.message;
+      if (err.code === CognitoErrorState.UserLambdaValidationException) {
+        const splitedMsg = err.message.split('-');
+        if (splitedMsg.length > 1) {
+          try {
+            // ex. "PreSignUp failed with error -{"msg":"email already exists"}."
+            const jsonobj = splitedMsg[1].substr(0, splitedMsg[1].length - 1);
+            errmsg = JSON.parse(jsonobj).msg;
+          } catch (e) {
+            errmsg = err.message;
+          }
+        }
+      }
+      setSignupAccErr(errmsg);
     }
     formik.resetForm();
-  }
+  };
 
   return (
     <>
@@ -69,9 +94,16 @@ const SignUp = (props: Props): ReactElement => {
         <div className={`signUpTitle mb-2`}>Create a new account </div>
         {signupAccErr && (
           <div className="alert alert-dismissible alert-warning">
-            <div className="mb-0">{signupAccErr.split('\n').map(line => {
-              return (<span>{line}<br /></span>)
-            })}</div>
+            <div className="mb-0">
+              {signupAccErr.split('\n').map((line, lIdx) => {
+                return (
+                  <span key={'signup-err-' + lIdx}>
+                    {line}
+                    <br />
+                  </span>
+                );
+              })}
+            </div>
           </div>
         )}
         <div className="form-group">
@@ -86,7 +118,7 @@ const SignUp = (props: Props): ReactElement => {
             value={formik.values.email}
             className={`form-control ${
               formik.touched.email && formik.errors.email ? 'is-invalid' : ''
-              }`}
+            }`}
           />
           {formik.touched.email && formik.errors.email && (
             <div className="invalid-feedback">{formik.errors.email}</div>
@@ -105,40 +137,42 @@ const SignUp = (props: Props): ReactElement => {
             onBlur={formik.handleBlur}
             value={formik.values.password}
             className={`form-control ${
-              formik.touched.password && formik.errors.password ? 'is-invalid' : ''
-              }`}
+              formik.touched.password && formik.errors.password
+                ? 'is-invalid'
+                : ''
+            }`}
           />
           {formik.touched.password && formik.errors.password && (
             <div className="invalid-feedback">{formik.errors.password}</div>
           )}
         </div>
-        <button
-          className={`btn btn-success shadow-sm`}
-          onClick={onSubmit}
-        >Create Account</button>
-        <div className={`mt-3`}>Have an account?
-                <span
-            className={`backToSignIn btn`}
-            onClick={toSignIn}
-          > Sign In</span>
+        <button className={`btn btn-success shadow-sm`} onClick={onSubmit}>
+          Create Account
+        </button>
+        <div className={`mt-3`}>
+          Have an account?
+          <span className={`backToSignIn btn`} onClick={toSignIn}>
+            {' '}
+            Sign In
+          </span>
         </div>
         <div></div>
       </div>
       <style global jsx>{`
-      .signUpTitle{
-        font-size: 1.8rem;
-      }
-      .backToSignIn{
-        color: #93c54c;
-        font-size: 0.9rem;
-      }
-      .signUpSuccess:hover{
-        cursor: pointer;
-        background-color: #b9e082;
-      }
+        .signUpTitle {
+          font-size: 1.8rem;
+        }
+        .backToSignIn {
+          color: #93c54c;
+          font-size: 0.9rem;
+        }
+        .signUpSuccess:hover {
+          cursor: pointer;
+          background-color: #b9e082;
+        }
       `}</style>
     </>
-  )
-}
+  );
+};
 
 export { SignUp };
