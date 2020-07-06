@@ -19,10 +19,10 @@ const Content = (props: Props): ReactElement => {
   return (
     <>
       <PageLoader hide={loadingFlag} />
-      <div className={`content col-9`}>
+      <div className={`content`}>
         {!content ? (
           <div
-            className={`w-100 h-100 d-flex justify-content-center align-items-center fa-lg`}
+            className={`h-100 d-flex justify-content-center align-items-center fa-lg`}
           >
             <div>Select Site</div>
           </div>
@@ -33,7 +33,7 @@ const Content = (props: Props): ReactElement => {
         ) : null}
       </div>
       <style jsx>{`
-      @media screen and (min-width: 768px) {
+      @media (min-width: 992px) {
         .content {
           padding-left: 30%;
           width: 100vw;
@@ -50,7 +50,7 @@ const Content = (props: Props): ReactElement => {
           opacity: 0.5;
         }
       }
-      @media screen and (max-width: 768px){
+      @media (max-width: 991px){
         .content {
           width: 100vw;
           height: 100vh;
@@ -61,7 +61,6 @@ const Content = (props: Props): ReactElement => {
           z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
           opacity: 0.5;
         }
-
       }
       `}</style>
     </>
