@@ -1,60 +1,15 @@
 import { useEffect, useState } from 'react';
 
+import { getSearchQry } from '../graphql';
 import sampledata from '../sampledata.json';
-
-// import { callGraphql } from '../utils';
-// import { search } from '../graphql/queries';
 
 interface Props {
   searchInput: string;
-  site: string;
+  result: any;
 }
 
-const getFromNextApi = async (): Promise<any> => {
-  // const res = await fetch('/api/search');
-  // const res = await fetch(
-  //   'https://temp-by-geoseong.s3.ap-northeast-2.amazonaws.com/sampledata.json',
-  // );
-  // console.log('res:', res);
-  // const data = await res.json();
-
-  // if (res.status !== 200) {
-  //   throw new Error(data.message);
-  // }
-  // return data;
-  return sampledata;
-};
 const SearchResult = (props: Props) => {
-  const { searchInput, site } = props || {};
-  const [result, setResult] = useState([]);
-
-  // async & await 허용 안함
-  useEffect(() => {
-    getFromNextApi()
-      .then((data) => {
-        console.log('SearchResult data:', data);
-        setResult(data.data.search.items);
-      })
-      .catch((e) => {
-        console.log('error happened!', e);
-      });
-    // callGraphql({
-    //   query: search,
-    //   variables: {
-    //     site,
-    //     keyword: searchInput
-    //   }
-    // })
-    //   .then(
-    //     data => {
-    //       console.log('result', data.data)
-    //       // 안전
-    //       if (data.data.search && data.data.search.items) {
-    //         setResult(data.data.search.items)
-    //       }
-    //     }
-    //   )
-  }, []);
+  const { searchInput, result } = props || {};
 
   return (
     <div className="px-3">

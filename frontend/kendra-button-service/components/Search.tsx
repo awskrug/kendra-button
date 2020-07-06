@@ -1,15 +1,17 @@
 import { ReactElement, useState } from 'react';
 
 import { SearchResult } from './SearchResult';
+import { callGraphql } from '../utils';
 
 interface Props {
   site: string;
 }
 
 const Search = (props: Props): ReactElement => {
-  const [inputValue, setInputValue] = useState('');
-
-  const [keyword, setKeywords] = useState('');
+  const [inputValue, setInputValue] = useState<string>('');
+  const [keyword, setKeywords] = useState<string>('');
+  const [result, setResult] = useState<any>([]);
+  const [error, setError] = useState<any>(null);
 
   const { site } = props;
 
@@ -17,9 +19,15 @@ const Search = (props: Props): ReactElement => {
     setInputValue(e.target.value);
   };
 
-  const searchHandler = () => {
+  const searchHandler = async (): Promise<any> => {
     setKeywords(inputValue);
-    setInputValue('');
+    // setInputValue('');
+    const res = await callGraphql({ text: inputValue, site });
+    if (res.status > 200) {
+      setError(res.message);
+    } else {
+      setResult(res);
+    }
   };
 
   return (
@@ -44,7 +52,14 @@ const Search = (props: Props): ReactElement => {
         </div>
       </form>
 
-      {keyword.length > 0 && <SearchResult site={site} searchInput={keyword} />}
+      {keyword.length > 0 && result.length > 0 && (
+        <SearchResult searchInput={keyword} result={result} />
+      )}
+      {error && (
+        <div className={`p-3 text-danger`}>
+          Query Error: <span className={`font-weight-bold`}>{error}</span>
+        </div>
+      )}
     </>
   );
 };

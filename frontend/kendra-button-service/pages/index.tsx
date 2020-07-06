@@ -7,16 +7,8 @@ interface Props {}
 
 export default function Home(props: Props) {
   const router = useRouter();
-  useEffect(() => {
-    console.log({ props });
-    // pathname, query
-    console.log('router', router.query);
-    // let localStorage = JSON.parse(
-    //   window.localStorage.getItem('ally-supports-cache'),
-    // );
-    // console.log({ localStorage });
-    console.log('localStorage:', window.localStorage);
-  }, []);
+  const site = router.query.id as string;
+
   return (
     <div className="p-1">
       <Head>
@@ -29,15 +21,16 @@ export default function Home(props: Props) {
       </Head>
 
       <main>
-        <Search site={'site'} />
-        <div
+        <Search site={site || 'site'} />
+        {/* debugging */}
+        {/* <div
           className={'btn btn-primary'}
           onClick={(e) => {
             console.log('router', router.query);
           }}
         >
           check
-        </div>
+        </div> */}
       </main>
 
       <footer></footer>
