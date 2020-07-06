@@ -46,13 +46,13 @@ const Settings = (props: Props): ReactElement => {
   const onSubmit = async (e): Promise<void> => {
     let errors = [];
     if (passwordCurr.current.length === 0) {
-      errors.push('"Your Current Password" 필드를 입력 해 주세요.');
+      errors.push('Please enter your current password.');
     }
     if (passwordNew.current.length === 0) {
-      errors.push('"Your New Password" 필드를 입력 해 주세요.');
+      errors.push('Please enter the new password.');
     }
     if (errors.length > 0) {
-      setUpdateAccErr(errors.join(' / '));
+      setUpdateAccErr(errors.join('\n'));
       return;
     }
 
@@ -67,7 +67,6 @@ const Settings = (props: Props): ReactElement => {
         setUpdateAccSuccess('비밀번호가 정상적으로 수정되었습니다.');
       }
     } catch (e) {
-      console.log('error e', e);
       let errormsg;
       if (e.code === 'InvalidParameterException') {
         let errors = [];
@@ -93,8 +92,7 @@ const Settings = (props: Props): ReactElement => {
 
   const okaction = async ({ hideModal }): Promise<void> => {
     const user = await Auth.currentAuthenticatedUser();
-    user.deleteUser((cb) => {
-      console.log('cb', cb);
+    user.deleteUser(() => {
       hideModal();
       Auth.signOut();
       setIsLoggedIn(false);
@@ -104,12 +102,13 @@ const Settings = (props: Props): ReactElement => {
     setModalConfig({
       type: 'plain',
       display: true,
-      title: '계정 탈퇴(work in process)',
+      title: 'Delete your account',
       content:
-        '정말 탈퇴하시겠습니까? 현재 계정 정보와 관련한 사이트 정보가 모두 삭제됩니다.',
+        'Are you sure you want to delete your account? This process cannot be undone.',
       okaction,
     });
   };
+
 
   return (
     <>
@@ -125,7 +124,7 @@ const Settings = (props: Props): ReactElement => {
               onClick={toggleDisplay}
             >
               {}
-              <div className="fa-lg">계정 정보 수정</div>
+              <div className="fa-lg">Change your password</div>
               <FontAwesomeIcon
                 className={`fa-lg`}
                 icon={displayAcc ? faCaretUp : faCaretDown}
@@ -136,66 +135,61 @@ const Settings = (props: Props): ReactElement => {
               {user.getUsername().includes('Google') ? (
                 <div>
                   <p className={`socialLoginUpdate`}>We are sorry!</p>
-                  <p className={`mb-0`}>
-                    You are not allowed to update your password if you logged in
-                    with Google.
-                  </p>
+                  <p className={`mb-0`}>You are not allowed to update your password if you logged in with Google.</p>
                 </div>
               ) : user.getUsername().includes('Facebook') ? (
                 <div>
                   <p className={`socialLoginUpdate`}>We are sorry!</p>
-                  <p className={`mb-0`}>
-                    You are not allowed to update your password if you logged in
-                    with Facebook.
-                  </p>
+                  <p className={`mb-0`}>You are not allowed to update your password if you logged in with Facebook.</p>
                 </div>
-              ) : (
-                <>
-                  {updateAccErr && (
-                    <div className="alert alert-dismissible alert-warning">
-                      <p className="mb-0">{updateAccErr}</p>
-                    </div>
+              ) :
+                  (
+                    <>
+                      {updateAccErr && (
+                        <div className="alert alert-dismissible alert-warning">
+                          <div className="mb-0">{updateAccErr.split('\n').map((line, lIdx) => {
+                            return (<span key={`signup-err-` + lIdx}>{line}<br /></span>)
+                          })}</div>
+                        </div>
+                      )}
+                      {updateAccSuccess && (
+                        <div className="alert alert-dismissible alert-success">
+                          <p className="mb-0">{updateAccSuccess}</p>
+                        </div>
+                      )}
+                      <AmplifyFormField
+                        fieldId={'email'}
+                        label={'Your Email'}
+                        inputProps={{
+                          placeholder: 'placeholder',
+                        }}
+                        required={true}
+                        value={user?.attributes?.email}
+                        disabled={true}
+                      />
+                      <AmplifyPasswordField
+                        fieldId={'curr-password'}
+                        handleInputChange={onChangeCurrPw}
+                        label={'Your Current Password'}
+                        inputProps={{
+                          placeholder: 'Enter current password',
+                        }}
+                        required={true}
+                        value={null}
+                      />
+                      <AmplifyPasswordField
+                        fieldId={'new-password'}
+                        handleInputChange={onChangeNewPw}
+                        label={'Your New Password'}
+                        inputProps={{
+                          placeholder: 'Enter new password',
+                        }}
+                        required={true}
+                        value={null}
+                      />
+                      <AmplifyButton handleButtonClick={onSubmit}>Submit</AmplifyButton>
+                    </>
                   )}
-                  {updateAccSuccess && (
-                    <div className="alert alert-dismissible alert-success">
-                      <p className="mb-0">{updateAccSuccess}</p>
-                    </div>
-                  )}
-                  <AmplifyFormField
-                    fieldId={'email'}
-                    label={'Your Email'}
-                    inputProps={{
-                      placeholder: 'placeholder',
-                    }}
-                    required={true}
-                    value={user?.attributes?.email}
-                    disabled={true}
-                  />
-                  <AmplifyPasswordField
-                    fieldId={'curr-password'}
-                    handleInputChange={onChangeCurrPw}
-                    label={'Your Current Password'}
-                    inputProps={{
-                      placeholder: 'input current password',
-                    }}
-                    required={true}
-                    value={null}
-                  />
-                  <AmplifyPasswordField
-                    fieldId={'new-password'}
-                    handleInputChange={onChangeNewPw}
-                    label={'Your New Password'}
-                    inputProps={{
-                      placeholder: 'input new password',
-                    }}
-                    required={true}
-                    value={null}
-                  />
-                  <AmplifyButton handleButtonClick={onSubmit}>
-                    Submit
-                  </AmplifyButton>
-                </>
-              )}
             </div>
           </div>
         </div>
@@ -204,21 +198,21 @@ const Settings = (props: Props): ReactElement => {
         className={`align-items-center d-flex justify-content-between pb-1 p-3`}
       >
         <div className="card text-danger border-danger">
-          <div className="card-header">계정 탈퇴</div>
+          <div className="card-header">Delete your account</div>
           <div className="card-body">
             <div className={'btn btn-danger mb-2'} onClick={deleteAccount}>
-              계정 탈퇴
+              Delete account
             </div>
             <p className="card-text">
-              계정 정보와 관련한 사이트 정보가 모두 삭제됩니다.
+              Your profile will be permanently deleted.
             </p>
           </div>
         </div>
       </div>
       <style jsx>{`
-        .socialLoginUpdate {
-          font-size: 1.1rem;
-        }
+      .socialLoginUpdate {
+        font-size: 1.1rem;
+      }
       `}</style>
     </>
   );

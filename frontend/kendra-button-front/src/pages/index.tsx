@@ -43,7 +43,7 @@ const Page = () => {
 
   return (
     <>
-      <Authenticator setUser={setUser} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}>
+      <Authenticator setUser={setUser} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} >
         <>
           <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
           <Content user={user} setIsLoggedIn={setIsLoggedIn} />
