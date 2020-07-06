@@ -92,8 +92,6 @@ const Settings = (props: Props): ReactElement => {
   };
 
   const okaction = async ({ hideModal }): Promise<void> => {
-    console.log('okaction');
-    // TODO: delete from cognito and extra
     const user = await Auth.currentAuthenticatedUser();
     user.deleteUser((cb) => {
       console.log('cb', cb);
@@ -126,6 +124,7 @@ const Settings = (props: Props): ReactElement => {
               }
               onClick={toggleDisplay}
             >
+              {}
               <div className="fa-lg">계정 정보 수정</div>
               <FontAwesomeIcon
                 className={`fa-lg`}
@@ -134,47 +133,69 @@ const Settings = (props: Props): ReactElement => {
               />
             </div>
             <div className={displayAcc ? 'p-4' : 'd-none'}>
-              {updateAccErr && (
-                <div className="alert alert-dismissible alert-warning">
-                  <p className="mb-0">{updateAccErr}</p>
+              {user.getUsername().includes('Google') ? (
+                <div>
+                  <p className={`socialLoginUpdate`}>We are sorry!</p>
+                  <p className={`mb-0`}>
+                    You are not allowed to update your password if you logged in
+                    with Google.
+                  </p>
                 </div>
-              )}
-              {updateAccSuccess && (
-                <div className="alert alert-dismissible alert-success">
-                  <p className="mb-0">{updateAccSuccess}</p>
+              ) : user.getUsername().includes('Facebook') ? (
+                <div>
+                  <p className={`socialLoginUpdate`}>We are sorry!</p>
+                  <p className={`mb-0`}>
+                    You are not allowed to update your password if you logged in
+                    with Facebook.
+                  </p>
                 </div>
+              ) : (
+                <>
+                  {updateAccErr && (
+                    <div className="alert alert-dismissible alert-warning">
+                      <p className="mb-0">{updateAccErr}</p>
+                    </div>
+                  )}
+                  {updateAccSuccess && (
+                    <div className="alert alert-dismissible alert-success">
+                      <p className="mb-0">{updateAccSuccess}</p>
+                    </div>
+                  )}
+                  <AmplifyFormField
+                    fieldId={'email'}
+                    label={'Your Email'}
+                    inputProps={{
+                      placeholder: 'placeholder',
+                    }}
+                    required={true}
+                    value={user?.attributes?.email}
+                    disabled={true}
+                  />
+                  <AmplifyPasswordField
+                    fieldId={'curr-password'}
+                    handleInputChange={onChangeCurrPw}
+                    label={'Your Current Password'}
+                    inputProps={{
+                      placeholder: 'input current password',
+                    }}
+                    required={true}
+                    value={null}
+                  />
+                  <AmplifyPasswordField
+                    fieldId={'new-password'}
+                    handleInputChange={onChangeNewPw}
+                    label={'Your New Password'}
+                    inputProps={{
+                      placeholder: 'input new password',
+                    }}
+                    required={true}
+                    value={null}
+                  />
+                  <AmplifyButton handleButtonClick={onSubmit}>
+                    Submit
+                  </AmplifyButton>
+                </>
               )}
-              <AmplifyFormField
-                fieldId={'email'}
-                label={'Your Email'}
-                inputProps={{
-                  placeholder: 'placeholder',
-                }}
-                required={true}
-                value={user?.attributes?.email}
-                disabled={true}
-              />
-              <AmplifyPasswordField
-                fieldId={'curr-password'}
-                handleInputChange={onChangeCurrPw}
-                label={'Your Current Password'}
-                inputProps={{
-                  placeholder: 'input current password',
-                }}
-                required={true}
-                value={null}
-              />
-              <AmplifyPasswordField
-                fieldId={'new-password'}
-                handleInputChange={onChangeNewPw}
-                label={'Your New Password'}
-                inputProps={{
-                  placeholder: 'input new password',
-                }}
-                required={true}
-                value={null}
-              />
-              <AmplifyButton handleButtonClick={onSubmit}>Submit</AmplifyButton>
             </div>
           </div>
         </div>
@@ -194,7 +215,11 @@ const Settings = (props: Props): ReactElement => {
           </div>
         </div>
       </div>
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .socialLoginUpdate {
+          font-size: 1.1rem;
+        }
+      `}</style>
     </>
   );
 };
