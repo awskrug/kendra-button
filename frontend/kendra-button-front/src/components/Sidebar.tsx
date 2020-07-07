@@ -18,11 +18,11 @@ const Sidebar = (props: Props): ReactElement => {
   const { dispatch } = useMainContextImpls();
   const [displayAcc, setDisplayAcc] = useState<boolean>(false);
 
-
-  const sideBarClasses = 'flex-column justify-content-between align-items-stretch align-items-center p-3 bg-primary sidebar'
+  const sideBarClasses =
+    'flex-column justify-content-between align-items-stretch align-items-center p-3 bg-primary sidebar';
 
   const signOut = async (): Promise<void> => {
-    const user = await Auth.signOut();
+    await Auth.signOut();
     setIsLoggedIn(false);
   };
 
@@ -36,16 +36,25 @@ const Sidebar = (props: Props): ReactElement => {
   };
 
   const toggleDisplay = (): void => {
-    setDisplayAcc(!displayAcc)
-  }
+    setDisplayAcc(!displayAcc);
+  };
 
   return (
     <>
-      <div className={`p-2 hamburger-btn ${displayAcc ? `text-white` : `text-dark`}`} onClick={toggleDisplay}>
+      <div
+        className={`p-2 hamburger-btn ${
+          displayAcc ? `text-white` : `text-dark`
+        }`}
+        onClick={toggleDisplay}
+      >
         <FontAwesomeIcon icon={faBars} />
       </div>
 
-      <div className={`sidebar bg-primary overflow-auto ${sideBarClasses} ${displayAcc ? `d-flex fullWidthSidebar` : ``}`}>
+      <div
+        className={`sidebar bg-primary overflow-auto ${sideBarClasses} ${
+          displayAcc ? `d-flex fullWidthSidebar` : ``
+        }`}
+      >
         <div className={`d-flex flex-column`}>
           <div className={`btn-group my-3`}>
             <button type="button" className={`btn btn-danger`}>
@@ -79,22 +88,22 @@ const Sidebar = (props: Props): ReactElement => {
             height: 100vh;
             box-shadow: 2px 0px 5px 0px #848484;
           }
-          .hamburger-btn{
+          .hamburger-btn {
             display: none;
           }
         }
 
-        @media (max-width: 991px){
-          .hamburger-btn{
+        @media (max-width: 991px) {
+          .hamburger-btn {
             display: block;
             position: absolute;
-            top:0;
-            left:0;
+            top: 0;
+            left: 0;
           }
           .sidebar {
             display: none;
           }
-          .fullWidthSidebar{
+          .fullWidthSidebar {
             position: fixed;
             z-index: -1;
             top: 0;
