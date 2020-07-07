@@ -25,6 +25,7 @@ const Search = (props: Props): ReactElement => {
       setError('Please type the keyword to find.');
       return;
     }
+    setError(null);
     setKeywords(inputValue);
     setIsLoading(true);
     const res = await callGraphql({ text: inputValue, site });
