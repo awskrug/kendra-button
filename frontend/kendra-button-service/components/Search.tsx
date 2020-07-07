@@ -12,6 +12,7 @@ const Search = (props: Props): ReactElement => {
   const [keyword, setKeywords] = useState<string>('');
   const [result, setResult] = useState<any>([]);
   const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { site } = props;
 
@@ -20,20 +21,25 @@ const Search = (props: Props): ReactElement => {
   };
 
   const searchHandler = async (): Promise<any> => {
+    if (inputValue.length === 0) {
+      setError('Please type the keyword to find.');
+      return;
+    }
     setKeywords(inputValue);
-    // setInputValue('');
+    setIsLoading(true);
     const res = await callGraphql({ text: inputValue, site });
     if (res.status > 200) {
-      setError(res.message);
+      setError('Query Error: ' + res.message);
     } else {
       setResult(res);
     }
+    setIsLoading(false);
   };
 
   return (
     <>
       <form className={`form-inline mb-4`}>
-        <div className={`col-10`}>
+        <div className={`inputtext`}>
           <input
             type="text"
             className="form-control w-100"
@@ -43,21 +49,32 @@ const Search = (props: Props): ReactElement => {
             onChange={onChangeHandler}
           />
         </div>
-        <div className={`col-2`}>
+        <div className={`searchbtn text-break`}>
           <button
             type="button"
             className={`btn btn-info shadow-sm w-100`}
             onClick={searchHandler}
           >{`Search`}</button>
         </div>
+        <style jsx>{`
+          .inputtext {
+            width: 80%;
+          }
+          .searchbtn {
+            width: 20%;
+          }
+        `}</style>
       </form>
 
       {keyword.length > 0 && result.length > 0 && (
         <SearchResult searchInput={keyword} result={result} />
       )}
+      {isLoading && (
+        <div className={`p-3 text-primary font-weight-bold`}>Loading...</div>
+      )}
       {error && (
         <div className={`p-3 text-danger`}>
-          Query Error: <span className={`font-weight-bold`}>{error}</span>
+          <span className={`font-weight-bold`}>{error}</span>
         </div>
       )}
     </>
