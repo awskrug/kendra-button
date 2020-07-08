@@ -11,15 +11,15 @@
 
   var splittedPath = myPath.split(myName + '?');
   if (splittedPath.length > 1) {
-    console.log('id received', splittedPath[1]);
+    console.log('site received', splittedPath[1]);
 
     var params = splittedPath[1].split('&');
-    var id, target, _src, floating;
+    var site, target, _src, floating;
 
     for (var i = 0; i < params.length; i++) {
       if (!params[i]) continue;
-      if (params[i].indexOf('id=') > -1) {
-        id = params[i].replace('id=', '');
+      if (params[i].indexOf('site=') > -1) {
+        site = params[i].replace('site=', '');
       } else if (params[i].indexOf('target=') > -1) {
         target = params[i].replace('target=', '');
       } else if (params[i].indexOf('src=') > -1) {
@@ -28,32 +28,30 @@
         floating = true;
       }
     }
-    console.log({ id, target });
+    console.log({ site, target });
     console.log({ node });
 
     if (!target) {
       document.body.appendChild(node);
-    } else {
-      document.querySelector(target).replaceWith(node);
-
-      // set Localstorage
-      window.localStorage.setItem('kendra-serviceId', id);
     }
-
-    var params = '?id=' + id + '&domain=' + location.origin;
+    var params = '?site=' + site + '&domain=' + location.origin;
     var src = _src || 'https://service.kendra.fun/' + params;
 
-    var iframenode = document.createElement('iframe');
-    iframenode.setAttribute('id', kendraIframeId);
-    iframenode.setAttribute('src', src);
-    iframenode.setAttribute(
-      'style',
-      'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
-    );
+    if (target) {
+      document.querySelector(target).replaceWith(node);
+      var iframenode = document.createElement('iframe');
+      iframenode.setAttribute('id', kendraIframeId);
+      iframenode.setAttribute('src', src);
+      iframenode.setAttribute(
+        'style',
+        'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
+      );
+      var targetNode = document.getElementById(kendraWrapperId);
+      targetNode.appendChild(iframenode);
 
-    var targetNode = document.getElementById(kendraWrapperId);
-    targetNode.appendChild(iframenode);
-
+      // set Localstorage
+      window.localStorage.setItem('kendra-serviceId', site);
+    }
     if (floating) {
       var iframenode = document.createElement('iframe');
       iframenode.setAttribute('id', kendraIframeId);

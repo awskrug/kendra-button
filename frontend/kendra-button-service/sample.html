@@ -5,12 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://bootswatch.com/4/sandstone/bootstrap.min.css" />
-    <title>Document</title>
-    <!-- <script defer type="text/javascript" src="kendra-nav.js?id=kendra_button&target=#bboom"></script> -->
-    <!-- <script defer type="text/javascript" src="http://kendra-button-service.s3-us-west-2.amazonaws.com/kendra.js?id=kendra_button&target=#bboom&src=https://feature-frontend-service.dcj1fh5deo5r3.amplifyapp.com/"></script> -->
-    <!-- <script defer type="text/javascript" src="http://button.kendra.fun/kendra.js?id=kendra_button&target=#bboom"></script> -->
-    <!-- <script defer type="text/javascript" src="http://button.kendra.fun/kendra.js?id=kendra_button&target=#bboom&floating=true"></script> -->
-    <script defer type="text/javascript" src="http://button.kendra.fun/kendra.js?id=kendra_button&target=#bboom&floating=true"></script>
+    <title>Kendra Button Sample</title>
+    <!-- <script defer type="text/javascript" src="http://kendra-button-service.s3-us-west-2.amazonaws.com/kendra.js?site=kendra_button&target=#target&src=https://feature-frontend-service.dcj1fh5deo5r3.amplifyapp.com/"></script> -->
+    <!-- for prod -->
+    <!-- <script defer type="text/javascript" src="http://button.kendra.fun/kendra.js?site=kendra_button&floating=true"></script> -->
+    <!-- <script defer type="text/javascript" src="http://button.kendra.fun/kendra.js?site=kendra_button&target=#target&floating=true"></script> -->
+    <script defer type="text/javascript" src="http://button.kendra.fun/kendra.js?site=kendra_button&target=#target"></script>
+    <!-- for local -->
+    <!-- <script defer type="text/javascript" src="./kendra.js?site=kendra_button&floating=true"></script> -->
+    <!-- <script defer type="text/javascript" src="./kendra.js?site=kendra_button&target=#target"></script> -->
+    <!-- <script defer type="text/javascript" src="./kendra.js?site=kendra_button&target=#target&floating=true"></script> -->
   </head>
 
   <body>
@@ -28,7 +32,7 @@
         <div class="card-body">
           <h5 class="">DOM inject type</h5>
           <div class="border border-dark overflow-auto rounded">
-            <div id="bboom">kek</div>
+            <div id="target">This is normal content</div>
           </div>
         </div>
       </div>
