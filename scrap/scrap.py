@@ -126,17 +126,43 @@ async def handler(messages: list):
 
 
 def worker(request, context):
+    """Worker lambda function implementation
+
+    최대 10개의 url이 들어옴
+    que에 담긴 수집 url을 이용하여 html일 가져오기
+        - html을 que에 담긴 메타와 함께 kendra에 넣기
+        - page index ddb에 해당 url 수집 완료 처리 및 인덱스ID도 같이 넣기
+        - html에 있는 url을 추출후 수집 정책에 부합한 url만 page index ddb에 추가
+
+    Parameters
+    ----------
+    request: dict, required
+       SQS Message
+       Event doc: https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html
+
+    context: object, required
+        Lambda Context runtime methods and attributes
+        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
+
+    """
     print('run worker')
     print(request)
     # request에서 메세시 파싱
     messages = []
     asyncio.get_event_loop().run_until_complete(handler(messages))
 
-    # 최대 10개의 url이 들어옴
-    # que에 담긴 수집 url을 이용하여 html일 가져오기
-    #     # html을 que에 담긴 메타와 함께 kendra에 넣기
-    #     # page index ddb에 해당 url 수집 완료 처리 및 인덱스ID도 같이 넣기
-    #     # html에 있는 url을 추출후 수집 정책에 부합한 url만 page index ddb에 추가
+
+
+    try:
+        for record in request['Records']:
+            body = json.loads(record["body"])
+            url = body["url"]
+
+    except Exception as e:
+        # Send some context about this error to Lambda Logs
+        print(e)
+        # throw exception, do not handle. Lambda will make message visible again.
+        raise e
 
 
 if __name__ == '__main__':
