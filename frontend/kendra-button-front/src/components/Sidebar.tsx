@@ -42,7 +42,7 @@ const Sidebar = (props: Props): ReactElement => {
   return (
     <>
       <div
-        className={`p-2 hamburger-btn ${
+        className={`p-2 hamburger-btn m-1 shadow-sm rounded ${
           displayAcc ? `text-white` : `text-dark`
         }`}
         onClick={toggleDisplay}
@@ -99,13 +99,14 @@ const Sidebar = (props: Props): ReactElement => {
             position: absolute;
             top: 0;
             left: 0;
+            z-index: 110;
           }
           .sidebar {
             display: none;
           }
           .fullWidthSidebar {
             position: fixed;
-            z-index: -1;
+            z-index: 100;
             top: 0;
             left: 0;
             width: 100vw;
