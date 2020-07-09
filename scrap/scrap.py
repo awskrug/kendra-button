@@ -2,6 +2,7 @@ import asyncio
 import os
 import sys
 import boto3
+import json
 
 try:
     from .page import Page
@@ -151,8 +152,6 @@ def worker(request, context):
     messages = []
     asyncio.get_event_loop().run_until_complete(handler(messages))
 
-
-
     try:
         for record in request['Records']:
             body = json.loads(record["body"])
@@ -169,8 +168,7 @@ if __name__ == '__main__':
     msg = {"url": "https://github.com/pricing", "site": "abcd", "host": "https://github.com/"}
     
     if (len(sys.argv) == 2) and (sys.argv[1].upper() == OPERATOR):
-        # Operator
-        import json
+        # todo: Operator: test-code will be removed.
         with open("event_samples/dynamodb_insert.json", "r") as f:
             events_data = json.load(f)
             
