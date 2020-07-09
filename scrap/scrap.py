@@ -1,5 +1,7 @@
 import asyncio
 import os
+import sys
+import boto3
 
 try:
     from .page import Page
@@ -8,30 +10,80 @@ except Exception:
 
 try:
     from .utils import AsyncCutBrowserSession
+    from .utils import Dict2Obj
 except Exception as e:
     from utils import AsyncCutBrowserSession
-
+    from utils import Dict2Obj
+    
+OPERATOR = "OPERATOR"
 SQS = os.environ.get('SQS', 'kendra-buttons-index-dev')
+
+CLIENT = boto3.client('sqs')
+
+
+def get_queue_url(queue_name):
+    response = CLIENT.get_queue_url(
+        QueueName=queue_name
+    )
+    
+    return response['QueueUrl']
+
+
+def send_to_sqs(queue_url, page):
+    # CLIENT.send_message(QueueUrl=queue_url, MessageBody=page.to_json())
+    print(page.to_json())
 
 
 def operator(request, context):
-    # 들어올 이벤트
-    # page index ddb stream
-    # cloud watch event
-
+    event_list = list()
+    
     print('run operator')
-    print(request)
-    # ddb stream case
-    # 새로 추가된 url만 추출
-    # site 정보 가져오기 정책 및 메타데이터
-    # sqs에 작업 넣기
-
-    # page 삭제시
-    # 삭제된 페이지의 인덱스ID를 이용해 켄드라 색인에서 해당 리소스 삭제 하기
-
-    # cloud watch case
-    # site 정보 가져오기 정책 및 메타데이터 및 entrypoint url
-    # sqs에 작업 넣기
+    
+    req = Dict2Obj(request)
+    if hasattr(req, "Records"):
+        # event data from DynamoDB Stream or SQS
+        for item in req.Records:
+            event_list.append(item)
+    else:
+        # todo: CloudWatch event, not yet implemented
+        raise TypeError("Unsupported event type")
+    
+    for event in event_list:
+        if hasattr(event, "eventSource"):
+            # events from DynamoDB or SQS
+            # Convert event to Page obj.
+            if event.eventSource == "aws:dynamodb":
+                page = Page()
+                if event.eventName == "INSERT":
+                    page.scraped = event.dynamodb.NewImage.scraped.BOOL
+                    page.site = event.dynamodb.NewImage.site.S
+                    page._type = event.dynamodb.NewImage.type.S
+                    page.url = event.dynamodb.NewImage.url.S
+                elif event.eventName == "MODIFY":
+                    page.scraped = event.dynamodb.NewImage.scraped.BOOL
+                    page.site = event.dynamodb.NewImage.site.S
+                    page._type = event.dynamodb.NewImage.type.S
+                    page.url = event.dynamodb.NewImage.url.S
+                elif event.eventName == "DELETED":
+                    # todo: page 삭제시, 삭제된 페이지의 인덱스ID를 이용해 켄드라 색인에서 해당 리소스 삭제 하기
+                    raise NotImplementedError("Not implemented: DynamoDB DELETED event handler/Operator")
+                
+                # todo: site 정보 가져오기 정책 및 메타데이터 (???)
+                send_to_sqs(SQS, page)
+                
+            elif event.eventSource == "aws:sqs":
+                raise NotImplementedError("Not implemented: SQS event handler/Operator")
+                # todo: SQS event handler
+            else:
+                raise TypeError("Unsupported event type. event type: {}".format(str(type(event))))
+        elif hasattr(event, "source"):
+            # events from CloudWatch
+            # cloudwatch case
+            # site 정보 가져오기 정책 및 메타데이터 및 entrypoint url
+            # sqs에 작업 넣기
+            raise NotImplementedError("Not implemented: CloudWatch event handler/Operator")
+        else:
+            raise TypeError("Unsupported event type. event type: {}/Operator".format(str(type(event))))
 
 
 async def get_page(url: str):
@@ -48,6 +100,11 @@ async def get_page(url: str):
 def verify(pettern, url) -> bool:
     return True
 
+####
+# message type
+#   msg['site']
+#   msg['url']
+#   msg['host']   <--- ???
 
 async def handler(messages: list):
     for msg in messages:
@@ -84,4 +141,14 @@ def worker(request, context):
 
 if __name__ == '__main__':
     msg = {"url": "https://github.com/pricing", "site": "abcd", "host": "https://github.com/"}
-    asyncio.get_event_loop().run_until_complete(handler([msg]))
+    
+    if (len(sys.argv) == 2) and (sys.argv[1].upper() == OPERATOR):
+        # Operator
+        import json
+        with open("event_samples/dynamodb_insert.json", "r") as f:
+            events_data = json.load(f)
+            
+        operator(request=events_data, context=None)
+    else:
+        # Worker
+        asyncio.get_event_loop().run_until_complete(handler([msg]))

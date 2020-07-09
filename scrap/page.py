@@ -1,4 +1,5 @@
 import os
+import json
 
 from pynamodb.attributes import UnicodeAttribute, BooleanAttribute
 from pynamodb.models import Model
@@ -16,6 +17,15 @@ class Page(Model):
     url = UnicodeAttribute(range_key=True)
     _type = UnicodeAttribute(attr_name="type")
     scraped = BooleanAttribute(default=False)
+
+    def to_json(self):
+        return json.dumps(
+            {
+                "site": self.site,
+                "url": self.url,
+                "type": self._type,
+                "scraped": self.scraped}
+        )
 
 
 if __name__ == '__main__':
