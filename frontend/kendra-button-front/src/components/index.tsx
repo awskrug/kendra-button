@@ -13,3 +13,4 @@ export * from './Settings';
 export * from './SignUp';
 export * from './SignIn';
 export * from './Confirmation';
+export * from './Title';

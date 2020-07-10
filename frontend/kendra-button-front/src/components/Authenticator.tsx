@@ -1,5 +1,5 @@
 import { Auth, Hub } from 'aws-amplify';
-import { Confirmation, SignIn, SignUp } from '../components';
+import { Confirmation, SignIn, SignUp, Title } from '../components';
 import {
   Dispatch,
   ReactElement,
@@ -87,21 +87,23 @@ const Authenticator = (props: Props): ReactElement => {
     <div
       className={`fullscreen d-flex flex-column justify-content-center align-items-center`}
     >
-      <div className={'kendra-button text-center m-4 text-primary'}>
-        KENDRA BUTTON
-      </div>
       {screen === AuthState.SignedIn ? (
         children
       ) : screen === AuthState.SignUp ? (
         <>
+          <Title />
           <SignUp setScreen={setScreen} setUsername={setUsername} />
         </>
       ) : screen === AuthState.ConfirmSignUp ? (
         <>
+          <Title />
           <Confirmation setScreen={setScreen} username={username} />
         </>
       ) : (
-        <SignIn setScreen={setScreen} setUsername={setUsername} />
+        <>
+          <Title />
+          <SignIn setScreen={setScreen} setUsername={setUsername} />
+        </>
       )}
       <style global jsx>{`
         .fullscreen {
