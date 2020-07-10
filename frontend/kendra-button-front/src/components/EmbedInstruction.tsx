@@ -1,4 +1,4 @@
-import { ReactElement, forwardRef, useRef, useState } from 'react';
+import { ReactElement, useRef, useState } from 'react';
 import { faCheck, faClipboard } from '@fortawesome/free-solid-svg-icons';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

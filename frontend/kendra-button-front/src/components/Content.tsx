@@ -54,7 +54,7 @@ const Content = (props: Props): ReactElement => {
           .content {
             width: 100vw;
             height: 100vh;
-            margin-top: 5rem;
+            padding-top: 3rem;
           }
           .pageloader {
             width: 100vw;

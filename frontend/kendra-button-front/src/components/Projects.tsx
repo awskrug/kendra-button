@@ -100,7 +100,7 @@ const Projects = (props: Props): ReactElement => {
           box-shadow: 2px 2px 5px 0px grey;
         }
         .kendra-site-list {
-          max-height: 90vh;
+          max-height: 65vh;
         }
       `}</style>
     </>
