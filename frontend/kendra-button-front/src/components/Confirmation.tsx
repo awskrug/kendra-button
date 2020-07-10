@@ -71,7 +71,7 @@ const Confirmation = (props: Props): ReactElement => {
   };
   return (
     <>
-      <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
+      <div className="shadow col-sm-6 h-75 overflow-auto p-3 justify-content-between">
         <div></div>
         <div className={`confirmTitle`}>Confirm Sign Up </div>
         <p className={`text-secondary small`}>
@@ -116,7 +116,8 @@ const Confirmation = (props: Props): ReactElement => {
       </div>
       <style global jsx>{`
         .confirmTitle {
-          font-size: 1.8rem;
+          font-size: 1.5rem;
+          font-family: 'Pacifico', cursive;
         }
         .backToSignIn {
           color: #ff9900;

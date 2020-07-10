@@ -1,14 +1,23 @@
-import { AmplifyButton, AmplifyFormField, AmplifyPasswordField } from '@aws-amplify/ui-react';
-import { useRef, useState, Dispatch, SetStateAction, ReactElement } from 'react'
+import {
+  AmplifyButton,
+  AmplifyFormField,
+  AmplifyPasswordField,
+} from '@aws-amplify/ui-react';
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useRef,
+  useState,
+} from 'react';
+
 import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
   setUsername?: Dispatch<SetStateAction<string>>;
-
 }
-
 
 const SignIn = (props: Props): ReactElement => {
   const { setScreen, setUsername } = props;
@@ -18,7 +27,6 @@ const SignIn = (props: Props): ReactElement => {
   const [emailErr, setEmailErr] = useState<string>('');
   const [passwordErr, setPasswordErr] = useState<string>('');
   const [signinAccErr, setSigninAccErr] = useState<string>('');
-
 
   const onEmailChange = (e): void => {
     email.current = e.target.value;
@@ -30,19 +38,16 @@ const SignIn = (props: Props): ReactElement => {
 
   const onSubmit = async (e): Promise<void> => {
     if (email.current.length === 0) {
-      setEmailErr('Required')
+      setEmailErr('Required');
       return;
     }
     if (password.current.length === 0) {
-      setPasswordErr('No password provided')
+      setPasswordErr('No password provided');
       return;
     }
 
     try {
-      const res = await Auth.signIn(
-        email.current,
-        password.current
-      );
+      const res = await Auth.signIn(email.current, password.current);
 
       if (res) {
         setEmailErr('');
@@ -54,10 +59,10 @@ const SignIn = (props: Props): ReactElement => {
       setPasswordErr('');
 
       if (e.code === 'UserNotConfirmedException') {
-        setSigninAccErr('Please confirm your email before sign in.')
-        setconfirmRequired(true)
+        setSigninAccErr('Please confirm your email before sign in.');
+        setconfirmRequired(true);
       } else {
-        setSigninAccErr(e.message)
+        setSigninAccErr(e.message);
       }
     }
     return;
@@ -65,13 +70,13 @@ const SignIn = (props: Props): ReactElement => {
 
   const toSignUp = (): void => {
     setScreen(AuthState.SignUp);
+    // setScreen(AuthState.ConfirmSignUp);
   };
 
   const toConfirm = (): void => {
-    setUsername(email.current)
+    setUsername(email.current);
     setScreen(AuthState.ConfirmSignUp);
   };
-
 
   const toSignInGoogle = async (): Promise<void> => {
     try {
@@ -88,21 +93,22 @@ const SignIn = (props: Props): ReactElement => {
     } catch (e) {
       console.log('[error in facebook]', e);
     }
-
   };
 
   return (
     <>
-      <div className={`card col-sm-6 h-75  overflow-auto p-3 justify-content-between`}>
+      <div className={`shadow col-sm-6 h-75 overflow-auto p-3`}>
         <div></div>
-        <div className={`signUpTitle mb-3`}>Sign in to your account </div>
+        <div className={`signUpTitle mb-3`}>Sign In </div>
         {signinAccErr && (
           <div className="alert alert-dismissible alert-warning">
             <div className="mb-0">{signinAccErr}</div>
           </div>
         )}
         {confirmRequired && (
-          <div className="toConfirm btn mb-2" onClick={toConfirm}>Click here to confirm</div>
+          <div className="toConfirm btn mb-2" onClick={toConfirm}>
+            Click here to confirm
+          </div>
         )}
 
         <AmplifyFormField
@@ -136,41 +142,44 @@ const SignIn = (props: Props): ReactElement => {
             <div className="mb-0">{passwordErr}</div>
           </div>
         )}
-        <AmplifyButton
-          handleButtonClick={onSubmit}
-        >Sign In</AmplifyButton>
-        <div className={`mt-3`}> Don't have an account?
+        <AmplifyButton handleButtonClick={onSubmit}>Sign In</AmplifyButton>
+        <div className={`row justify-content-between`}>
+          <div
+            className={`socialLoginBtns mt-1 col-sm-12 col-md-6 col-xl-4`}
+            onClick={toSignInGoogle}
+          >
+            <img src="/google.png" className="w-100" role="button" />
+          </div>
+          <div
+            className={`socialLoginBtns mt-1 col-sm-12 col-md-6 col-xl-4`}
+            onClick={toSignInFacebook}
+          >
+            <img src="/facebook.png" className="w-100" role="button" />
+          </div>
+        </div>
+        <div className={`mt-3`}>
+          Don't have an account?
           <span className={`toSignUp btn`} onClick={toSignUp}>
             Sign Up
-            </span>
-          <div>
-            <p className={`my-3 text-center`}> or </p>
-            <div className={`socialLoginBtns d-flex m-auto mt-1 col-sm-12 col-md-6`} onClick={toSignInGoogle}>
-              <img src="/google.png" className="w-100" />
-            </div>
-            <div className={`socialLoginBtns facebookLogin m-auto mt-1 col-sm-12 col-md-6`} onClick={toSignInFacebook}>
-              <img src="/facebook.png" className="w-100" />
-            </div>
-          </div>
+          </span>
         </div>
         <div></div>
       </div>
       <style global jsx>{`
-      .signUpTitle{
-        font-size: 1.8rem;
-      }
-      .toSignUp, .toConfirm{
-        color: #ff9900;
-        font-size: 0.9rem;
-      }
-      .socialLoginBtns{
-        cursor: pointer;
-      }
+        .signUpTitle {
+          font-size: 1.5rem;
+          font-family: 'Pacifico', cursive;
+        }
+        .toSignUp,
+        .toConfirm {
+          color: #ff9900;
+          font-size: 1rem;
+        }
+        .socialLoginBtns {
+        }
       `}</style>
     </>
-  )
+  );
+};
 
-
-}
-
-export { SignIn }
+export { SignIn };
