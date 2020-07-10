@@ -16,7 +16,9 @@ functions:
     handler: wsgi_handler.handler
     events:
       - http: ANY /
+        private: true
       - http: 'ANY {proxy+}'
+        private: true
 
 custom:
   wsgi:

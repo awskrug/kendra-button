@@ -11,6 +11,8 @@ custom:
   dynamodb:
     siteDB: kendra-buttons-site-${self:custom.stage}
     pageDB: kendra-buttons-index-${self:custom.stage}
+  smm:
+    kendraApiKey: ${self:custom.stage}KendraQueryApiKey
   sqs:
     pageQueue: kendra-buttons-page-que-${self:custom.stage}
   pythonRequirements:
@@ -171,3 +173,8 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "${self:custom.sqs.pageQueue}"
+    KendraAPIKey:
+      Type: AWS::SecretsManager::Secret
+      Properties:
+        Description: kendra query apig api key
+        Name: "${self:custom.smm.kendraApiKey}"
