@@ -15,10 +15,14 @@ functions:
   queryAPI:
     handler: wsgi_handler.handler
     events:
-      - http: ANY /
-        private: true
-      - http: 'ANY {proxy+}'
-        private: true
+      - http:
+          method: ANY
+          path: /
+          private: true
+      - http:
+          method: ANY
+          path: "{proxy+}"
+          private: true
 
 custom:
   wsgi:
