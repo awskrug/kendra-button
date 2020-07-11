@@ -17,7 +17,10 @@ custom:
     operator: scrap-${self:custom.stage}-operator
     worker: scrap-${self:custom.stage}-worker
   pythonRequirements:
-    layer: true
+    dockerizePip: non-linux
+    layer:
+      compatibleRuntimes:
+        - python3.8
   userPoolAuthorizer:
     type: COGNITO_USER_POOLS
     authorizerId:
@@ -50,6 +53,7 @@ provider:
 package:
   exclude:
     - .venv/**
+    - venv
     - node_modules/**
   include:
     - bin/**
