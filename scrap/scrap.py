@@ -1,5 +1,5 @@
-import asyncio
 import os
+import asyncio
 import sys
 import boto3
 import json
@@ -17,12 +17,21 @@ except Exception as e:
     from utils import Dict2Obj
     
 OPERATOR = "OPERATOR"
-SQS = os.environ.get('SQS', 'kendra-buttons-index-dev')
+RUNTIME_ENV = os.environ.get('RUNTIME_ENV', 'lambda')
+SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
+SQS_URL = None
 
 CLIENT = boto3.client('sqs')
 
 
+def is_local_env():
+    return RUNTIME_ENV.lower() == 'local'
+
+
 def get_queue_url(queue_name):
+    if is_local_env():   # temporary
+        return None
+
     response = CLIENT.get_queue_url(
         QueueName=queue_name
     )
@@ -30,16 +39,24 @@ def get_queue_url(queue_name):
     return response['QueueUrl']
 
 
-def send_to_sqs(queue_url, page):
-    # CLIENT.send_message(QueueUrl=queue_url, MessageBody=page.to_json())
-    print(page.to_json())
+if SQS_URL is None:
+    SQS_URL = get_queue_url(SQS)
+    
+
+def send_to_sqs(page):
+    if is_local_env():  # temporary
+        print(page.to_json())
+        return
+
+    resp = CLIENT.send_message(QueueUrl=SQS_URL, MessageBody=page.to_json())
+    print('Operator: sent a message to queue, {}. Return: {}.'.format(SQS_URL, str(resp)))
 
 
 def operator(request, context):
     event_list = list()
-    
-    print('run operator')
-    
+
+    print('Operator started.')
+    print(request)
     req = Dict2Obj(request)
     if hasattr(req, "Records"):
         # event data from DynamoDB Stream or SQS
@@ -56,21 +73,27 @@ def operator(request, context):
             if event.eventSource == "aws:dynamodb":
                 page = Page()
                 if event.eventName == "INSERT":
-                    page.scraped = event.dynamodb.NewImage.scraped.BOOL
-                    page.site = event.dynamodb.NewImage.site.S
-                    page._type = event.dynamodb.NewImage.type.S
-                    page.url = event.dynamodb.NewImage.url.S
+                    try:
+                        page.scraped = event.dynamodb.NewImage.scraped.BOOL
+                        page.site = event.dynamodb.NewImage.site.S
+                        page._type = event.dynamodb.NewImage.type.S
+                        page.url = event.dynamodb.NewImage.url.S
+                    except AttributeError:
+                        raise TypeError("Unsupported event scheme. event: {}".format(str(event)))
                 elif event.eventName == "MODIFY":
-                    page.scraped = event.dynamodb.NewImage.scraped.BOOL
-                    page.site = event.dynamodb.NewImage.site.S
-                    page._type = event.dynamodb.NewImage.type.S
-                    page.url = event.dynamodb.NewImage.url.S
+                    try:
+                        page.scraped = event.dynamodb.NewImage.scraped.BOOL
+                        page.site = event.dynamodb.NewImage.site.S
+                        page._type = event.dynamodb.NewImage.type.S
+                        page.url = event.dynamodb.NewImage.url.S
+                    except AttributeError:
+                        raise TypeError("Unsupported event scheme. event: {}".format(str(event)))
                 elif event.eventName == "DELETED":
                     # todo: page 삭제시, 삭제된 페이지의 인덱스ID를 이용해 켄드라 색인에서 해당 리소스 삭제 하기
                     raise NotImplementedError("Not implemented: DynamoDB DELETED event handler/Operator")
                 
                 # todo: site 정보 가져오기 정책 및 메타데이터 (???)
-                send_to_sqs(SQS, page)
+                send_to_sqs(page)
                 
             elif event.eventSource == "aws:sqs":
                 raise NotImplementedError("Not implemented: SQS event handler/Operator")
@@ -168,7 +191,7 @@ if __name__ == '__main__':
     msg = {"url": "https://github.com/pricing", "site": "abcd", "host": "https://github.com/"}
     
     if (len(sys.argv) == 2) and (sys.argv[1].upper() == OPERATOR):
-        # todo: Operator: test-code will be removed.
+        # todo: for testing. it should be removed.
         with open("event_samples/dynamodb_insert.json", "r") as f:
             events_data = json.load(f)
             
