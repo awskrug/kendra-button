@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { callGraphql } from '../utils';
 import { search } from '../graphql/queries';
 
@@ -33,7 +34,8 @@ const SearchResult = (props: Props) => {
 
   return (
     <div className="container">
-      <p className={`lead`}>Seach result for "{searchInput}"</p>
+      {result.length > 0 ? <p className={`lead`}>Search result for "{searchInput}"</p>
+        : <p className={`text-danger`}>This service is currently unavailable.</p>}
       {result.map((item, idx) => {
 
         if (idx <= 5) {
