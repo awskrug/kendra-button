@@ -13,8 +13,14 @@ custom:
     pageDB: kendra-buttons-index-${self:custom.stage}
   sqs:
     pageQueue: kendra-buttons-page-que-${self:custom.stage}
+  scrap:
+    operator: scrap-${self:custom.stage}-operator
+    worker: scrap-${self:custom.stage}-worker
   pythonRequirements:
-    layer: true
+    dockerizePip: non-linux
+    layer:
+      compatibleRuntimes:
+        - python3.8
   userPoolAuthorizer:
     type: COGNITO_USER_POOLS
     authorizerId:
@@ -47,13 +53,14 @@ provider:
 package:
   exclude:
     - .venv/**
+    - venv
     - node_modules/**
   include:
     - bin/**
     - manage.py
     - parser/**
     - page.py
-    - scrap.py
+    - scraper.py
     - kendra.py
     - kendra_site.py
     - schema.py
@@ -83,8 +90,9 @@ functions:
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
   operator:
+    name: ${self:custom.scrap.operator}
     memorySize: 128
-    handler: scrap.operator
+    handler: scraper.operator
     timeout: 300
     events:
       - stream:
@@ -95,8 +103,10 @@ functions:
               - StreamArn
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
+    package: {}
   worker:
-    handler: scrap.worker
+    name: ${self:custom.scrap.worker}
+    handler: scraper.worker
     memorySize: 512
     timeout: 30
     reservedConcurrency: 2
@@ -108,6 +118,7 @@ functions:
               - Arn
     layers:
       - { Ref: PythonRequirementsLambdaLayer }
+    package: {}
 plugins:
   - serverless-python-requirements
   - serverless-wsgi
@@ -135,11 +146,11 @@ resources:
           - 
             AttributeName: "user"
             KeyType: "HASH"
-          - 
+          -
             AttributeName: "site"
             KeyType: "RANGE"
         TableName: "${self:custom.dynamodb.siteDB}"
-    PageIndexTable: 
+    PageIndexTable:
       Type: AWS::DynamoDB::Table
       Properties:
         BillingMode: PAY_PER_REQUEST

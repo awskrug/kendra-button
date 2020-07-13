@@ -1,0 +1,54 @@
+{
+  "Records": [
+    {
+      "awsRegion": "us-west-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1593680617.0,
+        "Keys": {
+          "site": {
+            "S": "abcd"
+          },
+          "url": {
+            "S": "http://www.mysnu.org/m/community/newtechnology.php?search_order=&search_part=&c_cate1=&mode=v&idx=10586&thisPageNum="
+          }
+        },
+        "NewImage": {
+          "scraped": {
+            "BOOL": true
+          },
+          "site": {
+            "S": "abcd"
+          },
+          "type": {
+            "S": "html"
+          },
+          "url": {
+            "S": "http://www.mysnu.org/m/community/newtechnology.php?search_order=&search_part=&c_cate1=&mode=v&idx=10586&thisPageNum="
+          }
+        },
+        "OldImage": {
+          "scraped": {
+            "BOOL": false
+          },
+          "site": {
+            "S": "abcd"
+          },
+          "type": {
+            "S": "html"
+          },
+          "url": {
+            "S": "http://www.mysnu.org/m/community/newtechnology.php?search_order=&search_part=&c_cate1=&mode=v&idx=10586&thisPageNum="
+          }
+        },
+        "SequenceNumber": "57884200000000021902036729",
+        "SizeBytes": 413,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventID": "8e406dce8219588140acbcf9b4ca2b03",
+      "eventName": "MODIFY",
+      "eventSource": "aws:dynamodb",
+      "eventSourceARN": "arn:aws:dynamodb:us-west-2:213888382832:table/kendra-buttons-index-dev/stream/2020-06-26T13:25:00.778",
+      "eventVersion": "1.1"
+    }
+  ]
+}

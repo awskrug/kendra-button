@@ -1,6 +1,5 @@
 import os
 import random
-from pprint import pprint
 import graphene
 from graphene_pynamodb import PynamoObjectType
 from pynamodb.attributes import UnicodeAttribute
