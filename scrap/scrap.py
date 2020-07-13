@@ -1,8 +1,9 @@
-import os
 import asyncio
-import sys
-import boto3
 import json
+import os
+import sys
+
+import boto3
 
 try:
     from .page import Page
@@ -15,9 +16,9 @@ try:
 except Exception as e:
     from utils import AsyncCutBrowserSession
     from utils import Dict2Obj
-    
+
 OPERATOR = "OPERATOR"
-RUNTIME_ENV = os.environ.get('RUNTIME_ENV', 'lambda')
+RUNTIME_ENV = os.environ.get('AWS_EXECUTION_ENV')
 SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
 SQS_URL = None
 
@@ -25,23 +26,23 @@ CLIENT = boto3.client('sqs')
 
 
 def is_local_env():
-    return RUNTIME_ENV.lower() == 'local'
+    return not RUNTIME_ENV
 
 
 def get_queue_url(queue_name):
-    if is_local_env():   # temporary
+    if is_local_env():  # temporary
         return None
 
     response = CLIENT.get_queue_url(
         QueueName=queue_name
     )
-    
+
     return response['QueueUrl']
 
 
 if SQS_URL is None:
     SQS_URL = get_queue_url(SQS)
-    
+
 
 def send_to_sqs(page):
     if is_local_env():  # temporary
@@ -65,7 +66,7 @@ def operator(request, context):
     else:
         # todo: CloudWatch event, not yet implemented
         raise TypeError("Unsupported event type")
-    
+
     for event in event_list:
         if hasattr(event, "eventSource"):
             # events from DynamoDB or SQS
@@ -91,10 +92,10 @@ def operator(request, context):
                 elif event.eventName == "DELETED":
                     # todo: page 삭제시, 삭제된 페이지의 인덱스ID를 이용해 켄드라 색인에서 해당 리소스 삭제 하기
                     raise NotImplementedError("Not implemented: DynamoDB DELETED event handler/Operator")
-                
+
                 # todo: site 정보 가져오기 정책 및 메타데이터 (???)
                 send_to_sqs(page)
-                
+
             elif event.eventSource == "aws:sqs":
                 raise NotImplementedError("Not implemented: SQS event handler/Operator")
                 # todo: SQS event handler
@@ -123,6 +124,7 @@ async def get_page(url: str):
 
 def verify(pettern, url) -> bool:
     return True
+
 
 ####
 # message type
@@ -189,12 +191,12 @@ def worker(request, context):
 
 if __name__ == '__main__':
     msg = {"url": "https://github.com/pricing", "site": "abcd", "host": "https://github.com/"}
-    
+
     if (len(sys.argv) == 2) and (sys.argv[1].upper() == OPERATOR):
         # todo: for testing. it should be removed.
         with open("event_samples/dynamodb_insert.json", "r") as f:
             events_data = json.load(f)
-            
+
         operator(request=events_data, context=None)
     else:
         # Worker
