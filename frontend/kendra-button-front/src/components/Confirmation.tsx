@@ -74,13 +74,13 @@ const Confirmation = (props: Props): ReactElement => {
       <div className="shadow col-sm-6 h-75 overflow-auto p-3 justify-content-between">
         <div></div>
         <div className={`confirmTitle`}>Confirm Sign Up </div>
-        <p className={`text-secondary small`}>
+        <p className={`text-secondary small mt-4`}>
           We've sent you a confirmation code to your email.
         </p>
         <div>
           {signupAccSuccess && (
             <div
-              className="alert alert-dismissible alert-success signUpSuccess"
+              className="alert alert-dismissible alert-success signUpSuccess text-center px-0"
               onClick={toSignIn}
             >
               <p className="mb-0">{signupAccSuccess}</p>
