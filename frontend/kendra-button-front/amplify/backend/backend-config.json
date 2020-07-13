@@ -3,10 +3,6 @@
         "amplifyhosting": {
             "service": "amplifyhosting",
             "type": "cicd"
-        },
-        "S3AndCloudFront": {
-            "service": "S3AndCloudFront",
-            "providerPlugin": "awscloudformation"
         }
     },
     "auth": {
