@@ -60,7 +60,7 @@ package:
     - manage.py
     - parser/**
     - page.py
-    - scrap.py
+    - scraper.py
     - kendra.py
     - kendra_site.py
     - schema.py
@@ -92,7 +92,7 @@ functions:
   operator:
     name: ${self:custom.scrap.operator}
     memorySize: 128
-    handler: scrap.operator
+    handler: scraper.operator
     timeout: 300
     events:
       - stream:
@@ -106,7 +106,7 @@ functions:
     package: {}
   worker:
     name: ${self:custom.scrap.worker}
-    handler: scrap.worker
+    handler: scraper.worker
     memorySize: 512
     timeout: 30
     reservedConcurrency: 2
