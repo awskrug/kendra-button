@@ -91,7 +91,7 @@ const SignUp = (props: Props): ReactElement => {
 
   return (
     <>
-      <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
+      <div className="shadow col-sm-6 h-75 overflow-auto p-3 justify-content-between">
         <div></div>
         <div className={`signUpTitle mb-2`}>Create a new account </div>
         {signupAccErr && (
@@ -163,7 +163,8 @@ const SignUp = (props: Props): ReactElement => {
       </div>
       <style global jsx>{`
         .signUpTitle {
-          font-size: 1.8rem;
+          font-size: 1.5rem;
+          font-family: 'Pacifico', cursive;
         }
         .backToSignIn {
           color: #93c54c;

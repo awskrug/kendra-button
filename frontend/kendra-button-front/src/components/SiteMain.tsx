@@ -23,6 +23,7 @@ const SiteMain = (props: Props): ReactElement => {
 
   const callEmbed = (): void => {
     setModalConfig({
+      positionTop: '10%',
       type: 'plain',
       display: true,
       title: 'Embed kendra-button to your website',

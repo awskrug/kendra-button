@@ -22,14 +22,24 @@ const PageLoader = (props: Props) => {
       </div>
       <style jsx>{`
         .pageloader {
-          width: ${width || '70vw'};
-          margin-left: 30vw;
           height: ${height || '100vh'};
           position: absolute;
           top: 0;
           left: 0;
           z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
           opacity: 0.5;
+        }
+        @media (min-width: 992px) {
+          .pageloader {
+            width: ${width || '70vw'};
+            margin-left: 30vw;
+          }
+        }
+        @media (max-width: 991px) {
+          .pageloader {
+            width: ${width || '100vw'};
+            margin-left: 0;
+          }
         }
       `}</style>
     </>

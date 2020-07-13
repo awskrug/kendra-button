@@ -1,3 +1,5 @@
+import { Auth, Hub } from 'aws-amplify';
+import { Confirmation, SignIn, SignUp, Title } from '../components';
 import {
   Dispatch,
   ReactElement,
@@ -7,10 +9,7 @@ import {
   useState,
 } from 'react';
 
-import { Auth, Hub } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
-
-import { SignUp, SignIn, Confirmation } from '../components';
 import { useRouter } from 'next/router';
 
 interface Props {
@@ -42,29 +41,27 @@ const Authenticator = (props: Props): ReactElement => {
     }
   };
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    console.log('isLoggedIn? ', isLoggedIn)
+    console.log('isLoggedIn? ', isLoggedIn);
     if (!isLoggedIn) {
-      setScreen(AuthState.SignIn)
+      setScreen(AuthState.SignIn);
     }
-
-  }, [isLoggedIn])
-
+  }, [isLoggedIn]);
 
   useEffect(() => {
-
-    const query = router.asPath
-    const errorDescription = query || ''
-    if (errorDescription.includes('attributes+required')
-      && errorDescription.includes('email')) {
-      alert('Please check the email address on your Facebook account.')
-      setScreen(AuthState.SignUp)
+    const query = router.asPath;
+    const errorDescription = query || '';
+    if (
+      errorDescription.includes('attributes+required') &&
+      errorDescription.includes('email')
+    ) {
+      alert('Please check the email address on your Facebook account.');
+      setScreen(AuthState.SignUp);
     } else {
       checkUser(false);
     }
-
 
     // intermittently failure
     // issue that describes same symptoms: https://github.com/aws-amplify/amplify-js/issues/6155#issue-644662860
@@ -86,27 +83,39 @@ const Authenticator = (props: Props): ReactElement => {
     });
   }, []);
 
-
-  const bgClass = screen === AuthState.SignIn || screen === AuthState.SignUp ? `bg-dark` : ``;
   return (
     <div
-      className={`fullscreen ${bgClass} d-flex flex-column justify-content-center align-items-center`}
+      className={`fullscreen d-flex flex-column justify-content-center align-items-center`}
     >
       {screen === AuthState.SignedIn ? (
         children
       ) : screen === AuthState.SignUp ? (
-        <> <SignUp setScreen={setScreen} setUsername={setUsername} /> </>
+        <>
+          <Title />
+          <SignUp setScreen={setScreen} setUsername={setUsername} />
+        </>
       ) : screen === AuthState.ConfirmSignUp ? (
-        <> <Confirmation setScreen={setScreen} username={username} /> </>
+        <>
+          <Title />
+          <Confirmation setScreen={setScreen} username={username} />
+        </>
       ) : (
-              <SignIn setScreen={setScreen} setUsername={setUsername} />
-            )}
+        <>
+          <Title />
+          <SignIn setScreen={setScreen} setUsername={setUsername} />
+        </>
+      )}
       <style global jsx>{`
-          .fullscreen {
-            height: 100vh;
-            width: 100vw;
-          }
-        `}</style>
+        .fullscreen {
+          height: 100vh;
+          width: 100vw;
+        }
+
+        .kendra-button {
+          font-family: 'Orbitron', sans-serif;
+          font-size: 3rem;
+        }
+      `}</style>
     </div>
   );
 };
