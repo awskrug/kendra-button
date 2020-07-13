@@ -1,0 +1,148 @@
+{
+  "Records": [
+    {
+      "awsRegion": "us-west-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1593680666.0,
+        "Keys": {
+          "site": {
+            "S": "abcd"
+          },
+          "url": {
+            "S": "https://socialimpact.github.com/"
+          }
+        },
+        "NewImage": {
+          "scraped": {
+            "BOOL": false
+          },
+          "site": {
+            "S": "abcd"
+          },
+          "type": {
+            "S": "html"
+          },
+          "url": {
+            "S": "https://socialimpact.github.com/"
+          }
+        },
+        "SequenceNumber": "57886800000000021902072210",
+        "SizeBytes": 102,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventID": "56333d406fabac510f2aa03cc6e053f0",
+      "eventName": "INSERT",
+      "eventSource": "aws:dynamodb",
+      "eventSourceARN": "arn:aws:dynamodb:us-west-2:213888382832:table/kendra-buttons-index-dev/stream/2020-06-26T13:25:00.778",
+      "eventVersion": "1.1"
+    },
+    {
+      "awsRegion": "us-west-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1593680666.0,
+        "Keys": {
+          "site": {
+            "S": "abcd"
+          },
+          "url": {
+            "S": "https://enterprise.github.com/contact?ref_page=/pricing&ref_cta=Contact%20Sales&ref_loc=pricing%20comparison"
+          }
+        },
+        "NewImage": {
+          "scraped": {
+            "BOOL": false
+          },
+          "site": {
+            "S": "abcd"
+          },
+          "type": {
+            "S": "html"
+          },
+          "url": {
+            "S": "https://enterprise.github.com/contact?ref_page=/pricing&ref_cta=Contact%20Sales&ref_loc=pricing%20comparison"
+          }
+        },
+        "SequenceNumber": "57886900000000021902072211",
+        "SizeBytes": 254,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventID": "da7d75ec750091347d5924040ab6df24",
+      "eventName": "INSERT",
+      "eventSource": "aws:dynamodb",
+      "eventSourceARN": "arn:aws:dynamodb:us-west-2:213888382832:table/kendra-buttons-index-dev/stream/2020-06-26T13:25:00.778",
+      "eventVersion": "1.1"
+    },
+    {
+      "awsRegion": "us-west-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1593680666.0,
+        "Keys": {
+          "site": {
+            "S": "abcd"
+          },
+          "url": {
+            "S": "https://services.github.com/"
+          }
+        },
+        "NewImage": {
+          "scraped": {
+            "BOOL": false
+          },
+          "site": {
+            "S": "abcd"
+          },
+          "type": {
+            "S": "html"
+          },
+          "url": {
+            "S": "https://services.github.com/"
+          }
+        },
+        "SequenceNumber": "57887000000000021902072212",
+        "SizeBytes": 94,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventID": "47c2284f806f5f620a2dd7909d3041e2",
+      "eventName": "INSERT",
+      "eventSource": "aws:dynamodb",
+      "eventSourceARN": "arn:aws:dynamodb:us-west-2:213888382832:table/kendra-buttons-index-dev/stream/2020-06-26T13:25:00.778",
+      "eventVersion": "1.1"
+    },
+    {
+      "awsRegion": "us-west-2",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1593680666.0,
+        "Keys": {
+          "site": {
+            "S": "abcd"
+          },
+          "url": {
+            "S": "https://github.com/github"
+          }
+        },
+        "NewImage": {
+          "scraped": {
+            "BOOL": false
+          },
+          "site": {
+            "S": "abcd"
+          },
+          "type": {
+            "S": "html"
+          },
+          "url": {
+            "S": "https://github.com/github"
+          }
+        },
+        "SequenceNumber": "57887100000000021902072213",
+        "SizeBytes": 88,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventID": "d9aee9a311fda91d5f2537eb577fc6cd",
+      "eventName": "INSERT",
+      "eventSource": "aws:dynamodb",
+      "eventSourceARN": "arn:aws:dynamodb:us-west-2:213888382832:table/kendra-buttons-index-dev/stream/2020-06-26T13:25:00.778",
+      "eventVersion": "1.1"
+    }
+  ]
+}
