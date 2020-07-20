@@ -6,20 +6,20 @@ import { useState } from 'react';
 
 const oauthConfig = awsconfig.oauth
   ? {
-    ...awsconfig.oauth,
-    redirectSignIn:
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000/'
-        : awsconfig.oauth.redirectSignIn
-          .split(',')
-          .filter((url) => !url.includes('localhost'))[0],
-    redirectSignOut:
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000/'
-        : awsconfig.oauth.redirectSignOut
-          .split(',')
-          .filter((url) => !url.includes('localhost'))[0],
-  }
+      ...awsconfig.oauth,
+      redirectSignIn:
+        process.env.NODE_ENV === 'development'
+          ? 'http://localhost:3000/'
+          : awsconfig.oauth.redirectSignIn
+              .split(',')
+              .filter((url) => !url.includes('localhost'))[0],
+      redirectSignOut:
+        process.env.NODE_ENV === 'development'
+          ? 'http://localhost:3000/'
+          : awsconfig.oauth.redirectSignOut
+              .split(',')
+              .filter((url) => !url.includes('localhost'))[0],
+    }
   : {};
 const url =
   'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/graphql';
@@ -34,16 +34,24 @@ Amplify.configure({
   },
 });
 
-const Page = () => {
+interface Props {
+  code?: string;
+  state?: string;
+}
+const Page = (props: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  console.log({ isLoggedIn });
-
+  const isSignInInProcess = !!props.code && !!props.state;
 
   return (
     <>
-      <Authenticator setUser={setUser} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} >
+      <Authenticator
+        setUser={setUser}
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        isSignInInProcess={isSignInInProcess}
+      >
         <>
           <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
           <Content user={user} setIsLoggedIn={setIsLoggedIn} />
@@ -51,6 +59,10 @@ const Page = () => {
       </Authenticator>
     </>
   );
+};
+Page.getInitialProps = async (props) => {
+  const { code, state } = props.query || {};
+  return { code, state };
 };
 
 export default Page;
