@@ -42,15 +42,12 @@ const Page = (props: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
 
-  const isSignInInProcess = !!props.code && !!props.state;
-
   return (
     <>
       <Authenticator
         setUser={setUser}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
-        isSignInInProcess={isSignInInProcess}
       >
         <>
           <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
@@ -59,10 +56,6 @@ const Page = (props: Props) => {
       </Authenticator>
     </>
   );
-};
-Page.getInitialProps = async (props) => {
-  const { code, state } = props.query || {};
-  return { code, state };
 };
 
 export default Page;

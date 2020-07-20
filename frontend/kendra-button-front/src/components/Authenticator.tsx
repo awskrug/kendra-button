@@ -25,19 +25,12 @@ interface Props {
   setIsLoggedIn: Dispatch<SetStateAction<any>>;
   children: ReactNode;
   isLoggedIn: boolean;
-  isSignInInProcess: boolean;
 }
 const Authenticator = (props: Props): ReactElement => {
-  const {
-    children,
-    setUser,
-    isLoggedIn,
-    setIsLoggedIn,
-    isSignInInProcess,
-  } = props;
+  const { children, setUser, isLoggedIn, setIsLoggedIn } = props;
   const { setModalConfig } = useModalContextImpls();
 
-  const [isLoading, setIsLoading] = useState<boolean>(isSignInInProcess);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [screen, setScreen] = useState<AuthState>(AuthState.SignIn);
   const [username, setUsername] = useState<string>('');
 
@@ -73,10 +66,9 @@ const Authenticator = (props: Props): ReactElement => {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    setIsLoading(true);
-
     const query = router.asPath;
     const errorDescription = query || '';
+
     if (
       errorDescription.includes('attributes+required') &&
       errorDescription.includes('email')
