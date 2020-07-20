@@ -44,7 +44,6 @@ const Authenticator = (props: Props): ReactElement => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('isLoggedIn? ', isLoggedIn);
     if (!isLoggedIn) {
       setScreen(AuthState.SignIn);
     }
@@ -90,20 +89,20 @@ const Authenticator = (props: Props): ReactElement => {
       {screen === AuthState.SignedIn ? (
         children
       ) : screen === AuthState.SignUp ? (
-        <>
+        <div className={`overflow-auto w-100`}>
           <Title />
           <SignUp setScreen={setScreen} setUsername={setUsername} />
-        </>
+        </div>
       ) : screen === AuthState.ConfirmSignUp ? (
-        <>
+        <div className={`overflow-auto w-100`}>
           <Title />
           <Confirmation setScreen={setScreen} username={username} />
-        </>
+        </div>
       ) : (
-        <>
+        <div className={`overflow-auto w-100`}>
           <Title />
           <SignIn setScreen={setScreen} setUsername={setUsername} />
-        </>
+        </div>
       )}
       <style global jsx>{`
         .fullscreen {
