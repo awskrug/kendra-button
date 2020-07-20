@@ -10,8 +10,15 @@ import {
 } from 'react';
 
 import { AuthState } from '@aws-amplify/ui-components';
+import { ViewSource } from './ViewSource';
 import { useRouter } from 'next/router';
 
+const TitleWithIcon = (): ReactElement => (
+  <div className={`d-flex justify-content-center`}>
+    <Title />
+    <ViewSource size="large" alt />
+  </div>
+);
 interface Props {
   setUser: Dispatch<SetStateAction<any>>;
   setIsLoggedIn: Dispatch<SetStateAction<any>>;
@@ -90,17 +97,17 @@ const Authenticator = (props: Props): ReactElement => {
         children
       ) : screen === AuthState.SignUp ? (
         <div className={`overflow-auto w-100`}>
-          <Title />
+          <TitleWithIcon />
           <SignUp setScreen={setScreen} setUsername={setUsername} />
         </div>
       ) : screen === AuthState.ConfirmSignUp ? (
         <div className={`overflow-auto w-100`}>
-          <Title />
+          <TitleWithIcon />
           <Confirmation setScreen={setScreen} username={username} />
         </div>
       ) : (
         <div className={`overflow-auto w-100`}>
-          <Title />
+          <TitleWithIcon />
           <SignIn setScreen={setScreen} setUsername={setUsername} />
         </div>
       )}
