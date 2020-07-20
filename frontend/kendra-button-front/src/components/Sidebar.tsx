@@ -11,6 +11,7 @@ import { Auth } from 'aws-amplify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Projects } from './Projects';
 import { User } from '../types';
+import { ViewSource } from './ViewSource';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useMainContextImpls } from '../contexts';
 
@@ -85,10 +86,13 @@ const Sidebar = (props: Props): ReactElement => {
           </div>
           {user && <Projects />}
         </div>
-        <div className={`d-flex flex-column`} onClick={goToSettingsPage}>
-          <div className={`text-white btn btn-secondary`}>
-            <FontAwesomeIcon className={`mr-2`} icon={faCog} />
-            SETTINGS
+        <div>
+          <ViewSource text={'View Source'} />
+          <div className={`d-flex flex-column`} onClick={goToSettingsPage}>
+            <div className={`text-white btn btn-secondary`}>
+              <FontAwesomeIcon className={`mr-2`} icon={faCog} />
+              SETTINGS
+            </div>
           </div>
         </div>
       </div>
@@ -104,6 +108,7 @@ const Sidebar = (props: Props): ReactElement => {
             ? 'rgba(255, 255, 255, 0.05)'
             : 'rgba(0, 0, 0, 0.05)'};
         }
+
         @media (min-width: 992px) {
           .sidebar {
             display: flex;

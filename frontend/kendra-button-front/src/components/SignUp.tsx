@@ -90,9 +90,8 @@ const SignUp = (props: Props): ReactElement => {
   };
 
   return (
-    <>
-      <div className="shadow col-sm-6 h-75 overflow-auto p-3 justify-content-between">
-        <div></div>
+    <div className={`row justify-content-center m-2 mb-4`}>
+      <div className="rounded shadow col-sm-6 overflow-auto p-3 justify-content-between">
         <div className={`signUpTitle mb-2`}>Create a new account </div>
         {signupAccErr && (
           <div className="alert alert-dismissible alert-warning">
@@ -148,7 +147,10 @@ const SignUp = (props: Props): ReactElement => {
             <div className="invalid-feedback">{formik.errors.password}</div>
           )}
         </div>
-        <button className={`btn btn-success shadow-sm`} onClick={onSubmit}>
+        <button
+          className={`btn btn-success shadow-sm w-100`}
+          onClick={onSubmit}
+        >
           {isLoading && <Loader className={'mr-2'} />}
           Create Account
         </button>
@@ -159,7 +161,6 @@ const SignUp = (props: Props): ReactElement => {
             Sign In
           </span>
         </div>
-        <div></div>
       </div>
       <style global jsx>{`
         .signUpTitle {
@@ -175,7 +176,7 @@ const SignUp = (props: Props): ReactElement => {
           background-color: #b9e082;
         }
       `}</style>
-    </>
+    </div>
   );
 };
 

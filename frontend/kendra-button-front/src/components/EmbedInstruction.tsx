@@ -42,7 +42,7 @@ const EmbedInstruction = (props: Props): ReactElement => {
           <div
             className={`d-flex justify-content-between align-items-center my-2`}
           >
-            <div className={`fa-lg`}>Code: Place in the site's content</div>
+            <div className={`h5`}>Code: Place in the site's content</div>
             <div
               className={`btn-sm btn-secondary text-nowrap`}
               onClick={copyCode({ setState: setCopiedOne, ref: codeRefOne })}
@@ -81,11 +81,11 @@ const EmbedInstruction = (props: Props): ReactElement => {
             </div>
           </div>
         </div>
-        <div className={``}>
+        <div className={`mt-5`}>
           <div
             className={`d-flex justify-content-between align-items-center my-2`}
           >
-            <div className={`fa-lg`}>Code: Place the fixed floating screen</div>
+            <div className={`h5`}>Code: Place the fixed floating screen</div>
             <div
               className={`btn-sm btn-secondary text-nowrap`}
               onClick={copyCode({ setState: setCopiedTwo, ref: codeRefTwo })}
@@ -113,11 +113,11 @@ const EmbedInstruction = (props: Props): ReactElement => {
             </div>
           </div>
         </div>
-        <div className={``}>
+        <div className={`mt-5`}>
           <div
             className={`d-flex justify-content-between align-items-center my-2`}
           >
-            <div className={`fa-lg`}>
+            <div className={`h5`}>
               Code: Place in the site's content and Place the fixed floating
               screen
             </div>

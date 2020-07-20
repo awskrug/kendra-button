@@ -1,5 +1,5 @@
 import { Auth, Hub } from 'aws-amplify';
-import { Confirmation, SignIn, SignUp, Title } from '../components';
+import { Confirmation, Loader, SignIn, SignUp, Title } from '../components';
 import {
   Dispatch,
   ReactElement,
@@ -10,25 +10,47 @@ import {
 } from 'react';
 
 import { AuthState } from '@aws-amplify/ui-components';
+import { ViewSource } from './ViewSource';
+import { useModalContextImpls } from '../contexts';
 import { useRouter } from 'next/router';
 
+const TitleWithIcon = (): ReactElement => (
+  <div className={`d-flex justify-content-center`}>
+    <Title />
+    <ViewSource size="large" alt />
+  </div>
+);
 interface Props {
   setUser: Dispatch<SetStateAction<any>>;
   setIsLoggedIn: Dispatch<SetStateAction<any>>;
   children: ReactNode;
   isLoggedIn: boolean;
+  isSignInInProcess: boolean;
 }
 const Authenticator = (props: Props): ReactElement => {
-  const { children, setUser, isLoggedIn, setIsLoggedIn } = props;
-  const [screen, setScreen] = useState(AuthState.SignIn);
+  const {
+    children,
+    setUser,
+    isLoggedIn,
+    setIsLoggedIn,
+    isSignInInProcess,
+  } = props;
+  const { setModalConfig } = useModalContextImpls();
+
+  const [isLoading, setIsLoading] = useState<boolean>(isSignInInProcess);
+  const [screen, setScreen] = useState<AuthState>(AuthState.SignIn);
   const [username, setUsername] = useState<string>('');
 
   const checkUser = async (retry, tryCnt = 1): Promise<void> => {
     const tryLimit = 3;
-    console.log('[checkUser retryflag]', retry);
     try {
       const user = await Auth.currentAuthenticatedUser();
       console.log('[user:Auth]', user);
+      // it is worth in only dev mode
+      setModalConfig({
+        type: 'plain',
+        display: false,
+      });
       setScreen(AuthState.SignedIn);
       setUser(user);
     } catch (e) {
@@ -44,7 +66,6 @@ const Authenticator = (props: Props): ReactElement => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('isLoggedIn? ', isLoggedIn);
     if (!isLoggedIn) {
       setScreen(AuthState.SignIn);
     }
@@ -76,6 +97,14 @@ const Authenticator = (props: Props): ReactElement => {
           break;
         case 'signIn_failure':
           console.log('[Hub] signIn_failure');
+          setIsLoading(false);
+          setScreen(AuthState.SignIn);
+          setModalConfig({
+            type: 'plain',
+            display: true,
+            contentDisplay: ['body', 'footer'],
+            content: 'Sign in failure. please try again.',
+          });
           break;
         default:
           break;
@@ -87,23 +116,30 @@ const Authenticator = (props: Props): ReactElement => {
     <div
       className={`fullscreen d-flex flex-column justify-content-center align-items-center`}
     >
-      {screen === AuthState.SignedIn ? (
+      {isLoading && screen === AuthState.SignIn ? (
+        <div className={`w-100`}>
+          <TitleWithIcon />
+          <div className={`text-center`}>
+            <Loader className={'fa-5x'} />
+          </div>
+        </div>
+      ) : screen === AuthState.SignedIn ? (
         children
       ) : screen === AuthState.SignUp ? (
-        <>
-          <Title />
+        <div className={`overflow-auto w-100`}>
+          <TitleWithIcon />
           <SignUp setScreen={setScreen} setUsername={setUsername} />
-        </>
+        </div>
       ) : screen === AuthState.ConfirmSignUp ? (
-        <>
-          <Title />
+        <div className={`overflow-auto w-100`}>
+          <TitleWithIcon />
           <Confirmation setScreen={setScreen} username={username} />
-        </>
+        </div>
       ) : (
-        <>
-          <Title />
+        <div className={`overflow-auto w-100`}>
+          <TitleWithIcon />
           <SignIn setScreen={setScreen} setUsername={setUsername} />
-        </>
+        </div>
       )}
       <style global jsx>{`
         .fullscreen {

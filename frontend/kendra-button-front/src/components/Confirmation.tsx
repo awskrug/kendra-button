@@ -70,9 +70,8 @@ const Confirmation = (props: Props): ReactElement => {
     return;
   };
   return (
-    <>
+    <div className={`row justify-content-center m-2 mb-4`}>
       <div className="shadow col-sm-6 h-75 overflow-auto p-3 justify-content-between">
-        <div></div>
         <div className={`confirmTitle`}>Confirm Sign Up </div>
         <p className={`text-secondary small mt-4`}>
           We've sent you a confirmation code to your email.
@@ -109,10 +108,12 @@ const Confirmation = (props: Props): ReactElement => {
                 {isLoading && <Loader className={'mr-2'} />}
                 Complete Sign Up
               </AmplifyButton>
+              <div className={`btn btn-link mt-3 w-100`} onClick={toSignIn}>
+                Cancel and go to Sign In
+              </div>
             </>
           )}
         </div>
-        <div></div>
       </div>
       <style global jsx>{`
         .confirmTitle {
@@ -128,7 +129,7 @@ const Confirmation = (props: Props): ReactElement => {
           background-color: #b9e082;
         }
       `}</style>
-    </>
+    </div>
   );
 };
 

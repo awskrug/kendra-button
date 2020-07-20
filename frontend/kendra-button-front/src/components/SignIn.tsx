@@ -96,9 +96,8 @@ const SignIn = (props: Props): ReactElement => {
   };
 
   return (
-    <>
-      <div className={`shadow col-sm-6 h-75 overflow-auto p-3`}>
-        <div></div>
+    <div className={`row justify-content-center m-2 mb-4`}>
+      <div className={`rounded shadow col-sm-6 overflow-auto p-3`}>
         <div className={`signUpTitle mb-3`}>Sign In </div>
         {signinAccErr && (
           <div className="alert alert-dismissible alert-warning">
@@ -163,7 +162,6 @@ const SignIn = (props: Props): ReactElement => {
             Sign Up
           </span>
         </div>
-        <div></div>
       </div>
       <style global jsx>{`
         .signUpTitle {
@@ -178,7 +176,7 @@ const SignIn = (props: Props): ReactElement => {
         .socialLoginBtns {
         }
       `}</style>
-    </>
+    </div>
   );
 };
 
