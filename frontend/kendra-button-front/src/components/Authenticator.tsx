@@ -61,6 +61,7 @@ const Authenticator = (props: Props): ReactElement => {
         }, 1000);
       }
     }
+    setIsLoading(false);
   };
 
   const router = useRouter();
@@ -72,6 +73,8 @@ const Authenticator = (props: Props): ReactElement => {
   }, [isLoggedIn]);
 
   useEffect(() => {
+    setIsLoading(true);
+
     const query = router.asPath;
     const errorDescription = query || '';
     if (
