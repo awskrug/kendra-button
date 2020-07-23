@@ -2,9 +2,10 @@ import asyncio
 import json
 import os
 import sys
+import requests
 
 import boto3
-
+from botocore.exceptions import ClientError
 try:
     from .page import Page
 except Exception:
@@ -19,10 +20,68 @@ except Exception as e:
 
 OPERATOR = "OPERATOR"
 RUNTIME_ENV = os.environ.get('AWS_EXECUTION_ENV')
+
 SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
 SQS_URL = None
 
 CLIENT = boto3.client('sqs')
+kendra = boto3.client('kendra')
+
+
+import base64
+
+
+
+def get_secret():
+
+    secret_name = "devKendraQueryApiKey"
+    region_name = "us-west-2"
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=region_name
+    )
+
+    # In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
+    # See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+    # We rethrow the exception by default.
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=secret_name
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'DecryptionFailureException':
+            # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response['Error']['Code'] == 'InternalServiceErrorException':
+            # An error occurred on the server side.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response['Error']['Code'] == 'InvalidParameterException':
+            # You provided an invalid value for a parameter.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response['Error']['Code'] == 'InvalidRequestException':
+            # You provided a parameter value that is not valid for the current state of the resource.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response['Error']['Code'] == 'ResourceNotFoundException':
+            # We can't find the resource that you asked for.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+    else:
+        # Decrypts secret using the associated KMS CMK.
+        # Depending on whether the secret is a string or binary, one of these fields will be populated.
+        if 'SecretString' in get_secret_value_response:
+            secret = get_secret_value_response['SecretString']
+            return secret
+        else:
+            decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
+            return decoded_binary_secret
 
 
 def is_local_env():
@@ -140,15 +199,55 @@ async def handler(messages: list):
         pattern = "*"
         html = await get_page(url)
         # save kendra
-        print(html.raw_html)
-        p = Page.get(site, url)
+        # print(html.raw_html)
+
+        # binary로 변환
+        scrappedBinary = base64.b64encode(html.raw_html)
+
+        secret = get_secret()
+        print('secret.............', secret, type(secret))
+        print('header??????????', requests.head(url))
+
+
+        result = kendra.batch_put_document(
+        IndexId="zCrSOcnD6A8zkXjy7ahn88EV00HGtq2r5lC0yT8E",
+        RoleArn = "arn:aws:secretsmanager:us-west-2:213888382832:secret:devKendraQueryApiKey-bXjYFs",
+        Documents=[
+            {
+                'Id': site + ':' + url,
+                'Title': requests.head(url),
+                'Blob': scrappedBinary,
+                'Attributes': [
+                    {
+                        'Key': 'site',
+                        'Value': {
+                            'StringValue': site,  
+                        },
+                    }
+                ],
+                # 'AccessControlList': [
+                #     {
+                #         'Name': 'string',
+                #         'Type': 'USER' | 'GROUP',
+                #         'Access': 'ALLOW' | 'DENY'
+                #     },
+                # ],
+                # 'ContentType': 'PDF' | 'HTML' | 'MS_WORD' | 'PLAIN_TEXT' | 'PPT'
+            },
+        ]
+    )
+
+        p = Page.get(site, url) # dynamodb table의 item return
         p.update([Page.scraped.set(True)])
+        p.save()
+
+
         # get links
         links = [l for l in html.absolute_links if l != url]
-        with Page.batch_write() as batch:
+        with Page.batch_write() as batch: #dynamodb table의 batch 작업
             items = [Page(site, link, _type='html') for link in links if verify(pattern, url)]
             for item in items:
-                batch.save(item)
+                batch.save(item) # dynamodb에 넣기
 
 
 def worker(request, context):
@@ -175,18 +274,23 @@ def worker(request, context):
     print(request)
     # request에서 메세시 파싱
     messages = []
-    asyncio.get_event_loop().run_until_complete(handler(messages))
 
     try:
         for record in request['Records']:
             body = json.loads(record["body"])
             url = body["url"]
+            message = { "body": body, "url": url}
+            messages.append(message)
 
     except Exception as e:
         # Send some context about this error to Lambda Logs
         print(e)
         # throw exception, do not handle. Lambda will make message visible again.
         raise e
+
+    asyncio.get_event_loop().run_until_complete(handler(messages))
+
+
 
 
 if __name__ == '__main__':

@@ -4,7 +4,9 @@ import json
 from pynamodb.attributes import UnicodeAttribute, BooleanAttribute
 from pynamodb.models import Model
 
-DB = os.environ.get('pageDB', 'kendra-buttons-index-dev')
+# DB = os.environ.get('pageDB', 'kendra-buttons-index-dev')
+DB = os.environ.get('pageDB', 'kendra-buttons-index-chloe') # pageDB 못가져오면, 뒤에 Default값 적용
+
 SAMPLE_USER = 'sample'
 
 
