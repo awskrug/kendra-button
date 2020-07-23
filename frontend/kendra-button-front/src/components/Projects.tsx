@@ -83,96 +83,14 @@ const Projects = (props: Props): ReactElement => {
             </div>
           ) : (
             sites.map((item) => (
-              <>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-                <div
-                  key={item.site}
-                  className={`list-group-item list-group-item-action`}
-                  role={`button`}
-                  onClick={setSelectedSite}
-                >
-                  {item.site}
-                </div>
-              </>
+              <div
+                key={item.site}
+                className={`list-group-item list-group-item-action`}
+                role={`button`}
+                onClick={setSelectedSite}
+              >
+                {item.site}
+              </div>
             ))
           )}
         </div>
