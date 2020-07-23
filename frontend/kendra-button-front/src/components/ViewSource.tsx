@@ -7,10 +7,16 @@ interface Props {
   text?: string;
   alt?: boolean;
   size?: 'small' | 'medium' | 'large';
+  extraClass?: string;
 }
 const githubLink = 'https://github.com/awskrug/kendra-button';
 const ViewSource = (props: Props): ReactElement => {
-  const { text, alt, size = 'medium' } = props;
+  const {
+    text,
+    alt,
+    size = 'medium',
+    extraClass = 'align-items-center justify-content-center my-3',
+  } = props;
   const sizeClass =
     size === 'small' ? `fa-sm` : size === 'medium' ? `fa-2x` : `fa-3x`;
 
@@ -20,12 +26,12 @@ const ViewSource = (props: Props): ReactElement => {
   const faPropIcon = faGithub as IconProp;
   return (
     <>
-      <div
-        className={`viewsource align-items-center d-flex justify-content-center my-3`}
-        role="button"
-        onClick={viewSource}
-      >
-        <FontAwesomeIcon icon={faPropIcon} className={sizeClass} />
+      <div className={`viewsource d-flex ${extraClass}`} onClick={viewSource}>
+        <FontAwesomeIcon
+          role="button"
+          icon={faPropIcon}
+          className={sizeClass}
+        />
         {text && <span className={`ml-2`}>{text}</span>}
       </div>
       <style jsx>{`

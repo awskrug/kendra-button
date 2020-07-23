@@ -15,8 +15,13 @@ import { useModalContextImpls } from '../contexts';
 import { useRouter } from 'next/router';
 
 const TitleWithIcon = (): ReactElement => (
-  <div className={`d-flex justify-content-center`}>
-    <Title />
+  <div
+    className={`container d-flex justify-content-between align-items-center`}
+  >
+    <div>
+      <img src="/kendolle.png" style={{ height: '4rem' }} />
+    </div>
+    <Title extraClass={`text-break`} />
     <ViewSource size="large" alt />
   </div>
 );
@@ -115,7 +120,7 @@ const Authenticator = (props: Props): ReactElement => {
         <div className={`w-100`}>
           <TitleWithIcon />
           <div className={`text-center`}>
-            <Loader className={'fa-5x'} />
+            <Loader className={'fontsize-5x'} />
           </div>
         </div>
       ) : screen === AuthState.SignedIn ? (
@@ -145,6 +150,11 @@ const Authenticator = (props: Props): ReactElement => {
         .kendra-button {
           font-family: 'Orbitron', sans-serif;
           font-size: 3rem;
+          word-break: break-word;
+        }
+
+        .fontsize-5x {
+          font-size: 5rem;
         }
       `}</style>
     </div>

@@ -1,5 +1,5 @@
-const Title = () => (
-  <div className={'kendra-button text-center m-4 text-primary'}>
+const Title = ({ extraClass = '' }) => (
+  <div className={`kendra-button text-center m-4 text-primary ${extraClass}`}>
     KENDRA BUTTON
   </div>
 );
