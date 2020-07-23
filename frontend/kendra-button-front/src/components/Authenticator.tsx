@@ -120,7 +120,7 @@ const Authenticator = (props: Props): ReactElement => {
         <div className={`w-100`}>
           <TitleWithIcon />
           <div className={`text-center`}>
-            <Loader className={'fa-5x'} />
+            <Loader className={'fontsize-5x'} />
           </div>
         </div>
       ) : screen === AuthState.SignedIn ? (
@@ -151,6 +151,10 @@ const Authenticator = (props: Props): ReactElement => {
           font-family: 'Orbitron', sans-serif;
           font-size: 3rem;
           word-break: break-word;
+        }
+
+        .fontsize-5x {
+          font-size: 5rem;
         }
       `}</style>
     </div>
