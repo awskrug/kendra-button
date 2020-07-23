@@ -2,7 +2,6 @@ import asyncio
 import json
 import os
 import sys
-import requests
 
 import boto3
 from botocore.exceptions import ClientError
@@ -27,10 +26,7 @@ SQS_URL = None
 CLIENT = boto3.client('sqs')
 kendra = boto3.client('kendra')
 
-
 import base64
-
-
 
 def get_secret():
 
@@ -176,8 +172,6 @@ async def get_page(url: str):
     req = await session.get(url)
     await req.html.arender()
     result = req.html
-    print(req.html.absolute_links)
-    print(result)
     return result
 
 
@@ -198,15 +192,13 @@ async def handler(messages: list):
         host = msg.get('host')
         pattern = "*"
         html = await get_page(url)
-        # save kendra
-        # print(html.raw_html)
+
 
         # binary로 변환
         scrappedBinary = base64.b64encode(html.raw_html)
 
-        secret = get_secret()
-        print('secret.............', secret, type(secret))
-        print('header??????????', requests.head(url))
+        # site title 가져오기 
+        html_title = html.find("title",first=True).text
 
 
         result = kendra.batch_put_document(
@@ -215,7 +207,7 @@ async def handler(messages: list):
         Documents=[
             {
                 'Id': site + ':' + url,
-                'Title': requests.head(url),
+                'Title': html_title,
                 'Blob': scrappedBinary,
                 'Attributes': [
                     {
