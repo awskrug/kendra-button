@@ -72,6 +72,17 @@ const Sidebar = (props: Props): ReactElement => {
         }`}
       >
         <div className={`d-flex flex-column`}>
+          <div className={`d-flex justify-content-center mb-3`}>
+            <div className={`w-25`}></div>
+            <div className={`w-50 text-center`}>
+              <img
+                className={`goddess`}
+                src="/kendolle.png"
+                style={{ height: '4rem' }}
+              />
+            </div>
+            <ViewSource extraClass={`justify-content-end w-25`} />
+          </div>
           <div className={`btn-group my-3`}>
             <button type="button" className={`btn btn-danger`}>
               {user?.attributes?.email}
@@ -87,7 +98,6 @@ const Sidebar = (props: Props): ReactElement => {
           {user && <Projects />}
         </div>
         <div>
-          <ViewSource text={'View Source'} />
           <div className={`d-flex flex-column`} onClick={goToSettingsPage}>
             <div className={`text-white btn btn-secondary`}>
               <FontAwesomeIcon className={`mr-2`} icon={faCog} />
@@ -97,6 +107,16 @@ const Sidebar = (props: Props): ReactElement => {
         </div>
       </div>
       <style jsx>{`
+        .goddess {
+          animation: shining 5s infinite;
+          box-shadow: 0 0 7px 7px rgb(255 255 255);
+          border-radius: 40%;
+        }
+        @keyframes shining {
+          50% {
+            box-shadow: 0 0 40px 7px rgb(255 255 255);
+          }
+        }
         .hamburger-btn:focus,
         .hamburger-btn:active {
           background-color: ${displayAcc
