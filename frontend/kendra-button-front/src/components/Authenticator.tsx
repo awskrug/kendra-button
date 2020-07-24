@@ -51,7 +51,7 @@ const Authenticator = (props: Props): ReactElement => {
         type: 'plain',
         display: false,
       });
-      // setScreen(AuthState.SignedIn);
+      setScreen(AuthState.SignedIn);
       setUser(user);
     } catch (e) {
       console.log('[error in checkUser]', e);
@@ -93,7 +93,6 @@ const Authenticator = (props: Props): ReactElement => {
       console.log('[Hub] data', data);
       switch (data.payload.event) {
         case 'signIn':
-          // setScreen(AuthState.SignedIn);
           setIsLoggedIn(true);
           checkUser(false);
           break;
@@ -161,8 +160,8 @@ const Authenticator = (props: Props): ReactElement => {
           font-size: 5rem;
         }
         .svg-initsize {
-          width: 1rem;
-          height: 1rem;
+          width: 2rem;
+          height: 2rem;
         }
       `}</style>
     </div>
