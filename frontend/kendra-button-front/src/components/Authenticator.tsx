@@ -20,7 +20,7 @@ const TitleWithIcon = (): ReactElement => (
       className={`col-md-6 d-flex justify-content-between align-items-center`}
     >
       <div>
-        <img src="/kendolle.png" style={{ height: '4rem' }} />
+        <img src="/kendoll-E.png" style={{ height: '4rem' }} />
       </div>
       <Title extraClass={`text-break`} />
       <ViewSource size="large" alt />

@@ -17,7 +17,8 @@ const Layout = ({ children }) => {
           href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Pacifico&display=swap"
           rel="stylesheet"
         />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" href="/favicon-16.png" sizes="16x16" />
         <link rel="icon" href="/favicon-32.png" sizes="32x32" />
         <link rel="icon" href="/favicon-48.png" sizes="48x48" />
