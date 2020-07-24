@@ -15,14 +15,16 @@ import { useModalContextImpls } from '../contexts';
 import { useRouter } from 'next/router';
 
 const TitleWithIcon = (): ReactElement => (
-  <div
-    className={`container d-flex justify-content-between align-items-center`}
-  >
-    <div>
-      <img src="/kendolle.png" style={{ height: '4rem' }} />
+  <div className={`d-flex justify-content-center`}>
+    <div
+      className={`col-md-6 d-flex justify-content-between align-items-center`}
+    >
+      <div>
+        <img src="/kendolle.png" style={{ height: '4rem' }} />
+      </div>
+      <Title extraClass={`text-break`} />
+      <ViewSource size="large" alt />
     </div>
-    <Title extraClass={`text-break`} />
-    <ViewSource size="large" alt />
   </div>
 );
 interface Props {
@@ -49,7 +51,7 @@ const Authenticator = (props: Props): ReactElement => {
         type: 'plain',
         display: false,
       });
-      setScreen(AuthState.SignedIn);
+      // setScreen(AuthState.SignedIn);
       setUser(user);
     } catch (e) {
       console.log('[error in checkUser]', e);
@@ -91,7 +93,7 @@ const Authenticator = (props: Props): ReactElement => {
       console.log('[Hub] data', data);
       switch (data.payload.event) {
         case 'signIn':
-          setScreen(AuthState.SignedIn);
+          // setScreen(AuthState.SignedIn);
           setIsLoggedIn(true);
           checkUser(false);
           break;
@@ -120,7 +122,9 @@ const Authenticator = (props: Props): ReactElement => {
         <div className={`w-100`}>
           <TitleWithIcon />
           <div className={`text-center`}>
-            <Loader className={'fontsize-5x'} />
+            <Loader
+              className={`fontsize-5x ${isLoading ? 'svg-initsize' : ''}`}
+            />
           </div>
         </div>
       ) : screen === AuthState.SignedIn ? (
@@ -155,6 +159,10 @@ const Authenticator = (props: Props): ReactElement => {
 
         .fontsize-5x {
           font-size: 5rem;
+        }
+        .svg-initsize {
+          width: 1rem;
+          height: 1rem;
         }
       `}</style>
     </div>
