@@ -1,4 +1,5 @@
 import asyncio
+import base64
 import json
 import os
 import sys
@@ -141,8 +142,8 @@ async def handler(messages: list):
         documents = {
 
         }
-        # binary로 변환
-        scrappedBinary = base64.b64encode(html.raw_html)
+        # base64 변환
+        base64_doc = base64.b64encode(html.raw_html).encode('UTF-8')
 
         # site title 가져오기 
         html_title = html.find("title",first=True).text
@@ -152,7 +153,7 @@ async def handler(messages: list):
             {
                 'Id': site + ':' + url,
                 'Title': html_title,
-                'Blob': scrappedBinary,
+                'Blob': base64_doc,
                 'Attributes': [
                     {
                         'Key': url,
