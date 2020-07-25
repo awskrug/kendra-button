@@ -72,12 +72,12 @@ const Sidebar = (props: Props): ReactElement => {
         }`}
       >
         <div className={`d-flex flex-column`}>
-          <div className={`d-flex justify-content-center mb-3`}>
+          <div className={`d-flex justify-content-center`}>
             <div className={`w-25`}></div>
             <div className={`w-50 text-center`}>
               <img
                 className={`goddess`}
-                src="/kendolle.png"
+                src="/kendoll-E.png"
                 style={{ height: '4rem' }}
               />
             </div>
@@ -92,7 +92,8 @@ const Sidebar = (props: Props): ReactElement => {
               className={`btn btn-outline-danger`}
               onClick={signOut}
             >
-              <FontAwesomeIcon className={``} icon={faSignOutAlt} />
+              <FontAwesomeIcon className={`mr-2`} icon={faSignOutAlt} />
+              SIGN OUT
             </button>
           </div>
           {user && <Projects />}
@@ -109,12 +110,10 @@ const Sidebar = (props: Props): ReactElement => {
       <style jsx>{`
         .goddess {
           animation: shining 5s infinite;
-          box-shadow: 0 0 7px 7px rgb(255 255 255);
-          border-radius: 40%;
         }
         @keyframes shining {
           50% {
-            box-shadow: 0 0 40px 7px rgb(255 255 255);
+            filter: drop-shadow(0rem 0rem 2rem rgb(255 255 255));
           }
         }
         .hamburger-btn:focus,
