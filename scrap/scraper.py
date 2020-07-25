@@ -24,61 +24,6 @@ SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
 SQS_URL = None
 
 CLIENT = boto3.client('sqs')
-kendra = boto3.client('kendra')
-
-import base64
-
-def get_secret():
-
-    secret_name = "devKendraQueryApiKey"
-    region_name = "us-west-2"
-
-    # Create a Secrets Manager client
-    session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=region_name
-    )
-
-    # In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
-    # See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-    # We rethrow the exception by default.
-
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
-    except ClientError as e:
-        if e.response['Error']['Code'] == 'DecryptionFailureException':
-            # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
-            # Deal with the exception here, and/or rethrow at your discretion.
-            raise e
-        elif e.response['Error']['Code'] == 'InternalServiceErrorException':
-            # An error occurred on the server side.
-            # Deal with the exception here, and/or rethrow at your discretion.
-            raise e
-        elif e.response['Error']['Code'] == 'InvalidParameterException':
-            # You provided an invalid value for a parameter.
-            # Deal with the exception here, and/or rethrow at your discretion.
-            raise e
-        elif e.response['Error']['Code'] == 'InvalidRequestException':
-            # You provided a parameter value that is not valid for the current state of the resource.
-            # Deal with the exception here, and/or rethrow at your discretion.
-            raise e
-        elif e.response['Error']['Code'] == 'ResourceNotFoundException':
-            # We can't find the resource that you asked for.
-            # Deal with the exception here, and/or rethrow at your discretion.
-            raise e
-    else:
-        # Decrypts secret using the associated KMS CMK.
-        # Depending on whether the secret is a string or binary, one of these fields will be populated.
-        if 'SecretString' in get_secret_value_response:
-            secret = get_secret_value_response['SecretString']
-            return secret
-        else:
-            decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
-            return decoded_binary_secret
-
 
 def is_local_env():
     return not RUNTIME_ENV
@@ -193,7 +138,9 @@ async def handler(messages: list):
         pattern = "*"
         html = await get_page(url)
 
+        documents = {
 
+        }
         # binary로 변환
         scrappedBinary = base64.b64encode(html.raw_html)
 
@@ -201,9 +148,6 @@ async def handler(messages: list):
         html_title = html.find("title",first=True).text
 
 
-        result = kendra.batch_put_document(
-        IndexId="zCrSOcnD6A8zkXjy7ahn88EV00HGtq2r5lC0yT8E",
-        RoleArn = "arn:aws:secretsmanager:us-west-2:213888382832:secret:devKendraQueryApiKey-bXjYFs",
         Documents=[
             {
                 'Id': site + ':' + url,
@@ -211,23 +155,18 @@ async def handler(messages: list):
                 'Blob': scrappedBinary,
                 'Attributes': [
                     {
-                        'Key': 'site',
+                        'Key': url,
                         'Value': {
                             'StringValue': site,  
                         },
-                    }
+                    },
                 ],
-                # 'AccessControlList': [
-                #     {
-                #         'Name': 'string',
-                #         'Type': 'USER' | 'GROUP',
-                #         'Access': 'ALLOW' | 'DENY'
-                #     },
-                # ],
-                # 'ContentType': 'PDF' | 'HTML' | 'MS_WORD' | 'PLAIN_TEXT' | 'PPT'
             },
         ]
-    )
+
+
+
+
 
         p = Page.get(site, url) # dynamodb table의 item return
         p.update([Page.scraped.set(True)])
