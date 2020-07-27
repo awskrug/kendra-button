@@ -26,13 +26,7 @@ const SignIn = (props: Props): ReactElement => {
       email: Yup.string()
         .required("Please enter your email.")
         .email("Invalid email address."),
-      password: Yup.string()
-        .required("Please enter your password")
-        .min(8)
-        .matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-        ),
+      password: Yup.string().required("Please enter your password"),
     }),
     onSubmit: () => {},
   });
