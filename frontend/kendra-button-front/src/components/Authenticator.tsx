@@ -32,13 +32,21 @@ interface Props {
   setIsLoggedIn: Dispatch<SetStateAction<any>>;
   children: ReactNode;
   isLoggedIn: boolean;
+  screen: AuthState;
+  setScreen: Dispatch<SetStateAction<any>>;
 }
 const Authenticator = (props: Props): ReactElement => {
-  const { children, setUser, isLoggedIn, setIsLoggedIn } = props;
+  const {
+    children,
+    setUser,
+    isLoggedIn,
+    setIsLoggedIn,
+    screen,
+    setScreen,
+  } = props;
   const { setModalConfig } = useModalContextImpls();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [screen, setScreen] = useState<AuthState>(AuthState.SignIn);
   const [username, setUsername] = useState<string>('');
 
   const checkUser = async (retry, tryCnt = 1): Promise<void> => {
@@ -69,6 +77,7 @@ const Authenticator = (props: Props): ReactElement => {
   useEffect(() => {
     if (!isLoggedIn) {
       setScreen(AuthState.SignIn);
+      checkUser(false);
     }
   }, [isLoggedIn]);
 
@@ -82,8 +91,6 @@ const Authenticator = (props: Props): ReactElement => {
     ) {
       alert('Please check the email address on your Facebook account.');
       setScreen(AuthState.SignUp);
-    } else {
-      checkUser(false);
     }
 
     // intermittently failure

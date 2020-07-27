@@ -8,6 +8,7 @@ import {
 import { faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { Auth } from 'aws-amplify';
+import { AuthState } from '@aws-amplify/ui-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Projects } from './Projects';
 import { User } from '../types';
@@ -17,16 +18,16 @@ import { useMainContextImpls } from '../contexts';
 
 interface Props {
   user: User;
-  setIsLoggedIn?: Dispatch<SetStateAction<boolean>>;
+  // setIsLoggedIn?: Dispatch<SetStateAction<boolean>>;
+  setScreen: Dispatch<SetStateAction<any>>;
 }
 
 const Sidebar = (props: Props): ReactElement => {
-  const { user, setIsLoggedIn } = props;
+  const { user, setScreen } = props;
   const { states, dispatch } = useMainContextImpls();
   const [displayAcc, setDisplayAcc] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log('Sidebar states', states.loadingFlag);
     if (states.loadingFlag) {
       setDisplayAcc(false);
     }
@@ -37,7 +38,7 @@ const Sidebar = (props: Props): ReactElement => {
 
   const signOut = async (): Promise<void> => {
     await Auth.signOut();
-    setIsLoggedIn(false);
+    setScreen(AuthState.SignIn);
   };
 
   const goToSettingsPage = (): void => {

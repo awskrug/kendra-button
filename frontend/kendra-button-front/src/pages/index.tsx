@@ -1,6 +1,7 @@
 import Amplify, { Auth } from 'aws-amplify';
 import { Authenticator, Content, Sidebar } from '../components';
 
+import { AuthState } from '@aws-amplify/ui-components';
 import awsconfig from '../aws-exports';
 import { useState } from 'react';
 
@@ -41,6 +42,7 @@ interface Props {
 const Page = (props: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [screen, setScreen] = useState<AuthState>(AuthState.SignIn);
 
   return (
     <>
@@ -48,9 +50,11 @@ const Page = (props: Props) => {
         setUser={setUser}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        screen={screen}
+        setScreen={setScreen}
       >
         <>
-          <Sidebar user={user} setIsLoggedIn={setIsLoggedIn} />
+          <Sidebar user={user} setScreen={setScreen} />
           <Content user={user} setIsLoggedIn={setIsLoggedIn} />
         </>
       </Authenticator>
