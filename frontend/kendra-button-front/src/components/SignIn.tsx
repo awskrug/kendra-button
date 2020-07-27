@@ -1,11 +1,11 @@
-import * as Yup from "yup";
+import * as Yup from 'yup';
 
-import { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 
-import { AmplifyButton } from "@aws-amplify/ui-react";
-import { Auth } from "aws-amplify";
-import { AuthState } from "@aws-amplify/ui-components";
-import { useFormik } from "formik";
+import { AmplifyButton } from '@aws-amplify/ui-react';
+import { Auth } from 'aws-amplify';
+import { AuthState } from '@aws-amplify/ui-components';
+import { useFormik } from 'formik';
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
@@ -15,18 +15,18 @@ interface Props {
 const SignIn = (props: Props): ReactElement => {
   const { setScreen, setUsername } = props;
   const [confirmRequired, setconfirmRequired] = useState<boolean>(false);
-  const [signinAccErr, setSigninAccErr] = useState<string>("");
+  const [signinAccErr, setSigninAccErr] = useState<string>('');
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
     validationSchema: Yup.object({
       email: Yup.string()
-        .required("Please enter your email.")
-        .email("Invalid email address."),
-      password: Yup.string().required("Please enter your password"),
+        .required('Please enter your email.')
+        .email('Invalid email address.'),
+      password: Yup.string().required('Please enter your password'),
     }),
     onSubmit: () => {},
   });
@@ -43,12 +43,12 @@ const SignIn = (props: Props): ReactElement => {
         formik.values.password
       );
       if (res) {
-        setSigninAccErr("");
+        setSigninAccErr('');
       }
     } catch (e) {
-      console.log("error e", e);
-      if (e.code === "UserNotConfirmedException") {
-        setSigninAccErr("Please confirm your email before sign in.");
+      console.log('error e', e);
+      if (e.code === 'UserNotConfirmedException') {
+        setSigninAccErr('Please confirm your email before sign in.');
         setconfirmRequired(true);
       } else {
         setSigninAccErr(e.message);
@@ -70,17 +70,17 @@ const SignIn = (props: Props): ReactElement => {
   const toSignInGoogle = async (): Promise<void> => {
     try {
       //@ts-ignore
-      await Auth.federatedSignIn({ provider: "Google" });
+      await Auth.federatedSignIn({ provider: 'Google' });
     } catch (e) {
-      console.log("[error in google]", e);
+      console.log('[error in google]', e);
     }
   };
   const toSignInFacebook = async (e): Promise<void> => {
     try {
       //@ts-ignore
-      await Auth.federatedSignIn({ provider: "Facebook" });
+      await Auth.federatedSignIn({ provider: 'Facebook' });
     } catch (e) {
-      console.log("[error in facebook]", e);
+      console.log('[error in facebook]', e);
     }
   };
   return (
@@ -109,7 +109,7 @@ const SignIn = (props: Props): ReactElement => {
             onChange={formik.handleChange}
             value={formik.values.email}
             className={`form-control ${
-              formik.touched.email && formik.errors.email ? "is-invalid" : ""
+              formik.touched.email && formik.errors.email ? 'is-invalid' : ''
             }`}
           />
           {formik.touched.email && formik.errors.email && (
@@ -130,8 +130,8 @@ const SignIn = (props: Props): ReactElement => {
             onChange={formik.handleChange}
             className={`form-control ${
               formik.touched.password && formik.errors.password
-                ? "is-invalid"
-                : ""
+                ? 'is-invalid'
+                : ''
             }`}
           />
           {formik.touched.password && formik.errors.password && (
@@ -163,7 +163,7 @@ const SignIn = (props: Props): ReactElement => {
       <style global jsx>{`
         .signUpTitle {
           font-size: 1.5rem;
-          font-family: "Pacifico", cursive;
+          font-family: 'Pacifico', cursive;
         }
         .toSignUp,
         .toConfirm {
