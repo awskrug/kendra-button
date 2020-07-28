@@ -3,6 +3,7 @@ import base64
 import json
 import os
 import sys
+import requests
 
 import boto3
 from botocore.exceptions import ClientError
@@ -25,6 +26,39 @@ SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
 SQS_URL = None
 
 CLIENT = boto3.client('sqs')
+
+SECRET_ID = os.environ.get("SECRET_ID", "devKendraQueryApiKey")
+SECRET_REGION = os.environ.get("SECRET_REGION", "us-west-2")
+
+
+def get_secret():
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(
+        service_name='secretsmanager',
+        region_name=SECRET_REGION
+    )
+
+    # In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
+    # See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+    # We rethrow the exception by default.
+
+    try:
+        get_secret_value_response = client.get_secret_value(
+            SecretId=SECRET_ID
+        )
+    except ClientError as e:
+        raise e
+    else:
+        # Decrypts secret using the associated KMS CMK.
+        # Depending on whether the secret is a string or binary, one of these fields will be populated.
+        if 'SecretString' in get_secret_value_response:
+            secret = get_secret_value_response['SecretString']
+            return secret
+        else:
+            decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
+            return decoded_binary_secret
+
 
 def is_local_env():
     return not RUNTIME_ENV
@@ -146,13 +180,13 @@ async def handler(messages: list):
         base64_doc = base64.b64encode(html.raw_html).decode('UTF-8')
 
         # site title 가져오기 
-        html_title = html.find("title",first=True).text
+        doc_title = html.find("title", first=True).text
 
-
-        Documents=[
+        doc_id = site + ':' + url
+        doc_dict =[
             {
-                'Id': site + ':' + url,
-                'Title': html_title,
+                'Id': doc_id,
+                'Title': doc_title,
                 'Blob': base64_doc,
                 'Attributes': [
                     {
@@ -162,17 +196,31 @@ async def handler(messages: list):
                         },
                     },
                 ],
-            },
+            }
         ]
+        doc_json = json.dumps(doc_dict)
 
+        # Push to Kendra
+        secret = get_secret()
+        kendra_endpoint_info = json.loads(secret)
 
+        req_url = kendra_endpoint_info['endpoint']
+        req_headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-api-key': kendra_endpoint_info['apikey']
+        }
+        res = requests.post(url=kendra_endpoint_info['endpoint'], json=doc_json, headers=req_headers)
+        if res.status_code < 400:
+            pass
+        else:
+            print("Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
+                  .format(str(res.status_code), doc_id, doc_title))
+            continue
 
-
-
-        p = Page.get(site, url) # dynamodb table의 item return
+        # Save to DynamoDB table
+        p = Page.get(site, url)  # dynamodb table의 item return
         p.update([Page.scraped.set(True)])
         p.save()
-
 
         # get links
         links = [l for l in html.absolute_links if l != url]
