@@ -143,7 +143,7 @@ async def handler(messages: list):
 
         }
         # base64 변환
-        base64_doc = base64.b64encode(html.raw_html).encode('UTF-8')
+        base64_doc = base64.b64encode(html.raw_html).decode('UTF-8')
 
         # site title 가져오기 
         html_title = html.find("title",first=True).text
