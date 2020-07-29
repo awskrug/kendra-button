@@ -28,12 +28,12 @@ const SiteCreateModal = (): ReactElement => {
       term: 'd',
     },
     validationSchema: Yup.object({
-      site: Yup.string().required(`"Title"은 필수 입력 항목입니다.`),
+      site: Yup.string().required(`"Title" is a required field`),
       url: Yup.string()
-        .url(`올바르지 않은 "url"입니다.`)
-        .required(`"url"은 필수 입력 항목입니다.`),
-      domain: Yup.string().required(`"domain"은 필수 입력 항목입니다.`),
-      term: Yup.string().required(`"term"은 필수 입력 항목입니다.`),
+        .url(`invalid url address`)
+        .required(`"url" is a required field`),
+      domain: Yup.string().required(`"domain" is a required field`),
+      term: Yup.string().required(`"term" is a required field`),
     }),
     onSubmit: () => {},
   });
@@ -64,6 +64,30 @@ const SiteCreateModal = (): ReactElement => {
     if (loading) return;
     formik.submitForm();
     if (!formik.isValid) {
+      return;
+    }
+    const domainFromUrl = formik.values.url.match(
+      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
+    );
+    const domainFromDomain = formik.values.domain.match(
+      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
+    );
+
+    if (!domainFromUrl || domainFromUrl.length < 2) {
+      formik.setFieldError('url', 'invalid url');
+      return;
+    } else if (
+      domainFromUrl[1] !==
+      ((domainFromDomain && domainFromDomain[1]) || formik.values.domain)
+    ) {
+      formik.setFieldError(
+        'url',
+        'Domain name of this field must match the one entered for "Domain"',
+      );
+      formik.setFieldError(
+        'domain',
+        'Domain name must match the one entered for "Crawling URL"',
+      );
       return;
     }
 
@@ -161,7 +185,7 @@ const SiteCreateModal = (): ReactElement => {
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="input-url"
-                >{`Url to crawl`}</label>
+                >{`Crawling URL`}</label>
                 <input
                   type="text"
                   className={`form-control ${
