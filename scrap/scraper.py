@@ -159,6 +159,15 @@ def verify(pettern, url) -> bool:
     return True
 
 
+def convert_url_to_key(url):
+    char_sets = [':', '/', '.', '?', '&']
+
+    key = url
+    for ch in char_sets:
+        key = key.replace(ch, '_')
+
+    return key
+
 ####
 # message type
 #   msg['site']
@@ -173,49 +182,52 @@ async def handler(messages: list):
         pattern = "*"
         html = await get_page(url)
 
-        documents = {
-
-        }
         # base64 변환
         base64_doc = base64.b64encode(html.raw_html).decode('UTF-8')
 
         # site title 가져오기 
         doc_title = html.find("title", first=True).text
-
         doc_id = site + ':' + url
-        doc_dict =[
-            {
-                'Id': doc_id,
-                'Title': doc_title,
-                'Blob': base64_doc,
-                'Attributes': [
-                    {
-                        'Key': url,
-                        'Value': {
-                            'StringValue': site,  
+        doc_key = convert_url_to_key(url)
+
+        doc_dict = {
+                "IndexId": '57dc87e8-eba9-4f4f-9ccb-cec4ef9a2bc9',
+                "Documents": [
+                {
+                    'Id': doc_id,
+                    'Title': doc_title,
+                    'Blob': base64_doc,
+                    'Attributes': [
+                        {
+                            'Key': doc_key,
+                            'Value': {
+                                'StringValue': site,
+                            },
                         },
-                    },
-                ],
-            }
-        ]
-        doc_json = json.dumps(doc_dict)
+                    ],
+                }
+            ]
+        }
 
         # Push to Kendra
         secret = get_secret()
         kendra_endpoint_info = json.loads(secret)
 
-        req_url = kendra_endpoint_info['endpoint']
+        req_url = "{}/{}/{}".format(kendra_endpoint_info['endpoint'], 'kendra', 'batch_put_document')
         req_headers = {
             'Content-Type': 'application/json; charset=utf-8',
             'x-api-key': kendra_endpoint_info['apikey']
         }
-        res = requests.post(url=kendra_endpoint_info['endpoint'], json=doc_json, headers=req_headers)
+
+        res = requests.post(url=req_url, json=doc_dict, headers=req_headers)
         if res.status_code < 400:
             pass
         else:
             print("Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
                   .format(str(res.status_code), doc_id, doc_title))
             continue
+        print(res.status_code)
+        print(res.text)
 
         # Save to DynamoDB table
         p = Page.get(site, url)  # dynamodb table의 item return
