@@ -18,7 +18,8 @@ interface Props {
 const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
-  const { site, scrapEndpoint, term, crawlerStatus } = props.siteInfo || {};
+  const { site, scrapEndpoint, term, domain, crawlerStatus } =
+    props.siteInfo || {};
   const { total, done } = crawlerStatus || {};
 
   const callEmbed = (): void => {
@@ -59,6 +60,11 @@ const SiteMain = (props: Props): ReactElement => {
 
   return (
     <>
+      <div
+        className={`h3 px-3 d-flex justify-content-between align-items-center`}
+      >
+        {site}
+      </div>
       <div className={`d-flex justify-content-between p-3`}>
         <div
           className={`text-center text-danger`}
@@ -76,19 +82,32 @@ const SiteMain = (props: Props): ReactElement => {
           {/* <button className={`btn btn-warning shadow-sm`}>{`SAVE`}</button> */}
         </div>
       </div>
-      <SiteEdit site={site} />
       <div className={`p-3`}>
         <div className="form-group">
           <label
             className="form-control-label font-weight-bold"
             htmlFor="input-scrapEndpoint"
-          >{`Url to crawl`}</label>
+          >{`Crawling URL`}</label>
           <input
             type="text"
             className="form-control"
             id="input-scrapEndpoint"
             placeholder={`input scrapEndpoint`}
             defaultValue={scrapEndpoint}
+            disabled
+          />
+        </div>
+        <div className="form-group">
+          <label
+            className="form-control-label font-weight-bold"
+            htmlFor="input-scrapEndpoint"
+          >{`Domain`}</label>
+          <input
+            type="text"
+            className="form-control"
+            id="input-domain"
+            placeholder={`input domain`}
+            defaultValue={domain}
             disabled
           />
         </div>
