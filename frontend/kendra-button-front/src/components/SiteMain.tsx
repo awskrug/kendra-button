@@ -1,25 +1,39 @@
+import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
 import { Site, User } from '../types';
+import { deleteSite, updateSite } from '../graphql/queries';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { EmbedInstruction } from './EmbedInstruction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Loader } from './Loader';
 import { ProgressBar } from './ProgressBar';
-import { ReactElement } from 'react';
 import { Search } from './Search';
-import { SiteEdit } from './SiteEdit';
 import { callGraphql } from '../utils';
-import { deleteSite } from '../graphql/queries';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
   user?: User;
   siteInfo?: Site;
 }
+interface ResUpdateSite {
+  updateSite: {
+    site: Site;
+  };
+}
+
 const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
-  const { site, scrapEndpoint, term, crawlerStatus } = props.siteInfo || {};
+  const { site, scrapEndpoint, term, domain, crawlerStatus } =
+    props.siteInfo || {};
+  const [domainInput, setDomainInput] = useState(domain);
+  const [isLoading, setIsLoading] = useState(false);
   const { total, done } = crawlerStatus || {};
+
+  useEffect(() => {
+    setDomainInput(domain);
+  }, [props.siteInfo]);
 
   const callEmbed = (): void => {
     setModalConfig({
@@ -56,9 +70,76 @@ const SiteMain = (props: Props): ReactElement => {
       },
     });
   };
+  const domainOnChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    console.log('onchange');
+    setDomainInput(e.target.value);
+  };
+  const onUpdateSite = async (): Promise<void> => {
+    if (isLoading) {
+      return;
+    }
+    if (!domainInput) {
+      setModalConfig({
+        type: 'plain',
+        display: true,
+        title: 'Update Site validation error',
+        content: '"Domain" field is not typed',
+      });
+      return;
+    }
+
+    const regDomain = domainInput.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+    const compareDomain =
+      (regDomain && regDomain[1]) || domainInput.split('/')[0];
+    const domainFromEndpoint = scrapEndpoint.match(
+      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
+    );
+
+    if (!domainFromEndpoint || domainFromEndpoint.length < 2) {
+      setModalConfig({
+        type: 'plain',
+        display: true,
+        title: 'Update Site validation error',
+        content: '"Crawling URL" value is invalid',
+      });
+      return;
+    }
+
+    if (domainFromEndpoint[1] !== compareDomain) {
+      setModalConfig({
+        type: 'plain',
+        display: true,
+        title: 'Update Site validation error',
+        content: '"Domain" field must match the domain url of "Crawling URL"',
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    const res: GraphQLResult<ResUpdateSite> = await callGraphql({
+      query: updateSite,
+      variables: {
+        site,
+        domain: domainInput,
+      },
+    });
+    setDomainInput(res.data.updateSite.site.domain);
+    setModalConfig({
+      type: 'plain',
+      display: true,
+      title: 'Update Site Success',
+      content: 'Update site info is successfully changed!',
+    });
+    setIsLoading(false);
+  };
 
   return (
     <>
+      <div
+        className={`h3 px-3 d-flex justify-content-between align-items-center`}
+      >
+        {site}
+      </div>
       <div className={`d-flex justify-content-between p-3`}>
         <div
           className={`text-center text-danger`}
@@ -76,20 +157,33 @@ const SiteMain = (props: Props): ReactElement => {
           {/* <button className={`btn btn-warning shadow-sm`}>{`SAVE`}</button> */}
         </div>
       </div>
-      <SiteEdit site={site} />
       <div className={`p-3`}>
         <div className="form-group">
           <label
             className="form-control-label font-weight-bold"
             htmlFor="input-scrapEndpoint"
-          >{`Url to crawl`}</label>
+          >{`Crawling URL`}</label>
           <input
             type="text"
             className="form-control"
             id="input-scrapEndpoint"
             placeholder={`input scrapEndpoint`}
-            defaultValue={scrapEndpoint}
+            value={scrapEndpoint}
             disabled
+          />
+        </div>
+        <div className="form-group">
+          <label
+            className="form-control-label font-weight-bold"
+            htmlFor="input-scrapEndpoint"
+          >{`Domain`}</label>
+          <input
+            type="text"
+            className="form-control"
+            id="input-domain"
+            placeholder={`input domain`}
+            onChange={domainOnChange}
+            value={domainInput}
           />
         </div>
         <div className="form-group">
@@ -100,12 +194,23 @@ const SiteMain = (props: Props): ReactElement => {
           <select
             className="custom-select"
             id="select-term"
-            defaultValue={term || 'd'}
+            value={term || 'd'}
             disabled
           >
             <option value={`d`}>{`Daily`}</option>
             <option value={`h`}>{`Hourly`}</option>
           </select>
+        </div>
+        <div className={`text-right`}>
+          <button
+            className={`btn ${
+              isLoading ? 'disabled' : ''
+            } btn-primary shadow-sm`}
+            onClick={onUpdateSite}
+          >
+            {isLoading && <Loader className={`mr-2`} />}
+            {`UPDATE SITE`}
+          </button>
         </div>
       </div>
       <hr className={`m-3`} />
