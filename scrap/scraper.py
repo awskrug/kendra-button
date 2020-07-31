@@ -217,7 +217,7 @@ async def handler(messages: list):
         if res.status_code < 400:
             pass
         else:
-            print("Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
+            print("[ERROR]Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
                   .format(str(res.status_code), doc_id, doc_title))
             continue
         print(res.status_code)
@@ -226,6 +226,7 @@ async def handler(messages: list):
         # Save to DynamoDB table
         p = Page.get(site, url)  # dynamodb table의 item return
         p.update([Page.scraped.set(True)])
+        p._type = 'html'
         p.save()
 
         # get links
