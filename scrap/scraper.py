@@ -30,6 +30,8 @@ CLIENT = boto3.client('sqs')
 SECRET_ID = os.environ.get("SECRET_ID", "devKendraQueryApiKey")
 SECRET_REGION = os.environ.get("SECRET_REGION", "us-west-2")
 
+KENDRA_INDEX_ID = os.environ.get("KENDRA_INDEX_ID", "f3eca9c5-5307-4347-b573-9fbb20be6658")
+
 
 def get_secret():
     # Create a Secrets Manager client
@@ -191,20 +193,12 @@ async def handler(messages: list):
         doc_key = convert_url_to_key(url)
 
         doc_dict = {
-                "IndexId": '57dc87e8-eba9-4f4f-9ccb-cec4ef9a2bc9',
+                "IndexId": KENDRA_INDEX_ID,
                 "Documents": [
                 {
                     'Id': doc_id,
                     'Title': doc_title,
-                    'Blob': base64_doc,
-                    'Attributes': [
-                        {
-                            'Key': doc_key,
-                            'Value': {
-                                'StringValue': site,
-                            },
-                        },
-                    ],
+                    'Blob': base64_doc
                 }
             ]
         }
