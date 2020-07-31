@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ReactElement, useEffect, useState } from 'react';
 import { Site, User } from '../types';
 import { deleteSite, updateSite } from '../graphql/queries';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
