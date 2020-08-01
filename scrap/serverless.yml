@@ -15,6 +15,9 @@ custom:
     pageQueue: kendra-buttons-page-que-${self:custom.stage}
   s3:
     temp: kendra-buttons-temp-store-${self:custom.stage}
+  role:
+    kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
+    arn: arn:aws:iam::${self:custom.kendra.account}:role/${self:custom.role.kendra_role}
   scrap:
     operator: scrap-${self:custom.stage}-operator
     worker: scrap-${self:custom.stage}-worker
@@ -40,6 +43,7 @@ provider:
     pageDB: ${self:custom.dynamodb.pageDB}
     SQS: ${self:custom.sqs.pageQueue}
     S3: ${self:custom.s3.temp}
+    KENDRA_ROLE: ${self:custom.role.arn}
     PYPPETEER_HOME: '/tmp/'
   iamRoleStatements:
     - Effect: "Allow"

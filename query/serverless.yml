@@ -19,11 +19,42 @@ functions:
       - http: 'ANY {proxy+}'
 
 custom:
+  stage:  ${opt:stage, 'dev'}
   wsgi:
     app: app.app
     pythonBin: python3 # Some systems with Python3 may require this
     packRequirements: false
+  s3:
+    temp: kendra-buttons-temp-store-${self:custom.stage}
+  role:
+    kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
 
 plugins:
   - serverless-wsgi
   - serverless-python-requirements
+
+resources:
+  Resources:
+    KendraRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+          RoleName: ${self:custom.role.kendra_role}
+          AssumeRolePolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Sid: AllowKendraToAssumeAttachedRole
+                Principal:
+                  Service:
+                  - kendra.amazonaws.com
+                Action:
+                  - 'sts:AssumeRole'
+          Policies:
+            - PolicyName: root
+              PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                  - Effect: Allow
+                    Action: "s3:GetObject"
+                    Resource:
+                      - "arn:aws:s3:::kendra-buttons-temp-store-dev/*"

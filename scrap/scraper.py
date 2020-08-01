@@ -27,11 +27,12 @@ RUNTIME_ENV = os.environ.get('AWS_EXECUTION_ENV')
 
 SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
 SQS_URL = None
-
+#  kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
+#     arn: arn:aws:iam::${self:custom.kendra.account}:role/${self:custom.role.kendra_role}
 S3 = os.environ.get('S3', 'kendra-buttons-temp-store-dev')
 BUCKET = boto3.resource('s3').Bucket('kendra-buttons-temp-store-dev')
 CLIENT = boto3.client('sqs')
-
+KENDRA_ROLE_ARN = os.environ.get('KENDRA_ROLE', "arn:aws:iam::294038372338:role/kendra-buttons-put-doc-role-dev")
 SECRET_ID = os.environ.get("SECRET_ID", "devKendraQueryApiKey")
 SECRET_REGION = os.environ.get("SECRET_REGION", "us-west-2")
 
@@ -202,6 +203,7 @@ async def handler(messages: list):
 
         doc_dict = {
             "IndexId": KENDRA_INDEX_ID,
+            "RoleArn":KENDRA_ROLE_ARN,
             "Documents": [
                 {
                     'Id': doc_id,
@@ -210,6 +212,7 @@ async def handler(messages: list):
                         'Bucket': S3,
                         'Key': key,
                     },
+                    "":"",
                     "ContentType": "HTML",
                     "Attributes": [
                         {
