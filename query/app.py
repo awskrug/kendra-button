@@ -41,9 +41,10 @@ def kendra_client(method: str):
         data = request.get_json(silent=True) or {}
         if method == 'batch_put_document':
             for n in range(len(data.get('Documents', []))):
-                b64_doc = data['Documents'][n]['Blob']
-                origin_doc = base64.b64decode(b64_doc)
-                data['Documents'][n]['Blob'] = origin_doc
+                if 'Blob' in data['Documents'][n]:
+                    b64_doc = data['Documents'][n]['Blob']
+                    origin_doc = base64.b64decode(b64_doc)
+                    data['Documents'][n]['Blob'] = origin_doc
 
         return jsonify(getattr(kendra, method)(**data))
     except Exception as e:
