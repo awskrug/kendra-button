@@ -3,10 +3,13 @@ import base64
 import json
 import os
 import sys
-import requests
+from io import BytesIO
 
 import boto3
+import requests
+import shortuuid
 from botocore.exceptions import ClientError
+
 try:
     from .page import Page
 except Exception:
@@ -25,6 +28,8 @@ RUNTIME_ENV = os.environ.get('AWS_EXECUTION_ENV')
 SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
 SQS_URL = None
 
+S3 = os.environ.get('S3', 'kendra-buttons-temp-store-dev')
+BUCKET = boto3.resource('s3').Bucket('kendra-buttons-temp-store-dev')
 CLIENT = boto3.client('sqs')
 
 SECRET_ID = os.environ.get("SECRET_ID", "devKendraQueryApiKey")
@@ -170,6 +175,7 @@ def convert_url_to_key(url):
 
     return key
 
+
 ####
 # message type
 #   msg['site']
@@ -182,23 +188,51 @@ async def handler(messages: list):
         url = msg['url']
         host = msg.get('host')
         pattern = "*"
+        key = shortuuid.uuid(name=url)
         html = await get_page(url)
-
+        f = BytesIO(html.raw_html)
+        BUCKET.upload_fileobj(f, key)
         # base64 변환
-        base64_doc = base64.b64encode(html.raw_html).decode('UTF-8')
+        # base64_doc = base64.b64encode(html.raw_html).decode('UTF-8')
 
         # site title 가져오기 
         doc_title = html.find("title", first=True).text
-        doc_id = site + ':' + url
-        doc_key = convert_url_to_key(url)
+        doc_id = f"{site}:{key}"
+        # doc_key = convert_url_to_key(url)
 
         doc_dict = {
-                "IndexId": KENDRA_INDEX_ID,
-                "Documents": [
+            "IndexId": KENDRA_INDEX_ID,
+            "Documents": [
                 {
                     'Id': doc_id,
                     'Title': doc_title,
-                    'Blob': base64_doc
+                    'S3Path': {
+                        'Bucket': S3,
+                        'Key': key,
+                    },
+                    "ContentType": "HTML",
+                    "Attributes": [
+                        {
+                            "Key": "_source_uri",
+                            "Value": {
+                                "StringValue": url
+                            },
+                        },
+                        {
+                            "Key": "site",
+                            "Value": {
+                                "StringValue": site
+                            },
+                        },
+                        {
+                            "Key": "host",
+                            "Value": {
+                                "StringValue": host
+                            },
+                        },
+
+                    ],
+
                 }
             ]
         }
@@ -217,8 +251,9 @@ async def handler(messages: list):
         if res.status_code < 400:
             pass
         else:
-            print("[ERROR]Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
-                  .format(str(res.status_code), doc_id, doc_title))
+            print(
+                "[ERROR]Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
+                    .format(str(res.status_code), doc_id, doc_title))
             continue
         print(res.status_code)
         print(res.text)
@@ -231,10 +266,10 @@ async def handler(messages: list):
 
         # get links
         links = [l for l in html.absolute_links if l != url]
-        with Page.batch_write() as batch: #dynamodb table의 batch 작업
+        with Page.batch_write() as batch:  # dynamodb table의 batch 작업
             items = [Page(site, link, _type='html') for link in links if verify(pattern, url)]
             for item in items:
-                batch.save(item) # dynamodb에 넣기
+                batch.save(item)  # dynamodb에 넣기
 
 
 def worker(request, context):
@@ -266,7 +301,7 @@ def worker(request, context):
         for record in request['Records']:
             body = json.loads(record["body"])
             url = body["url"]
-            message = { "body": body, "url": url}
+            message = {"body": body, "url": url}
             messages.append(message)
 
     except Exception as e:
@@ -276,8 +311,6 @@ def worker(request, context):
         raise e
 
     asyncio.get_event_loop().run_until_complete(handler(messages))
-
-
 
 
 if __name__ == '__main__':

@@ -13,6 +13,8 @@ custom:
     pageDB: kendra-buttons-index-${self:custom.stage}
   sqs:
     pageQueue: kendra-buttons-page-que-${self:custom.stage}
+  s3:
+    temp: kendra-buttons-temp-store-${self:custom.stage}
   scrap:
     operator: scrap-${self:custom.stage}-operator
     worker: scrap-${self:custom.stage}-worker
@@ -37,6 +39,7 @@ provider:
     siteDB: ${self:custom.dynamodb.siteDB}
     pageDB: ${self:custom.dynamodb.pageDB}
     SQS: ${self:custom.sqs.pageQueue}
+    S3: ${self:custom.s3.temp}
     PYPPETEER_HOME: '/tmp/'
   iamRoleStatements:
     - Effect: "Allow"
@@ -184,3 +187,12 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: "${self:custom.sqs.pageQueue}"
+    TempBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: "${self:custom.s3.temp}"
+        LifecycleConfiguration:
+          Rules:
+            - Id: tempRule
+              Status: Enabled
+              ExpirationInDays: '3'
