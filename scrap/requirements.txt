@@ -41,7 +41,6 @@ singledispatch==3.4.0.3
 six==1.15.0
 soupsieve==2.0.1
 tqdm==4.47.0
-typing==3.7.4.3
 urllib3==1.25.9
 w3lib==1.22.0
 websockets==8.1

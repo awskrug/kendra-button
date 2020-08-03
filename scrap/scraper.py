@@ -317,10 +317,8 @@ def worker(request, context):
 
     try:
         for record in request['Records']:
-            body = json.loads(record["body"])
-            url = body["url"]
-            message = {"body": body, "url": url}
-            messages.append(message)
+            body_json = json.loads(record["body"])
+            messages.append(body_json)
 
     except Exception as e:
         # Send some context about this error to Lambda Logs
