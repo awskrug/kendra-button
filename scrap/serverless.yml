@@ -14,7 +14,7 @@ custom:
   sqs:
     pageQueue: kendra-buttons-page-que-${self:custom.stage}
   s3:
-    temp: kendra-buttons-temp-store-${self:custom.stage}
+    store: kendra-buttons-store-${self:custom.stage}
   role:
     kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
     arn: arn:aws:iam::${self:custom.kendra.account}:role/${self:custom.role.kendra_role}
@@ -42,7 +42,7 @@ provider:
     siteDB: ${self:custom.dynamodb.siteDB}
     pageDB: ${self:custom.dynamodb.pageDB}
     SQS: ${self:custom.sqs.pageQueue}
-    S3: ${self:custom.s3.temp}
+    S3: ${self:custom.s3.store}
     KENDRA_ROLE: ${self:custom.role.arn}
     PYPPETEER_HOME: '/tmp/'
   iamRoleStatements:
@@ -194,9 +194,4 @@ resources:
     TempBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: "${self:custom.s3.temp}"
-        LifecycleConfiguration:
-          Rules:
-            - Id: tempRule
-              Status: Enabled
-              ExpirationInDays: '3'
+        BucketName: "${self:custom.s3.store}"

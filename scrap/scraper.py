@@ -3,10 +3,9 @@ import base64
 import json
 import os
 import sys
-from io import BytesIO
+from io import BytesIO, StringIO
 
 import boto3
-import requests
 import shortuuid
 from botocore.exceptions import ClientError
 
@@ -190,76 +189,92 @@ async def handler(messages: list):
         host = msg.get('host')
         pattern = "*"
         key = shortuuid.uuid(name=url)
+        meta_key = f"{key}.metadata.json"
         html = await get_page(url)
         f = BytesIO(html.raw_html)
         BUCKET.upload_fileobj(f, key)
+
+        doc_title = html.find("title", first=True).text
+        doc_id = f"{site}:{key}"
+
+        metadata = {
+            "DocumentId": doc_id,
+            "Attributes": {
+                "_source_uri": url,
+                "site": site,
+                "host": host,
+            },
+            "Title": doc_title,
+            "ContentType": "HTML",
+        }
+
+        meta_obj = StringIO(json.dumps(metadata, ensure_ascii=False))
+        BUCKET.upload_fileobj(meta_obj, meta_key)
         # base64 변환
         # base64_doc = base64.b64encode(html.raw_html).decode('UTF-8')
 
         # site title 가져오기 
-        doc_title = html.find("title", first=True).text
-        doc_id = f"{site}:{key}"
+
         # doc_key = convert_url_to_key(url)
 
-        doc_dict = {
-            "IndexId": KENDRA_INDEX_ID,
-            "RoleArn":KENDRA_ROLE_ARN,
-            "Documents": [
-                {
-                    'Id': doc_id,
-                    'Title': doc_title,
-                    'S3Path': {
-                        'Bucket': S3,
-                        'Key': key,
-                    },
-                    "":"",
-                    "ContentType": "HTML",
-                    "Attributes": [
-                        {
-                            "Key": "_source_uri",
-                            "Value": {
-                                "StringValue": url
-                            },
-                        },
-                        {
-                            "Key": "site",
-                            "Value": {
-                                "StringValue": site
-                            },
-                        },
-                        {
-                            "Key": "host",
-                            "Value": {
-                                "StringValue": host
-                            },
-                        },
-
-                    ],
-
-                }
-            ]
-        }
+        # doc_dict = {
+        #     "IndexId": KENDRA_INDEX_ID,
+        #     "RoleArn": KENDRA_ROLE_ARN,
+        #     "Documents": [
+        #         {
+        #             'Id': doc_id,
+        #             'Title': doc_title,
+        #             'S3Path': {
+        #                 'Bucket': S3,
+        #                 'Key': key,
+        #             },
+        #             "ContentType": "HTML",
+        #             "Attributes": [
+        #                 {
+        #                     "Key": "_source_uri",
+        #                     "Value": {
+        #                         "StringValue": url
+        #                     },
+        #                 },
+        #                 {
+        #                     "Key": "site",
+        #                     "Value": {
+        #                         "StringValue": site
+        #                     },
+        #                 },
+        #                 {
+        #                     "Key": "host",
+        #                     "Value": {
+        #                         "StringValue": host
+        #                     },
+        #                 },
+        #
+        #             ],
+        #
+        #         }
+        #     ]
+        # }
 
         # Push to Kendra
-        secret = get_secret()
-        kendra_endpoint_info = json.loads(secret)
+        # secret = get_secret()
+        # kendra_endpoint_info = json.loads(secret)
+        #
+        # req_url = "{}/{}/{}".format(kendra_endpoint_info['endpoint'], 'kendra', 'batch_put_document')
+        # req_headers = {
+        #     'Content-Type': 'application/json; charset=utf-8',
+        #     'x-api-key': kendra_endpoint_info['apikey']
+        # }
 
-        req_url = "{}/{}/{}".format(kendra_endpoint_info['endpoint'], 'kendra', 'batch_put_document')
-        req_headers = {
-            'Content-Type': 'application/json; charset=utf-8',
-            'x-api-key': kendra_endpoint_info['apikey']
-        }
-
-        res = requests.post(url=req_url, json=doc_dict, headers=req_headers)
-        if res.status_code < 400:
-            pass
-        else:
-            print(
-                "[ERROR]Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
-                    .format(str(res.status_code), doc_id, doc_title))
-            continue
-        print(res.status_code)
-        print(res.text)
+        # res = requests.post(url=req_url, json=doc_dict, headers=req_headers)
+        # if res.status_code < 400:
+        #     pass
+        # else:
+        #     print(
+        #         "[ERROR]Unable to store the document into Kendra. Status code: {}, Document ID: '{}', Document Title: '{}'"
+        #             .format(str(res.status_code), doc_id, doc_title))
+        #     continue
+        # print(res.status_code)
+        # print(res.text)
 
         # Save to DynamoDB table
         p = Page.get(site, url)  # dynamodb table의 item return
