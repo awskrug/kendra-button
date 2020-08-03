@@ -3,7 +3,7 @@ import base64
 import json
 import os
 import sys
-from io import BytesIO, StringIO
+from io import BytesIO
 
 import boto3
 import shortuuid
@@ -208,7 +208,7 @@ async def handler(messages: list):
             "ContentType": "HTML",
         }
 
-        meta_obj = StringIO(json.dumps(metadata, ensure_ascii=False))
+        meta_obj = BytesIO(json.dumps(metadata, ensure_ascii=False).encode('utf-8'))
         BUCKET.upload_fileobj(meta_obj, meta_key)
         # base64 변환
         # base64_doc = base64.b64encode(html.raw_html).decode('UTF-8')
