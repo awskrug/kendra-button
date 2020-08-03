@@ -28,8 +28,8 @@ SQS = os.environ.get('SQS', 'kendra-buttons-page-que-dev')
 SQS_URL = None
 #  kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
 #     arn: arn:aws:iam::${self:custom.kendra.account}:role/${self:custom.role.kendra_role}
-S3 = os.environ.get('S3', 'kendra-buttons-temp-store-dev')
-BUCKET = boto3.resource('s3').Bucket('kendra-buttons-temp-store-dev')
+S3 = os.environ.get('S3', 'kendra-button')
+BUCKET = boto3.resource('s3').Bucket(S3)
 CLIENT = boto3.client('sqs')
 KENDRA_ROLE_ARN = os.environ.get('KENDRA_ROLE', "arn:aws:iam::294038372338:role/kendra-buttons-put-doc-role-dev")
 SECRET_ID = os.environ.get("SECRET_ID", "devKendraQueryApiKey")

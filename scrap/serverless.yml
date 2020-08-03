@@ -14,7 +14,7 @@ custom:
   sqs:
     pageQueue: kendra-buttons-page-que-${self:custom.stage}
   s3:
-    store: kendra-buttons-store-${self:custom.stage}
+    store: kendra-button
   role:
     kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
     arn: arn:aws:iam::${self:custom.kendra.account}:role/${self:custom.role.kendra_role}
