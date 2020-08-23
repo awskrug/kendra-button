@@ -950,3 +950,5 @@ scrap/vendor
 !scrap/vendor/bin/headless-chromium
 
 scrap/terraform/deployment.zip
+!/scrap/vendor/requirements.txt
+!/scrap/vendor/bin/

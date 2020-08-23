@@ -1,0 +1,12 @@
+lxml
+shortuuid
+boto3
+requests_html
+flask
+pynamodb
+graphene
+graphene-pynamodb
+Flask-GraphQL
+flask-cors
+beautifulsoup4
+chalice
