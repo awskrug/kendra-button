@@ -9,17 +9,8 @@ import boto3
 import shortuuid
 from botocore.exceptions import ClientError
 
-try:
-    from .page import Page
-except Exception:
-    from page import Page
-
-try:
-    from .utils import AsyncCutBrowserSession
-    from .utils import Dict2Obj
-except Exception as e:
-    from utils import AsyncCutBrowserSession
-    from utils import Dict2Obj
+from chalicelib.page import Page
+from chalicelib.utils import AsyncCutBrowserSession, Dict2Obj
 
 OPERATOR = "OPERATOR"
 RUNTIME_ENV = os.environ.get('AWS_EXECUTION_ENV')
@@ -32,7 +23,7 @@ S3 = os.environ.get('S3', 'kendra-button')
 BUCKET = boto3.resource('s3').Bucket(S3)
 CLIENT = boto3.client('sqs')
 KENDRA_ROLE_ARN = os.environ.get('KENDRA_ROLE', "arn:aws:iam::294038372338:role/kendra-buttons-put-doc-role-dev")
-SECRET_ID = os.environ.get("SECRET_ID", "devKendraQueryApiKey")
+SECRET_ID = os.environ.get("SECRET_ID", "kendera-btn/dev/secretes")
 SECRET_REGION = os.environ.get("SECRET_REGION", "us-west-2")
 
 KENDRA_INDEX_ID = os.environ.get("KENDRA_INDEX_ID", "f3eca9c5-5307-4347-b573-9fbb20be6658")
