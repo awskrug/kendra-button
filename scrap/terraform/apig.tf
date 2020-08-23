@@ -1,5 +1,11 @@
+provider "aws" {
+  alias = "virginia"
+  region = "us-east-1"
+}
+
 data "aws_acm_certificate" "custom_domain_cert" {
   domain = "kendra-btns.whatilearened.today"
+  provider = "aws.virginia"
 }
 data "aws_route53_zone" "whatilearened" {
   name = "whatilearened.today."

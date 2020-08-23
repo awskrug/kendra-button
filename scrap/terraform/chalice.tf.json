@@ -1,5 +1,15 @@
 {
   "resource": {
+    "aws_lambda_layer_version": {
+      "managed-layer": {
+        "layer_name": "kendera-scrap-dev-managed-layer",
+        "compatible_runtimes": [
+          "python3.8"
+        ],
+        "filename": "${path.module}/layer-deployment.zip",
+        "source_code_hash": "${filebase64sha256(\"${path.module}/layer-deployment.zip\")}"
+      }
+    },
     "aws_iam_role": {
       "default-role": {
         "name": "kendera-scrap-dev",
@@ -9,18 +19,18 @@
     "aws_iam_role_policy": {
       "default-role": {
         "name": "default-rolePolicy",
-        "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"logs:CreateLogGroup\", \"logs:CreateLogStream\", \"logs:PutLogEvents\"], \"Resource\": \"arn:*:logs:*:*:*\"}]}",
+        "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"logs:CreateLogGroup\", \"logs:CreateLogStream\", \"logs:PutLogEvents\"], \"Resource\": \"arn:*:logs:*:*:*\"}, {\"Effect\": \"Allow\", \"Action\": [\"sqs:ReceiveMessage\", \"sqs:DeleteMessage\", \"sqs:GetQueueAttributes\"], \"Resource\": \"*\"}]}",
         "role": "${aws_iam_role.default-role.id}"
       }
     },
     "aws_lambda_function": {
-      "api_handler": {
-        "function_name": "kendera-scrap-dev",
+      "operator": {
+        "function_name": "kendera-scrap-dev-operator",
         "runtime": "python3.8",
-        "handler": "app.app",
+        "handler": "app.operator_handler",
         "memory_size": 512,
         "tags": {
-          "aws-chalice": "version=1.17.0:stage=dev:app=kendera-scrap"
+          "aws-chalice": "version=1.18.0:stage=dev:app=kendera-scrap"
         },
         "timeout": 60,
         "source_code_hash": "${filebase64sha256(\"${path.module}/deployment.zip\")}",
@@ -30,7 +40,59 @@
             "PYPPETEER_HOME": "/tmp/"
           }
         },
+        "layers": [
+          "${aws_lambda_layer_version.managed-layer.arn}"
+        ],
         "role": "${aws_iam_role.default-role.arn}"
+      },
+      "worker_handler": {
+        "function_name": "kendera-scrap-dev-worker_handler",
+        "runtime": "python3.8",
+        "handler": "app.worker_handler",
+        "memory_size": 768,
+        "tags": {
+          "aws-chalice": "version=1.18.0:stage=dev:app=kendera-scrap"
+        },
+        "timeout": 300,
+        "source_code_hash": "${filebase64sha256(\"${path.module}/deployment.zip\")}",
+        "filename": "${path.module}/deployment.zip",
+        "environment": {
+          "variables": {
+            "PYPPETEER_HOME": "/tmp/"
+          }
+        },
+        "layers": [
+          "${aws_lambda_layer_version.managed-layer.arn}"
+        ],
+        "role": "${aws_iam_role.default-role.arn}"
+      },
+      "api_handler": {
+        "function_name": "kendera-scrap-dev",
+        "runtime": "python3.8",
+        "handler": "app.app",
+        "memory_size": 512,
+        "tags": {
+          "aws-chalice": "version=1.18.0:stage=dev:app=kendera-scrap"
+        },
+        "timeout": 60,
+        "source_code_hash": "${filebase64sha256(\"${path.module}/deployment.zip\")}",
+        "filename": "${path.module}/deployment.zip",
+        "environment": {
+          "variables": {
+            "PYPPETEER_HOME": "/tmp/"
+          }
+        },
+        "layers": [
+          "${aws_lambda_layer_version.managed-layer.arn}"
+        ],
+        "role": "${aws_iam_role.default-role.arn}"
+      }
+    },
+    "aws_lambda_event_source_mapping": {
+      "worker_handler-sqs-event-source": {
+        "event_source_arn": "arn:${data.aws_partition.chalice.partition}:sqs:${data.aws_region.chalice.name}:${data.aws_caller_identity.chalice.account_id}:kendra-btns-page-que-dev",
+        "batch_size": 10,
+        "function_name": "kendera-scrap-dev-worker_handler"
       }
     },
     "aws_api_gateway_rest_api": {
@@ -115,13 +177,16 @@
     },
     "template_file": {
       "chalice_api_swagger": {
-        "template": "{\"swagger\": \"2.0\", \"info\": {\"version\": \"1.0\", \"title\": \"kendra-scrap\"}, \"schemes\": [\"https\"], \"paths\": {\"/graphql\": {\"post\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\"}}, \"uri\": \"${aws_lambda_function.api_handler.invoke_arn}\", \"passthroughBehavior\": \"when_no_match\", \"httpMethod\": \"POST\", \"contentHandling\": \"CONVERT_TO_TEXT\", \"type\": \"aws_proxy\"}, \"security\": [{\"KendraBtnUserPool\": []}]}, \"options\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}, \"headers\": {\"Access-Control-Allow-Methods\": {\"type\": \"string\"}, \"Access-Control-Allow-Origin\": {\"type\": \"string\"}, \"Access-Control-Allow-Headers\": {\"type\": \"string\"}}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\", \"responseParameters\": {\"method.response.header.Access-Control-Allow-Methods\": \"'POST,OPTIONS'\", \"method.response.header.Access-Control-Allow-Origin\": \"'*'\", \"method.response.header.Access-Control-Allow-Headers\": \"'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'\"}}}, \"requestTemplates\": {\"application/json\": \"{\\\"statusCode\\\": 200}\"}, \"passthroughBehavior\": \"when_no_match\", \"type\": \"mock\", \"contentHandling\": \"CONVERT_TO_TEXT\"}}}, \"/noauth/graphql\": {\"post\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\"}}, \"uri\": \"${aws_lambda_function.api_handler.invoke_arn}\", \"passthroughBehavior\": \"when_no_match\", \"httpMethod\": \"POST\", \"contentHandling\": \"CONVERT_TO_TEXT\", \"type\": \"aws_proxy\"}}, \"options\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}, \"headers\": {\"Access-Control-Allow-Methods\": {\"type\": \"string\"}, \"Access-Control-Allow-Origin\": {\"type\": \"string\"}, \"Access-Control-Allow-Headers\": {\"type\": \"string\"}}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\", \"responseParameters\": {\"method.response.header.Access-Control-Allow-Methods\": \"'POST,OPTIONS'\", \"method.response.header.Access-Control-Allow-Origin\": \"'*'\", \"method.response.header.Access-Control-Allow-Headers\": \"'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'\"}}}, \"requestTemplates\": {\"application/json\": \"{\\\"statusCode\\\": 200}\"}, \"passthroughBehavior\": \"when_no_match\", \"type\": \"mock\", \"contentHandling\": \"CONVERT_TO_TEXT\"}}}}, \"definitions\": {\"Empty\": {\"type\": \"object\", \"title\": \"Empty Schema\"}}, \"x-amazon-apigateway-binary-media-types\": [\"application/octet-stream\", \"application/x-tar\", \"application/zip\", \"audio/basic\", \"audio/ogg\", \"audio/mp4\", \"audio/mpeg\", \"audio/wav\", \"audio/webm\", \"image/png\", \"image/jpg\", \"image/jpeg\", \"image/gif\", \"video/ogg\", \"video/mpeg\", \"video/webm\"], \"securityDefinitions\": {\"KendraBtnUserPool\": {\"in\": \"header\", \"type\": \"apiKey\", \"name\": \"Authorization\", \"x-amazon-apigateway-authtype\": \"cognito_user_pools\", \"x-amazon-apigateway-authorizer\": {\"type\": \"cognito_user_pools\", \"providerARNs\": [\"arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_XT1s3RtPp\"]}}}}"
+        "template": "{\"swagger\": \"2.0\", \"info\": {\"version\": \"1.0\", \"title\": \"kendra-scrap\"}, \"schemes\": [\"https\"], \"paths\": {\"/graphql\": {\"get\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\"}}, \"uri\": \"${aws_lambda_function.api_handler.invoke_arn}\", \"passthroughBehavior\": \"when_no_match\", \"httpMethod\": \"POST\", \"contentHandling\": \"CONVERT_TO_TEXT\", \"type\": \"aws_proxy\"}, \"security\": [{\"KendraBtnUserPool\": []}]}, \"post\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\"}}, \"uri\": \"${aws_lambda_function.api_handler.invoke_arn}\", \"passthroughBehavior\": \"when_no_match\", \"httpMethod\": \"POST\", \"contentHandling\": \"CONVERT_TO_TEXT\", \"type\": \"aws_proxy\"}, \"security\": [{\"KendraBtnUserPool\": []}]}, \"options\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}, \"headers\": {\"Access-Control-Allow-Methods\": {\"type\": \"string\"}, \"Access-Control-Allow-Origin\": {\"type\": \"string\"}, \"Access-Control-Allow-Headers\": {\"type\": \"string\"}}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\", \"responseParameters\": {\"method.response.header.Access-Control-Allow-Methods\": \"'GET,POST,OPTIONS'\", \"method.response.header.Access-Control-Allow-Origin\": \"'*'\", \"method.response.header.Access-Control-Allow-Headers\": \"'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'\"}}}, \"requestTemplates\": {\"application/json\": \"{\\\"statusCode\\\": 200}\"}, \"passthroughBehavior\": \"when_no_match\", \"type\": \"mock\", \"contentHandling\": \"CONVERT_TO_TEXT\"}}}, \"/noauth/graphql\": {\"get\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\"}}, \"uri\": \"${aws_lambda_function.api_handler.invoke_arn}\", \"passthroughBehavior\": \"when_no_match\", \"httpMethod\": \"POST\", \"contentHandling\": \"CONVERT_TO_TEXT\", \"type\": \"aws_proxy\"}}, \"post\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\"}}, \"uri\": \"${aws_lambda_function.api_handler.invoke_arn}\", \"passthroughBehavior\": \"when_no_match\", \"httpMethod\": \"POST\", \"contentHandling\": \"CONVERT_TO_TEXT\", \"type\": \"aws_proxy\"}}, \"options\": {\"consumes\": [\"application/json\"], \"produces\": [\"application/json\"], \"responses\": {\"200\": {\"description\": \"200 response\", \"schema\": {\"$ref\": \"#/definitions/Empty\"}, \"headers\": {\"Access-Control-Allow-Methods\": {\"type\": \"string\"}, \"Access-Control-Allow-Origin\": {\"type\": \"string\"}, \"Access-Control-Allow-Headers\": {\"type\": \"string\"}}}}, \"x-amazon-apigateway-integration\": {\"responses\": {\"default\": {\"statusCode\": \"200\", \"responseParameters\": {\"method.response.header.Access-Control-Allow-Methods\": \"'GET,POST,OPTIONS'\", \"method.response.header.Access-Control-Allow-Origin\": \"'*'\", \"method.response.header.Access-Control-Allow-Headers\": \"'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key'\"}}}, \"requestTemplates\": {\"application/json\": \"{\\\"statusCode\\\": 200}\"}, \"passthroughBehavior\": \"when_no_match\", \"type\": \"mock\", \"contentHandling\": \"CONVERT_TO_TEXT\"}}}}, \"definitions\": {\"Empty\": {\"type\": \"object\", \"title\": \"Empty Schema\"}}, \"x-amazon-apigateway-binary-media-types\": [\"application/octet-stream\", \"application/x-tar\", \"application/zip\", \"audio/basic\", \"audio/ogg\", \"audio/mp4\", \"audio/mpeg\", \"audio/wav\", \"audio/webm\", \"image/png\", \"image/jpg\", \"image/jpeg\", \"image/gif\", \"video/ogg\", \"video/mpeg\", \"video/webm\"], \"securityDefinitions\": {\"KendraBtnUserPool\": {\"in\": \"header\", \"type\": \"apiKey\", \"name\": \"Authorization\", \"x-amazon-apigateway-authtype\": \"cognito_user_pools\", \"x-amazon-apigateway-authorizer\": {\"type\": \"cognito_user_pools\", \"providerARNs\": [\"arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_XT1s3RtPp\"]}}}}"
       }
     }
   },
   "output": {
     "EndpointURL": {
       "value": "${aws_api_gateway_deployment.rest_api.invoke_url}"
+    },
+    "RestAPIId": {
+      "value": "${aws_api_gateway_rest_api.rest_api.id}"
     }
   }
 }

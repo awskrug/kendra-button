@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "lambda_policy" {
-  name        = "views_lambda_policy_${data.null_data_source.chalice.inputs.stage}"
-  description = "views lambda resource access policy"
+  name        = "kendra_lambda_policy_${data.null_data_source.chalice.inputs.stage}"
+  description = "kendra lambda resource access policy"
 
   policy = <<EOF
 {

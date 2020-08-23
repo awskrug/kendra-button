@@ -1,7 +1,6 @@
-POST https://8pfums0mu7.execute-api.us-west-2.amazonaws.com/dev/graphql
+POST https://dev.kendra-btns.whatilearened.today/noauth/graphql
 Content-Type: application/json
 X-REQUEST-TYPE: GraphQL
-Authorization: Bearer asdfasdfa
 
 query SiteList{
 	sites{

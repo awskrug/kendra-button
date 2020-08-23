@@ -53,6 +53,7 @@ class Query:
     def resolve_sites(self, info):
         results = []
         try:
+            print('sites request user', info.context.get('user'))
             results = list(Site.query(info.context.get('user')))
         except Exception as e:
             print(e)

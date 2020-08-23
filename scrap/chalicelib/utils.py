@@ -1,14 +1,23 @@
 import os
 
+import boto3
 import pyppeteer
 import shortuuid
 from requests_html import AsyncHTMLSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CHROMIUM = os.path.join(BASE_DIR, 'bin', 'headless-chromium')
+CHROMIUM = os.path.join('tmp', 'headless-chromium')
 
 
 class AsyncCutBrowserSession(AsyncHTMLSession):
+
+    def check_chromium(self):
+        if os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+            if not os.path.isfile(CHROMIUM):
+                s3 = boto3.client('s3')
+                with open(CHROMIUM, 'wb') as f:
+                    s3.download_fileobj('kendra-btns-assets', 'headless-chromium', f)
+
     @property
     async def browser(self):
         if not hasattr(self, "_browser"):
@@ -19,6 +28,7 @@ class AsyncCutBrowserSession(AsyncHTMLSession):
                 'args': self.__browser_args
             }
             if os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+                self.check_chromium()
                 kwargs['executablePath'] = CHROMIUM
 
             self._browser = await pyppeteer.launch(**kwargs)

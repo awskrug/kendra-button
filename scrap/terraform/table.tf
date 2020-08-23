@@ -34,8 +34,15 @@ resource "aws_dynamodb_table" "page_db" {
     name = "url"
     type = "S"
   }
-
+  stream_enabled = true
+  stream_view_type = "NEW_AND_OLD_IMAGES"
   tags = {
     Project        = "kendra-button"
   }
+}
+
+resource "aws_lambda_event_source_mapping" "page_stream" {
+  event_source_arn = aws_dynamodb_table.page_db.stream_arn
+  function_name = aws_lambda_function.api_handler.function_name
+  starting_position = "LATEST"
 }

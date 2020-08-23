@@ -952,3 +952,5 @@ scrap/vendor
 scrap/terraform/deployment.zip
 !/scrap/vendor/requirements.txt
 !/scrap/vendor/bin/
+
+scrap/terraform/layer-deployment.zip

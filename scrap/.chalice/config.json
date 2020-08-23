@@ -4,9 +4,16 @@
   "stages": {
     "dev": {
       "api_gateway_stage": "dev",
+      "automatic_layer": true,
       "lambda_memory_size": 512,
       "environment_variables": {
         "PYPPETEER_HOME": "/tmp/"
+      },
+      "lambda_functions": {
+        "worker_handler": {
+          "lambda_memory_size": 768,
+          "lambda_timeout": 300
+        }
       }
     }
   }
