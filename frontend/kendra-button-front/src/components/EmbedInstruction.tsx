@@ -35,14 +35,16 @@ const EmbedInstruction = (props: Props): ReactElement => {
     <>
       <>
         <p>
-          Copy and paste this code in your website's{' '}
+          <u>Choose one of the cases</u> below, and <u>Copy&amp;paste</u> this
+          code in your website's{' '}
           <span className={'badge-pill badge-info'}>{`<head>`}</span> tag.
         </p>
+        <hr className={`my-4`} />
         <div className={``}>
           <div
             className={`d-flex justify-content-between align-items-center my-2`}
           >
-            <div className={`h5`}>Code: Place in the site's content</div>
+            <div className={`h5`}>Place in the site's content</div>
             <div
               className={`btn-sm btn-secondary text-nowrap`}
               onClick={copyCode({ setState: setCopiedOne, ref: codeRefOne })}
@@ -81,11 +83,12 @@ const EmbedInstruction = (props: Props): ReactElement => {
             </div>
           </div>
         </div>
-        <div className={`mt-5`}>
+        <hr className={`my-4`} />
+        <div className={``}>
           <div
             className={`d-flex justify-content-between align-items-center my-2`}
           >
-            <div className={`h5`}>Code: Place the fixed floating screen</div>
+            <div className={`h5`}>Place the fixed floating screen</div>
             <div
               className={`btn-sm btn-secondary text-nowrap`}
               onClick={copyCode({ setState: setCopiedTwo, ref: codeRefTwo })}
@@ -113,13 +116,13 @@ const EmbedInstruction = (props: Props): ReactElement => {
             </div>
           </div>
         </div>
-        <div className={`mt-5`}>
+        <hr className={`my-4`} />
+        <div className={``}>
           <div
             className={`d-flex justify-content-between align-items-center my-2`}
           >
             <div className={`h5`}>
-              Code: Place in the site's content and Place the fixed floating
-              screen
+              Place in the site's content and Place the fixed floating screen
             </div>
             <div
               className={`btn-sm btn-secondary text-nowrap`}
@@ -144,8 +147,9 @@ const EmbedInstruction = (props: Props): ReactElement => {
         `}</div>
           <div className={`p-2`}>
             <div>
-              * this option can display both placing in the site's content and
-              place the fixed floating screen in your{' '}
+              * this option can display both{' '}
+              <u>placing in the site's content</u> and
+              <u>place the fixed floating screen</u> in your{' '}
               <span className={`font-weight-bold`}>"{scrapEndpoint}"</span>{' '}
               website.
             </div>
