@@ -22,8 +22,8 @@ const oauthConfig = awsconfig.oauth
               .filter((url) => !url.includes('localhost'))[0],
     }
   : {};
-const url =
-  'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/graphql';
+const url = 'https://dev.kendra-btns.whatilearened.today/graphql';
+
 Amplify.configure({
   ...awsconfig,
   oauth: oauthConfig,
