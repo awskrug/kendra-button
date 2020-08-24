@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
 
 import { MouseEvent, ReactElement, useState } from 'react';
+import { callGraphql, regDomain } from '../utils';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Site } from '../types';
-import { callGraphql } from '../utils';
 import { createSite } from '../graphql/queries';
 import { useFormik } from 'formik';
 
@@ -66,12 +66,8 @@ const SiteCreateModal = (): ReactElement => {
     if (!formik.isValid) {
       return;
     }
-    const domainFromUrl = formik.values.url.match(
-      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
-    );
-    const domainFromDomain = formik.values.domain.match(
-      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
-    );
+    const domainFromUrl = formik.values.url.match(regDomain);
+    const domainFromDomain = formik.values.domain.match(regDomain);
 
     if (!domainFromUrl || domainFromUrl.length < 2) {
       formik.setFieldError('url', 'invalid url');
@@ -92,6 +88,8 @@ const SiteCreateModal = (): ReactElement => {
     }
 
     setLoading(true);
+    console.log('passed');
+    return;
 
     const res: GraphQLResult<ResCreateSite> = await callGraphql({
       query: createSite,

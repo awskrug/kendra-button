@@ -1,5 +1,6 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from 'react';
 import { Site, User } from '../types';
+import { callGraphql, regDomain } from '../utils';
 import { deleteSite, updateSite } from '../graphql/queries';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
@@ -7,10 +8,12 @@ import { EmbedInstruction } from './EmbedInstruction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Loader } from './Loader';
+import { Logger } from 'aws-amplify';
 import { ProgressBar } from './ProgressBar';
 import { Search } from './Search';
-import { callGraphql } from '../utils';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
+
+const logger = new Logger('SiteMain');
 
 interface Props {
   user?: User;
@@ -58,9 +61,11 @@ const SiteMain = (props: Props): ReactElement => {
               site,
             },
           });
-          console.log('delete res', res);
+          // console.log('delete res', res);
+          logger.debug('delete res', res);
         } catch (e) {
-          console.log('catch e', e);
+          // console.log('catch e', e);
+          logger.error('catch e', e);
         } finally {
           dispatch({
             type: 'delete-site',
@@ -71,7 +76,8 @@ const SiteMain = (props: Props): ReactElement => {
     });
   };
   const domainOnChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log('onchange');
+    // console.log('onchange');
+    logger.info('onchange');
     setDomainInput(e.target.value);
   };
   const onUpdateSite = async (): Promise<void> => {
@@ -88,12 +94,14 @@ const SiteMain = (props: Props): ReactElement => {
       return;
     }
 
-    const regDomain = domainInput.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
+    const validatedDomainInput = domainInput.match(regDomain);
     const compareDomain =
-      (regDomain && regDomain[1]) || domainInput.split('/')[0];
-    const domainFromEndpoint = scrapEndpoint.match(
-      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
-    );
+      (validatedDomainInput && validatedDomainInput[1]) ||
+      domainInput.split('/')[0];
+    const domainFromEndpoint = scrapEndpoint.match(regDomain);
+
+    logger.info({ validatedDomainInput, compareDomain, domainFromEndpoint });
+    return;
 
     if (!domainFromEndpoint || domainFromEndpoint.length < 2) {
       setModalConfig({
@@ -136,7 +144,7 @@ const SiteMain = (props: Props): ReactElement => {
   return (
     <>
       <div
-        className={`h3 px-3 d-flex justify-content-between align-items-center`}
+        className={`h3 p-3 d-flex justify-content-between align-items-center`}
       >
         {site}
       </div>
