@@ -6,7 +6,7 @@ from graphene_pynamodb import PynamoObjectType
 from pynamodb.attributes import UnicodeAttribute
 from pynamodb.models import Model
 
-DB = os.environ.get('siteDB', 'kendra-buttons-index-dev')
+DB = os.environ.get('siteDB', 'kendra-btns-site-dbdev')
 SAMPLE_USER = 'sample'
 
 
@@ -55,6 +55,7 @@ class Query:
         try:
             print('sites request user', info.context.get('user'))
             results = list(Site.query(info.context.get('user')))
+            print('results',results)
         except Exception as e:
             print(e)
         return results

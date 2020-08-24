@@ -13,3 +13,12 @@ class Query(graphene.ObjectType, SiteQuery, KendraQuery):
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation, types=[SiteNode] + KendraTypes)
+
+if __name__ == '__main__':
+    result = schema.execute(
+        '{ sites { user site } }',
+        context={
+            'user':'test'
+        }
+    )
+    print(result)

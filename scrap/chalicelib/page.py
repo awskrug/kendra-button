@@ -4,7 +4,7 @@ import json
 from pynamodb.attributes import UnicodeAttribute, BooleanAttribute
 from pynamodb.models import Model
 
-DB = os.environ.get('pageDB', 'kendra-buttons-index-dev')
+DB = os.environ.get('pageDB', 'kendra-btns-page-dbdev')
 
 SAMPLE_USER = 'sample'
 
