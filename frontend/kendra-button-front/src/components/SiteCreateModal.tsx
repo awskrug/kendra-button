@@ -5,9 +5,12 @@ import { callGraphql, regDomain } from '../utils';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Logger } from 'aws-amplify';
 import { Site } from '../types';
 import { createSite } from '../graphql/queries';
 import { useFormik } from 'formik';
+
+const logger = new Logger('SiteCreateModal');
 
 interface ResCreateSite {
   createSite: {
@@ -88,7 +91,7 @@ const SiteCreateModal = (): ReactElement => {
     }
 
     setLoading(true);
-    console.log('passed');
+    logger.log('passed');
     return;
 
     const res: GraphQLResult<ResCreateSite> = await callGraphql({
@@ -103,7 +106,7 @@ const SiteCreateModal = (): ReactElement => {
 
     formik.resetForm();
 
-    console.log({ res });
+    logger.log('onSubmit', res);
     dispatch({
       type: 'reload-site',
       payload: {

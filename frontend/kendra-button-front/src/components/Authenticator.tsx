@@ -1,4 +1,4 @@
-import { Auth, Hub } from 'aws-amplify';
+import { Auth, Hub, Logger } from 'aws-amplify';
 import { Confirmation, Loader, SignIn, SignUp, Title } from '../components';
 import {
   Dispatch,
@@ -13,6 +13,8 @@ import { AuthState } from '@aws-amplify/ui-components';
 import { ViewSource } from './ViewSource';
 import { useModalContextImpls } from '../contexts';
 import { useRouter } from 'next/router';
+
+const logger = new Logger('Authenticator');
 
 const TitleWithIcon = (): ReactElement => (
   <div className={`d-flex justify-content-center`}>
@@ -53,7 +55,7 @@ const Authenticator = (props: Props): ReactElement => {
     const tryLimit = 3;
     try {
       const user = await Auth.currentAuthenticatedUser();
-      console.log('[user:Auth]', user);
+      logger.log('[user:Auth]', user);
       // it is worth in only dev mode
       setModalConfig({
         type: 'plain',
@@ -62,7 +64,7 @@ const Authenticator = (props: Props): ReactElement => {
       setScreen(AuthState.SignedIn);
       setUser(user);
     } catch (e) {
-      console.log('[error in checkUser]', e);
+      logger.log('[error in checkUser]', e);
       if (retry === true && tryLimit > tryCnt) {
         setTimeout(() => {
           checkUser(retry, tryCnt + 1);
@@ -97,14 +99,14 @@ const Authenticator = (props: Props): ReactElement => {
     // issue that describes same symptoms: https://github.com/aws-amplify/amplify-js/issues/6155#issue-644662860
     // only error occurs in development
     Hub.listen('auth', (data) => {
-      console.log('[Hub] data', data);
+      logger.log('[Hub] data', data);
       switch (data.payload.event) {
         case 'signIn':
           setIsLoggedIn(true);
           checkUser(false);
           break;
         case 'signIn_failure':
-          console.log('[Hub] signIn_failure');
+          logger.log('[Hub] signIn_failure');
           setIsLoading(false);
           setScreen(AuthState.SignIn);
           setModalConfig({

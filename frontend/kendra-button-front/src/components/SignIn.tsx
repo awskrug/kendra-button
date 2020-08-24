@@ -1,11 +1,13 @@
 import * as Yup from 'yup';
 
+import { Auth, Logger } from 'aws-amplify';
 import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 
 import { AmplifyButton } from '@aws-amplify/ui-react';
-import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 import { useFormik } from 'formik';
+
+const logger = new Logger('SignIn');
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
@@ -40,13 +42,13 @@ const SignIn = (props: Props): ReactElement => {
     try {
       const res = await Auth.signIn(
         formik.values.email,
-        formik.values.password
+        formik.values.password,
       );
       if (res) {
         setSigninAccErr('');
       }
     } catch (e) {
-      console.log('error e', e);
+      logger.error('error e', e);
       if (e.code === 'UserNotConfirmedException') {
         setSigninAccErr('Please confirm your email before sign in.');
         setconfirmRequired(true);
@@ -72,7 +74,7 @@ const SignIn = (props: Props): ReactElement => {
       //@ts-ignore
       await Auth.federatedSignIn({ provider: 'Google' });
     } catch (e) {
-      console.log('[error in google]', e);
+      logger.error('[error in google]', e);
     }
   };
   const toSignInFacebook = async (e): Promise<void> => {
@@ -80,7 +82,7 @@ const SignIn = (props: Props): ReactElement => {
       //@ts-ignore
       await Auth.federatedSignIn({ provider: 'Facebook' });
     } catch (e) {
-      console.log('[error in facebook]', e);
+      logger.error('[error in facebook]', e);
     }
   };
   return (

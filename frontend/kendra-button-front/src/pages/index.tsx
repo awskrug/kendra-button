@@ -34,6 +34,7 @@ Amplify.configure({
     }),
   },
 });
+Amplify.Logger.LOG_LEVEL = process.env.NODE_ENV === 'development' && 'INFO';
 
 interface Props {
   code?: string;

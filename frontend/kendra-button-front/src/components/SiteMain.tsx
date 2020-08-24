@@ -61,10 +61,8 @@ const SiteMain = (props: Props): ReactElement => {
               site,
             },
           });
-          // console.log('delete res', res);
-          logger.debug('delete res', res);
+          logger.info('delete res', res);
         } catch (e) {
-          // console.log('catch e', e);
           logger.error('catch e', e);
         } finally {
           dispatch({
@@ -76,8 +74,7 @@ const SiteMain = (props: Props): ReactElement => {
     });
   };
   const domainOnChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    // console.log('onchange');
-    logger.info('onchange');
+    logger.info('domainOnChange', e.target.value);
     setDomainInput(e.target.value);
   };
   const onUpdateSite = async (): Promise<void> => {
