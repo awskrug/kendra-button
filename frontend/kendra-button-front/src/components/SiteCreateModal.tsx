@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { MouseEvent, ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { callGraphql, regDomain } from '../utils';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
@@ -43,7 +43,6 @@ const SiteCreateModal = (): ReactElement => {
   const {
     type,
     display,
-    blockExitOutside,
     positionTop,
     title,
     state,
