@@ -13,11 +13,7 @@ const SearchResult = (props: Props) => {
 
   return (
     <div className="px-3">
-      {result.length > 0 ? (
-        <p className={`lead`}>Search result for "{searchInput}"</p>
-      ) : (
-        <p className={`text-danger`}>This service is currently unavailable.</p>
-      )}
+      <p className={`lead`}>Search result for "{searchInput}"</p>
       {result.map((item, idx) => {
         if (idx <= 5) {
           const highlights = item.excerpt.highlights[0];
@@ -34,7 +30,7 @@ const SearchResult = (props: Props) => {
             <strong key={'highlight' + idx}>
               {' '}
               {text.substring(start, end)}
-            </strong>,
+            </strong>
           );
 
           if (end < text.length) {

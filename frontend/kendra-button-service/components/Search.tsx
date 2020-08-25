@@ -67,17 +67,15 @@ const Search = (props: Props): ReactElement => {
         `}</style>
       </form>
 
-      {keyword.length > 0 && result.length > 0 && (
-        <SearchResult searchInput={keyword} result={result} />
-      )}
-      {isLoading && (
+      {isLoading ? (
         <div className={`p-3 text-primary font-weight-bold`}>Loading...</div>
-      )}
-      {error && (
+      ) : !isLoading && !error && keyword.length > 0 ? (
+        <SearchResult searchInput={keyword} result={result} />
+      ) : !isLoading && error ? (
         <div className={`p-3 text-danger`}>
           <span className={`font-weight-bold`}>{error}</span>
         </div>
-      )}
+      ) : null}
     </>
   );
 };
