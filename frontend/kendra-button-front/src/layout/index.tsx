@@ -24,6 +24,7 @@ const Layout = ({ children }) => {
         <link rel="icon" href="/favicon-48.png" sizes="48x48" />
         <link rel="icon" href="/favicon-64.png" sizes="64x64" />
         <link rel="icon" href="/favicon-128.png" sizes="128x128" />
+        <title>KENDRA BUTTON</title>
       </Head>
       {children}
     </>

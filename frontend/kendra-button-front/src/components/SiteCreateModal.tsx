@@ -1,13 +1,16 @@
 import * as Yup from 'yup';
 
 import { MouseEvent, ReactElement, useState } from 'react';
+import { callGraphql, regDomain } from '../utils';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Logger } from 'aws-amplify';
 import { Site } from '../types';
-import { callGraphql } from '../utils';
 import { createSite } from '../graphql/queries';
 import { useFormik } from 'formik';
+
+const logger = new Logger('SiteCreateModal');
 
 interface ResCreateSite {
   createSite: {
@@ -66,12 +69,8 @@ const SiteCreateModal = (): ReactElement => {
     if (!formik.isValid) {
       return;
     }
-    const domainFromUrl = formik.values.url.match(
-      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
-    );
-    const domainFromDomain = formik.values.domain.match(
-      /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i,
-    );
+    const domainFromUrl = formik.values.url.match(regDomain);
+    const domainFromDomain = formik.values.domain.match(regDomain);
 
     if (!domainFromUrl || domainFromUrl.length < 2) {
       formik.setFieldError('url', 'invalid url');
@@ -92,6 +91,8 @@ const SiteCreateModal = (): ReactElement => {
     }
 
     setLoading(true);
+    logger.log('passed');
+    return;
 
     const res: GraphQLResult<ResCreateSite> = await callGraphql({
       query: createSite,
@@ -105,7 +106,7 @@ const SiteCreateModal = (): ReactElement => {
 
     formik.resetForm();
 
-    console.log({ res });
+    logger.log('onSubmit', res);
     dispatch({
       type: 'reload-site',
       payload: {

@@ -1,4 +1,5 @@
 import { AmplifyButton, AmplifyFormField } from '@aws-amplify/ui-react';
+import { Auth, Logger } from 'aws-amplify';
 import {
   Dispatch,
   ReactElement,
@@ -7,10 +8,11 @@ import {
   useState,
 } from 'react';
 
-import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 import { CognitoException } from '../types';
 import { Loader } from './Loader';
+
+const logger = new Logger('Confirmation');
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
@@ -63,7 +65,7 @@ const Confirmation = (props: Props): ReactElement => {
     } catch (e) {
       const err: CognitoException<CognitoSignUpErrorState> = e;
       setConfirmErr('');
-      console.log('error e ', err);
+      logger.error('CognitoException', err);
       setConfirmErr(err.message);
     }
     setIsLoading(false);

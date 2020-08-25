@@ -1,12 +1,14 @@
 import * as Yup from 'yup';
 
+import { Auth, Logger } from 'aws-amplify';
 import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 
-import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 import { CognitoException } from '../types';
 import { Loader } from './Loader';
 import { useFormik } from 'formik';
+
+const logger = new Logger('SignUp');
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
@@ -68,7 +70,7 @@ const SignUp = (props: Props): ReactElement => {
         setScreen(AuthState.ConfirmSignUp);
       }
     } catch (e) {
-      console.log('error e ', e);
+      logger.error('error e ', e);
       const err: CognitoException<CognitoSignUpErrorState> = e;
       let errmsg = err.message;
       if (err.code === CognitoSignUpErrorState.UserLambdaValidationException) {
