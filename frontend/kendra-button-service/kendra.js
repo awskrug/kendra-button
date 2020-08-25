@@ -1,7 +1,3 @@
-import { Logger } from 'aws-amplify';
-
-const logger = new Logger('kendra');
-
 (function () {
   var kendraWrapperId = 'kendra-button-wraper';
   var kendraIframeId = 'kendra-button-iframe';
@@ -11,11 +7,11 @@ const logger = new Logger('kendra');
   var myName = 'kendra.js';
   var myPath = document.querySelector('script[src*="' + myName + '"]').src;
 
-  logger.log('src path is:', myPath);
+  console.log('src path is:', myPath);
 
   var splittedPath = myPath.split(myName + '?');
   if (splittedPath.length > 1) {
-    logger.log('site received', splittedPath[1]);
+    console.log('site received', splittedPath[1]);
 
     var params = splittedPath[1].split('&');
     var site, target, _src, floating;
@@ -32,8 +28,8 @@ const logger = new Logger('kendra');
         floating = true;
       }
     }
-    logger.log({ site, target });
-    logger.log({ node });
+    console.log({ site, target });
+    console.log({ node });
 
     if (!target) {
       document.body.appendChild(node);
@@ -71,10 +67,10 @@ const logger = new Logger('kendra');
         'style',
         'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;'
       );
-      logger.log('floatingNode', { floatingNode });
+      console.log('floatingNode', { floatingNode });
       document.body.appendChild(floatingNode);
     }
   } else {
-    logger.log('no id received');
+    console.log('no id received');
   }
 })();
