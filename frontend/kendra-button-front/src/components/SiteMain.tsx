@@ -47,9 +47,9 @@ const SiteMain = (props: Props): ReactElement => {
               site,
             },
           });
-          logger.log('delete res', res);
+          logger.info('delete res', res);
         } catch (e) {
-          logger.log('catch e', e);
+          logger.error('catch e', e);
         } finally {
           dispatch({
             type: 'delete-site',

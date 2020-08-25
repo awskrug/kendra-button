@@ -22,7 +22,7 @@ const Projects = (props: Props): ReactElement => {
     if (!states.reloadSite) return;
     callGraphql({ query: siteList })
       .then((res) => {
-        logger.log('200', JSON.stringify(res, null, 2));
+        logger.info('200', JSON.stringify(res, null, 2));
         setSites(res?.data?.sites);
         setIsLoading(false);
         dispatch({
@@ -33,7 +33,7 @@ const Projects = (props: Props): ReactElement => {
         });
       })
       .catch((err) => {
-        logger.log('400', JSON.stringify(err, null, 2));
+        logger.error('400', JSON.stringify(err, null, 2));
         setIsLoading(false);
       });
   }, [states.reloadSite]);

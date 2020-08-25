@@ -70,7 +70,7 @@ const Settings = (props: Props): ReactElement => {
         setUpdateAccSuccess('비밀번호가 정상적으로 수정되었습니다.');
       }
     } catch (e) {
-      logger.log('error e', e);
+      logger.error('error e', e);
       let errormsg;
       if (e.code === 'InvalidParameterException') {
         let errors = [];
