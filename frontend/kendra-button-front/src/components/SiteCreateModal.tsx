@@ -91,8 +91,6 @@ const SiteCreateModal = (): ReactElement => {
     }
 
     setLoading(true);
-    logger.log('passed');
-    return;
 
     const res: GraphQLResult<ResCreateSite> = await callGraphql({
       query: createSite,
