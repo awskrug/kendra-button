@@ -98,7 +98,6 @@ const SiteMain = (props: Props): ReactElement => {
     const domainFromEndpoint = scrapEndpoint.match(regDomain);
 
     logger.info({ validatedDomainInput, compareDomain, domainFromEndpoint });
-    return;
 
     if (!domainFromEndpoint || domainFromEndpoint.length < 2) {
       setModalConfig({
