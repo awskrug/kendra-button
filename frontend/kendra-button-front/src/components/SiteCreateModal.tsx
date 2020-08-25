@@ -128,10 +128,6 @@ const SiteCreateModal = (): ReactElement => {
     <div
       className={isMe ? 'modal overflow-auto visible' : 'modal invisible'}
       id="plain-outer"
-      onClick={(e: MouseEvent<HTMLDivElement>) => {
-        const target = e.target as HTMLDivElement;
-        target.id === 'plain-outer' && !blockExitOutside && hideModal();
-      }}
     >
       <div
         className="modal-dialog"
