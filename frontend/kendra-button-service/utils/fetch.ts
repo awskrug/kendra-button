@@ -11,7 +11,7 @@ const callGraphql = async ({ text = '', site = '' }: Props): Promise<any> => {
   });
   console.log('qry:', qry);
   const res = await fetch(
-    'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/noauth/graphql',
+    'https://dev.kendra-btns.whatilearened.today/noauth/graphql',
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

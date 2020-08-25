@@ -13,8 +13,9 @@ import awsconfig from '../aws-exports';
 
 Amplify.configure(awsconfig);
 
-const url =
-  'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/graphql'; // dev
+const url = 'https://dev.kendra-btns.whatilearened.today/noauth/graphql';
+
+// const url = 'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/graphql'; // dev
 // const url = 'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/noauth/graphql', // noauth
 
 /**
@@ -29,6 +30,7 @@ Amplify.configure({
     }),
   },
 });
+Amplify.Logger.LOG_LEVEL = process.env.NODE_ENV === 'development' && 'INFO';
 
 function App({ Component, pageProps }: AppProps) {
   return (
