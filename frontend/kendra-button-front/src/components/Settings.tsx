@@ -3,6 +3,7 @@ import {
   AmplifyFormField,
   AmplifyPasswordField,
 } from '@aws-amplify/ui-react';
+import { Auth, Logger } from 'aws-amplify';
 import {
   Dispatch,
   ReactElement,
@@ -12,7 +13,6 @@ import {
 } from 'react';
 import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 
-import { Auth } from 'aws-amplify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { User } from '../types';
 import { useModalContextImpls } from '../contexts';
@@ -21,6 +21,9 @@ interface Props {
   user: User;
   setIsLoggedIn?: Dispatch<SetStateAction<boolean>>;
 }
+
+const logger = new Logger('Settings');
+
 const Settings = (props: Props): ReactElement => {
   const { user, setIsLoggedIn } = props;
   const passwordCurr = useRef('');
@@ -60,14 +63,14 @@ const Settings = (props: Props): ReactElement => {
       const res = await Auth.changePassword(
         user,
         passwordCurr.current,
-        passwordNew.current,
+        passwordNew.current
       );
       if (res === 'SUCCESS') {
         setUpdateAccErr('');
         setUpdateAccSuccess('비밀번호가 정상적으로 수정되었습니다.');
       }
     } catch (e) {
-      console.log('error e', e);
+      logger.log('error e', e);
       let errormsg;
       if (e.code === 'InvalidParameterException') {
         let errors = [];
@@ -76,7 +79,7 @@ const Settings = (props: Props): ReactElement => {
         }
         if (e.message.indexOf('proposedPassword') > -1) {
           errors.push(
-            '"Your New Password" 입력이 잘못 되었습니다. (최소 6글자 이상)',
+            '"Your New Password" 입력이 잘못 되었습니다. (최소 6글자 이상)'
           );
         }
         errormsg = errors.join(' / ');
@@ -92,11 +95,11 @@ const Settings = (props: Props): ReactElement => {
   };
 
   const okaction = async ({ hideModal }): Promise<void> => {
-    console.log('okaction');
+    logger.log('okaction');
     // TODO: delete from cognito and extra
     const user = await Auth.currentAuthenticatedUser();
     user.deleteUser((cb) => {
-      console.log('cb', cb);
+      logger.log('cb', cb);
       hideModal();
       Auth.signOut();
       setIsLoggedIn(false);

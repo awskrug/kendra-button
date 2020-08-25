@@ -1,9 +1,9 @@
 import { getSearchQry } from '../graphql';
-
 interface Props {
   text: string;
   site: string;
 }
+
 const callGraphql = async ({ text = '', site = '' }: Props): Promise<any> => {
   const qry = getSearchQry({
     text,
@@ -16,7 +16,7 @@ const callGraphql = async ({ text = '', site = '' }: Props): Promise<any> => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: qry }),
-    },
+    }
   );
   const data = await res.json();
 

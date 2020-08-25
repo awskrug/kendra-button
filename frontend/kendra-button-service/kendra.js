@@ -1,3 +1,7 @@
+import { Logger } from 'aws-amplify';
+
+const logger = new Logger('kendra');
+
 (function () {
   var kendraWrapperId = 'kendra-button-wraper';
   var kendraIframeId = 'kendra-button-iframe';
@@ -7,11 +11,11 @@
   var myName = 'kendra.js';
   var myPath = document.querySelector('script[src*="' + myName + '"]').src;
 
-  console.log('src path is:', myPath);
+  logger.log('src path is:', myPath);
 
   var splittedPath = myPath.split(myName + '?');
   if (splittedPath.length > 1) {
-    console.log('site received', splittedPath[1]);
+    logger.log('site received', splittedPath[1]);
 
     var params = splittedPath[1].split('&');
     var site, target, _src, floating;
@@ -28,8 +32,8 @@
         floating = true;
       }
     }
-    console.log({ site, target });
-    console.log({ node });
+    logger.log({ site, target });
+    logger.log({ node });
 
     if (!target) {
       document.body.appendChild(node);
@@ -44,7 +48,7 @@
       iframenode.setAttribute('src', src);
       iframenode.setAttribute(
         'style',
-        'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
+        'position:relative!important;height:100%!important;width:100%!important;border:none!important;'
       );
       var targetNode = document.getElementById(kendraWrapperId);
       targetNode.appendChild(iframenode);
@@ -58,19 +62,19 @@
       iframenode.setAttribute('src', src);
       iframenode.setAttribute(
         'style',
-        'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
+        'position:relative!important;height:100%!important;width:100%!important;border:none!important;'
       );
 
       var floatingNode = document.createElement('div');
       floatingNode.appendChild(iframenode);
       floatingNode.setAttribute(
         'style',
-        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;',
+        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;'
       );
-      console.log('floatingNode', { floatingNode });
+      logger.log('floatingNode', { floatingNode });
       document.body.appendChild(floatingNode);
     }
   } else {
-    console.log('no id received');
+    logger.log('no id received');
   }
 })();

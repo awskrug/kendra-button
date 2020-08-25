@@ -4,6 +4,7 @@ import { MouseEvent, ReactElement, useState } from 'react';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Logger } from 'aws-amplify';
 import { Site } from '../types';
 import { callGraphql } from '../utils';
 import { createSite } from '../graphql/queries';
@@ -14,6 +15,9 @@ interface ResCreateSite {
     site: Site;
   };
 }
+
+const logger = new Logger('SiteCreateModal');
+
 const SiteCreateModal = (): ReactElement => {
   const { modalConfig, setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
@@ -81,7 +85,7 @@ const SiteCreateModal = (): ReactElement => {
 
     formik.resetForm();
 
-    console.log({ res });
+    logger.log({ res });
     dispatch({
       type: 'reload-site',
       payload: {
