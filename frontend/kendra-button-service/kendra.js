@@ -44,7 +44,7 @@
       iframenode.setAttribute('src', src);
       iframenode.setAttribute(
         'style',
-        'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
+        'position:relative!important;height:100%!important;width:100%!important;border:none!important;'
       );
       var targetNode = document.getElementById(kendraWrapperId);
       targetNode.appendChild(iframenode);
@@ -58,14 +58,14 @@
       iframenode.setAttribute('src', src);
       iframenode.setAttribute(
         'style',
-        'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
+        'position:relative!important;height:100%!important;width:100%!important;border:none!important;'
       );
 
       var floatingNode = document.createElement('div');
       floatingNode.appendChild(iframenode);
       floatingNode.setAttribute(
         'style',
-        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;',
+        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;'
       );
       console.log('floatingNode', { floatingNode });
       document.body.appendChild(floatingNode);

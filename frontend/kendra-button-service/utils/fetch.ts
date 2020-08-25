@@ -1,9 +1,9 @@
 import { getSearchQry } from '../graphql';
-
 interface Props {
   text: string;
   site: string;
 }
+
 const callGraphql = async ({ text = '', site = '' }: Props): Promise<any> => {
   const qry = getSearchQry({
     text,
@@ -11,12 +11,12 @@ const callGraphql = async ({ text = '', site = '' }: Props): Promise<any> => {
   });
   console.log('qry:', qry);
   const res = await fetch(
-    'https://f9hg6qjmt8.execute-api.us-west-2.amazonaws.com/dev/noauth/graphql',
+    'https://dev.kendra-btns.whatilearened.today/noauth/graphql',
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: qry }),
-    },
+    }
   );
   const data = await res.json();
 

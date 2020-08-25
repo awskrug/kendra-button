@@ -3,6 +3,7 @@ import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { EmbedInstruction } from './EmbedInstruction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Logger } from 'aws-amplify';
 import { ProgressBar } from './ProgressBar';
 import { ReactElement } from 'react';
 import { Search } from './Search';
@@ -15,6 +16,9 @@ interface Props {
   user?: User;
   siteInfo?: Site;
 }
+
+const logger = new Logger('SiteMain');
+
 const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
@@ -43,9 +47,9 @@ const SiteMain = (props: Props): ReactElement => {
               site,
             },
           });
-          console.log('delete res', res);
+          logger.info('delete res', res);
         } catch (e) {
-          console.log('catch e', e);
+          logger.error('catch e', e);
         } finally {
           dispatch({
             type: 'delete-site',

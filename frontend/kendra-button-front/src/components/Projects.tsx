@@ -4,10 +4,13 @@ import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Loader } from './Loader';
+import { Logger } from 'aws-amplify';
 import { callGraphql } from '../utils';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {}
+
+const logger = new Logger('Projects');
 
 const Projects = (props: Props): ReactElement => {
   const [sites, setSites] = useState([]);
@@ -19,7 +22,7 @@ const Projects = (props: Props): ReactElement => {
     if (!states.reloadSite) return;
     callGraphql({ query: siteList })
       .then((res) => {
-        console.log('200', JSON.stringify(res, null, 2));
+        logger.info('200', JSON.stringify(res, null, 2));
         setSites(res?.data?.sites);
         setIsLoading(false);
         dispatch({
@@ -30,7 +33,7 @@ const Projects = (props: Props): ReactElement => {
         });
       })
       .catch((err) => {
-        console.log('400', JSON.stringify(err, null, 2));
+        logger.error('400', JSON.stringify(err, null, 2));
         setIsLoading(false);
       });
   }, [states.reloadSite]);
@@ -45,7 +48,7 @@ const Projects = (props: Props): ReactElement => {
   };
 
   const setSelectedSite = async (
-    e: MouseEvent<HTMLDivElement>,
+    e: MouseEvent<HTMLDivElement>
   ): Promise<void> => {
     const target = e.target as HTMLDivElement;
 
