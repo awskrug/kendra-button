@@ -113,8 +113,12 @@ class GraphQLView:
 
     # TODO: Same stuff as above method.
     def is_pretty(self, request: Request):
+
         return any(
-            [self.pretty, self.is_graphiql(request), request.query_params.get("pretty")]
+            [
+                self.pretty, self.is_graphiql(request),
+                request.query_params.get("pretty") if request.query_params else None
+            ]
         )
 
     def __call__(self, request: Request):
@@ -134,7 +138,7 @@ class GraphQLView:
                 self.schema,
                 request_method,
                 data,
-                query_data=request.query_params,
+                query_data=request.query_params or {},
                 batch_enabled=False,
                 catch=is_graphiql,
                 # Execute options
