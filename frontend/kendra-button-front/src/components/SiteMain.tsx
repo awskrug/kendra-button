@@ -74,7 +74,6 @@ const SiteMain = (props: Props): ReactElement => {
     });
   };
   const domainOnChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    logger.info('domainOnChange', e.target.value);
     setDomainInput(e.target.value);
   };
   const onUpdateSite = async (): Promise<void> => {
@@ -105,16 +104,6 @@ const SiteMain = (props: Props): ReactElement => {
         display: true,
         title: 'Update Site validation error',
         content: '"Crawling URL" value is invalid',
-      });
-      return;
-    }
-
-    if (domainFromEndpoint[1] !== compareDomain) {
-      setModalConfig({
-        type: 'plain',
-        display: true,
-        title: 'Update Site validation error',
-        content: '"Domain" field must match the domain url of "Crawling URL"',
       });
       return;
     }
