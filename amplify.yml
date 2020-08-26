@@ -4,8 +4,8 @@ backend:
     build:
       commands:
         - cd frontend/kendra-button-service
-        - chmod +x amplfypush.sh
-        - ./amplfypush.sh -e dev
+        - chmod +x amplifypush.sh
+        - ./amplifypush.sh -e dev
 frontend:
   phases:
     preBuild:
