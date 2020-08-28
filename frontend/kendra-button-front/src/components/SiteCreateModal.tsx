@@ -215,7 +215,7 @@ const SiteCreateModal = (): ReactElement => {
                   data-for="domainTip"
                 >{`Domain`}</label>
                 <ReactTooltip id="domainTip" place="right" effect="solid">
-                  Website URL that you'd like to embed Kendra-button
+                  Website URL that you'd like to embed Kendra Button
                 </ReactTooltip>
                 <input
                   type="text"
@@ -241,7 +241,7 @@ const SiteCreateModal = (): ReactElement => {
                   htmlFor="select-term"
                   data-tip
                   data-for="crawlTermTip"
-                >{`Crawl/index term`}</label>
+                >{`Crawl/Index Term`}</label>
                 <ReactTooltip id="crawlTermTip" place="right" effect="solid">
                   How frequently would you like to re-crawl your website?
                 </ReactTooltip>
