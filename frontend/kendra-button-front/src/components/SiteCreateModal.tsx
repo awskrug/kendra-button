@@ -4,11 +4,13 @@ import { ReactElement, useState } from 'react';
 import { callGraphql, regDomain } from '../utils';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Logger } from 'aws-amplify';
 import ReactTooltip from 'react-tooltip';
 import { Site } from '../types';
 import { createSite } from '../graphql/queries';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useFormik } from 'formik';
 
 const logger = new Logger('SiteCreateModal');
@@ -157,9 +159,14 @@ const SiteCreateModal = (): ReactElement => {
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="input-site"
+                >{`Site Name`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
                   data-tip
                   data-for="siteNameTip"
-                >{`Site Name`}</label>
+                />
                 <ReactTooltip id="siteNameTip" place="right" effect="solid">
                   Name of website to register
                 </ReactTooltip>
@@ -185,9 +192,14 @@ const SiteCreateModal = (): ReactElement => {
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="input-url"
+                >{`Crawling URL`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
                   data-tip
                   data-for="crawlingTip"
-                >{`Crawling URL`}</label>
+                />
                 <ReactTooltip id="crawlingTip" place="right" effect="solid">
                   Target to crawl
                 </ReactTooltip>
@@ -211,9 +223,14 @@ const SiteCreateModal = (): ReactElement => {
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="input-domain"
+                >{`Domain`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
                   data-tip
                   data-for="domainTip"
-                >{`Domain`}</label>
+                />
                 <ReactTooltip id="domainTip" place="right" effect="solid">
                   Website URL that you'd like to embed Kendra Button
                 </ReactTooltip>
@@ -239,9 +256,14 @@ const SiteCreateModal = (): ReactElement => {
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="select-term"
+                >{`Crawl/Index Term`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
                   data-tip
                   data-for="crawlTermTip"
-                >{`Crawl/Index Term`}</label>
+                />
                 <ReactTooltip id="crawlTermTip" place="right" effect="solid">
                   How frequently would you like to re-crawl your website?
                 </ReactTooltip>
