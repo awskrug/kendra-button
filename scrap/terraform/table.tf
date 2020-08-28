@@ -43,6 +43,6 @@ resource "aws_dynamodb_table" "page_db" {
 
 resource "aws_lambda_event_source_mapping" "page_stream" {
   event_source_arn = aws_dynamodb_table.page_db.stream_arn
-  function_name = aws_lambda_function.api_handler.function_name
+  function_name = aws_lambda_function.ddb_operator.function_name
   starting_position = "LATEST"
 }

@@ -19,15 +19,15 @@
     "aws_iam_role_policy": {
       "default-role": {
         "name": "default-rolePolicy",
-        "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"logs:CreateLogGroup\", \"logs:CreateLogStream\", \"logs:PutLogEvents\"], \"Resource\": \"arn:*:logs:*:*:*\"}, {\"Effect\": \"Allow\", \"Action\": [\"sqs:ReceiveMessage\", \"sqs:DeleteMessage\", \"sqs:GetQueueAttributes\"], \"Resource\": \"*\"}]}",
+        "policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Effect\": \"Allow\", \"Action\": [\"sqs:SendMessage\"], \"Resource\": [\"*\"], \"Sid\": \"44ba876bc87b4c749228530f7f6d5dc2\"}, {\"Effect\": \"Allow\", \"Action\": [\"logs:CreateLogGroup\", \"logs:CreateLogStream\", \"logs:PutLogEvents\"], \"Resource\": \"arn:*:logs:*:*:*\"}, {\"Effect\": \"Allow\", \"Action\": [\"sqs:ReceiveMessage\", \"sqs:DeleteMessage\", \"sqs:GetQueueAttributes\"], \"Resource\": \"*\"}]}",
         "role": "${aws_iam_role.default-role.id}"
       }
     },
     "aws_lambda_function": {
-      "operator": {
-        "function_name": "kendera-scrap-dev-operator",
+      "ddb_operator": {
+        "function_name": "kendera-scrap-dev-ddb_operator",
         "runtime": "python3.8",
-        "handler": "app.operator_handler",
+        "handler": "app.ddb_operator",
         "memory_size": 512,
         "tags": {
           "aws-chalice": "version=1.18.0:stage=dev:app=kendera-scrap"

@@ -3,6 +3,7 @@ import json
 import os
 from functools import partial
 
+import boto3
 from chalice import Chalice, CognitoUserPoolAuthorizer
 from chalice.app import Request, Response, SQSEvent
 from graphql import GraphQLError, GraphQLSchema
@@ -10,11 +11,16 @@ from graphql.error import format_error
 from graphql_server import HttpQueryError, encode_execution_results, json_encode, \
     run_http_query
 
+from chalicelib.kendra_site import Site
 from chalicelib.render_graphiql import GraphiQLConfig, GraphiQLData, GraphiQLOptions, render_graphiql_sync
 from chalicelib.schema import schema
-from chalicelib.scraper import handler, operator
+from chalicelib.scraper import BUCKET, WorkerMsg, handler
+from chalicelib.utils import Dict2Obj, download_chromium
 
 STAGE = os.environ.get('CHALICE_STAGE', 'dev')
+PAGE_QUE_URL = os.environ.get('pageQueUrl')
+sqs = boto3.client('sqs')
+
 app = Chalice(app_name='kendra-scrap')
 app.debug = True
 
@@ -76,11 +82,11 @@ class GraphQLView:
         content_type = request.headers.get('content-type', '')
         # request.text() is the aiohttp equivalent to
         # request.body.decode("utf8")
-        if content_type == "application/graphql":
+        if content_type.startswith("application/graphql"):
             r_text = request.raw_body.decode()
             return {"query": r_text}
 
-        if content_type == "application/json":
+        if content_type.startswith("application/json"):
             return request.json_body
 
         if content_type in (
@@ -192,11 +198,12 @@ class GraphQLView:
 
         except HttpQueryError as err:
             parsed_error = GraphQLError(err.message)
+            headers = err.headers or {}
             return Response(
                 body=self.encode(dict(errors=[self.format_error(parsed_error)])),
                 status_code=err.status_code,
                 headers={
-                    **err.headers,
+                    **headers,
                     'Content-Type': "application/json"
                 },
 
@@ -223,34 +230,6 @@ class GraphQLView:
         return Response(status_code=400)
 
 
-#
-# def execute(request):
-#     user = request.context.get('authorizer', {}).get('claims', {}).get('cognito:username')
-#
-#     if request.method == 'GET':
-#         query = request.query_params.get('query')
-#         variables = request.query_params.get('variables')
-#         operation_name = request.query_params.get('operation_name')
-#     else:
-#         body = json.loads(request.raw_body.decode())
-#         query = body['query']
-#         variables = body.get('variables', {})
-#         operation_name = body.get('operationName')
-#     print(f'{query=}\n{request=}\n{operation_name}\n{variables=}\n{user=}')
-#
-#     result = schema.execute(
-#         query,
-#         variables=variables,
-#         operation_name=operation_name,
-#         context={
-#             'user': user
-#         })
-#     return {
-#         'data': result.data,
-#         'errors': result.errors
-#     }
-
-
 @app.route('/graphql', methods=['GET', 'POST'], cors=True, authorizer=authorizer)
 def query():
     request = app.current_request
@@ -269,27 +248,84 @@ def noauth():
     return view(request)
 
 
-@app.lambda_function(name='operator')
-def operator_handler(event, context):
-    return operator(event, context)
+def send_job(message: WorkerMsg):
+    sqs.send_message(QueueUrl=PAGE_QUE_URL, MessageBody=json.dumps(message, ensure_ascii=False))
+
+
+def domain_buff():
+    domains = {}
+
+    def get_domain(user: str, site: str):
+        key = f"{user}:{site}"
+        if key not in domains:
+            site = Site.get(user, site)
+            domains[key] = site.domain
+        return domains[key]
+
+    return get_domain
+
+
+@app.lambda_function(name='ddb_operator')
+def ddb_operator(request, context):
+    print('Operator started.')
+    print(request)
+    req = Dict2Obj(request)
+
+    get_domain = domain_buff()
+
+    for event in req.Records:
+        print(f"event name {event.eventName}")
+        print(event)
+        if event.eventName == "REMOVE":
+            try:
+                obj_key = event.dynamodb.OldImage.obj_key.S
+                meta_obj_key = event.dynamodb.OldImage.meta_obj_key.S
+                BUCKET.delete_objects(
+                    Delete={
+                        'Objects': [
+                            {'Key': obj_key, },
+                            {'Key': meta_obj_key, },
+                        ],
+                    },
+                )
+            except Exception:
+                pass
+        else:
+            if not event.dynamodb.NewImage.scraped.BOOL:
+                try:
+                    user = event.dynamodb.NewImage.user.S
+                    site = event.dynamodb.NewImage.site.S
+                    worker_msg = WorkerMsg(
+                        site=site,
+                        _type=event.dynamodb.NewImage.type.S,
+                        url=event.dynamodb.NewImage.url.S,
+                        user=user,
+                        domain=get_domain(user, site),
+                        doc_id=None,
+                        obj_key=None,
+                        meta_obj_key=None,
+                    )
+                    if event.eventName == "MODIFY":
+                        worker_msg['doc_id'] = event.dynamodb.NewImage.doc_id.S
+                        worker_msg['obj_key'] = event.dynamodb.NewImage.obj_key.S
+                        worker_msg['meta_obj_key'] = event.dynamodb.NewImage.meta_obj_key.S
+                    send_job(worker_msg)
+                except AttributeError:
+                    print(f"Unsupported event scheme. event: {event}")
+                except Exception as e:
+                    print(f"Skip scraped")
+                    print(e)
 
 
 @app.on_sqs_message(f'kendra-btns-page-que-{STAGE}', batch_size=10)
 def worker_handler(event: SQSEvent):
     print('run worker')
     print(event.to_dict())
-    # request에서 메세시 파싱
-    messages = []
 
     try:
-        for record in event:
-            body_json = json.loads(record.body)
-            messages.append(body_json)
-
+        messages = [json.loads(record.body) for record in event]
     except Exception as e:
-        # Send some context about this error to Lambda Logs
-        print(e)
         # throw exception, do not handle. Lambda will make message visible again.
         raise e
-
+    # download_chromium()
     asyncio.get_event_loop().run_until_complete(handler(messages))

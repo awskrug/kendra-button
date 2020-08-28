@@ -6,8 +6,9 @@ from graphene_pynamodb import PynamoObjectType
 from pynamodb.attributes import UnicodeAttribute
 from pynamodb.models import Model
 
+from chalicelib.page import Page
+
 DB = os.environ.get('siteDB', 'kendra-btns-site-dbdev')
-SAMPLE_USER = 'sample'
 
 
 class Site(Model):
@@ -55,7 +56,7 @@ class Query:
         try:
             print('sites request user', info.context.get('user'))
             results = list(Site.query(info.context.get('user')))
-            print('results',results)
+            print('results', results)
         except Exception as e:
             print(e)
         return results
@@ -68,15 +69,18 @@ class Query:
         }
         if last_key:
             args['last_evaluated_key'] = last_key
-        results = []
         try:
-            results = list(Site.query(user, **args))
+            sites = Site.query(user, **args)
         except Exception as e:
             print(e)
+            return SiteList(
+                items=[],
+                last_key=None,
+            )
 
         return SiteList(
-            items=results,
-            last_key=results.last_evaluated_key
+            items=list(sites),
+            last_key=sites.last_evaluated_key
         )
 
 
@@ -94,6 +98,8 @@ class SiteCreate(graphene.Mutation):
             raise Exception('duplicated site name')
         data = Site(user, site, domain=domain, scrap_endpoint=scrap_endpoint)
         data.save()
+        page = Page(site, data.scrap_endpoint, user=user, _type='html')
+        page.save()
         return SiteCreate(site=data)
 
 
@@ -130,6 +136,11 @@ class SiteDelete(graphene.Mutation):
         except Exception as e:
             print(e)
             return SiteDelete(ok=False)
+        pages = Page.query(site)
+        with Page.batch_write() as batch:
+            for page in pages:
+                batch.delete(page)
+
         return SiteDelete(ok=True)
 
 

@@ -6,30 +6,37 @@ import shortuuid
 from requests_html import AsyncHTMLSession
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CHROMIUM = os.path.join('tmp', 'headless-chromium')
+CHROMIUM = os.path.join('/tmp', 'headless-chromium')
+
+
+def download_chromium():
+    if os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+        print('check chromium exists')
+        if not os.path.isfile(CHROMIUM):
+            s3 = boto3.client('s3')
+            with open(CHROMIUM, 'wb') as f:
+                s3.download_fileobj('kendra-btns-assets', 'headless-chromium', f)
+            os.chmod(CHROMIUM, 777)
+            print("download chromium")
+        else:
+            print('already chromium exists')
 
 
 class AsyncCutBrowserSession(AsyncHTMLSession):
 
-    def check_chromium(self):
-        if os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
-            if not os.path.isfile(CHROMIUM):
-                s3 = boto3.client('s3')
-                with open(CHROMIUM, 'wb') as f:
-                    s3.download_fileobj('kendra-btns-assets', 'headless-chromium', f)
-
     @property
     async def browser(self):
         if not hasattr(self, "_browser"):
-            self.__browser_args = ['--no-sandbox']
+            self.__browser_args = [
+                '--no-sandbox',
+            ]
             kwargs = {
                 'ignoreHTTPSErrors': not (self.verify),
                 'headless': True,
                 'args': self.__browser_args
             }
-            if os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
-                self.check_chromium()
-                kwargs['executablePath'] = CHROMIUM
+            # if os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+            #     kwargs['executablePath'] = CHROMIUM
 
             self._browser = await pyppeteer.launch(**kwargs)
         return self._browser
