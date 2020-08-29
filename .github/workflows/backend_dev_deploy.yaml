@@ -32,9 +32,11 @@ jobs:
         pip install -r ./scrap/requirements-dev.txt
 
     - name: install & deploy
+      env:
+        TF_WORKSPACE: dev
       run: |
         cd ./scrap
         export AWS_DEFAULT_REGION=us-west-2
         chalice package --pkg-format terraform --stage dev ./terraform/
-        cd terraform && terraform init && terraform workspace select dev && terraform apply -auto-approve
+        cd terraform && terraform init &&  terraform apply -auto-approve
 
