@@ -3,7 +3,7 @@ name: Backend Dev Deploy
 on:
   push:
     branches:
-    - develop
+    - master
     paths:
     - 'scrap/**'
   workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: us-west-2
-      TF_WORKSPACE: dev
+      TF_WORKSPACE: prod
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -41,6 +41,6 @@ jobs:
     - name: install & deploy
       run: |
         cd ./scrap
-        chalice package --pkg-format terraform --stage dev ./terraform/
+        chalice package --pkg-format terraform --stage prod ./terraform/
         cd terraform && terraform init &&  terraform apply -auto-approve
 
