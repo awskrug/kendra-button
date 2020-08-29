@@ -137,12 +137,13 @@ class SiteDelete(graphene.Mutation):
     ok = graphene.Boolean()
 
     def mutate(self, info, site):
+        user = info.context.get('user')
         try:
             Site(info.context.get('user'), site).delete()
         except Exception as e:
             print(e)
             return SiteDelete(ok=False)
-        pages = Page.query(site)
+        pages = Page.user_site_index.query(user,Page.site == site)
         with Page.batch_write() as batch:
             for page in pages:
                 batch.delete(page)
