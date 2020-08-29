@@ -74,21 +74,14 @@ const SiteCreateModal = (): ReactElement => {
     const domainFromUrl = formik.values.url.match(regDomain);
     const domainFromDomain = formik.values.domain.match(regDomain);
 
+    logger.log({
+      domainFromUrl,
+      domainFromDomain,
+      formikdomain: formik.values.domain,
+    });
+
     if (!domainFromUrl || domainFromUrl.length < 2) {
       formik.setFieldError('url', 'invalid url');
-      return;
-    } else if (
-      domainFromUrl[1] !==
-      ((domainFromDomain && domainFromDomain[1]) || formik.values.domain)
-    ) {
-      formik.setFieldError(
-        'url',
-        'Domain name of this field must match the one entered for "Domain"'
-      );
-      formik.setFieldError(
-        'domain',
-        'Domain name must match the one entered for "Crawling URL"'
-      );
       return;
     }
 
