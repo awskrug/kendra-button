@@ -16,9 +16,10 @@ def download_chromium():
             s3 = boto3.client('s3')
             with open(CHROMIUM, 'wb') as f:
                 s3.download_fileobj('kendra-btns-assets', 'headless-chromium', f)
-            os.chmod(CHROMIUM, 777)
+            os.chmod(CHROMIUM, 755)
             print("download chromium")
         else:
+            os.chmod(CHROMIUM, 755)
             print('already chromium exists')
 
 
@@ -40,6 +41,8 @@ class AsyncCutBrowserSession(AsyncHTMLSession):
 
             self._browser = await pyppeteer.launch(**kwargs)
         return self._browser
+
+
 
 
 def make_hash(name: str):

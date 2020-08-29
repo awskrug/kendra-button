@@ -954,3 +954,5 @@ scrap/terraform/deployment.zip
 !/scrap/vendor/bin/
 
 scrap/terraform/layer-deployment.zip
+
+scrap/terraform/chalice.tf.json

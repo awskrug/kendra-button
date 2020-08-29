@@ -15,7 +15,7 @@ from chalicelib.kendra_site import Site
 from chalicelib.render_graphiql import GraphiQLConfig, GraphiQLData, GraphiQLOptions, render_graphiql_sync
 from chalicelib.schema import schema
 from chalicelib.scraper import BUCKET, WorkerMsg, handler
-from chalicelib.utils import Dict2Obj, download_chromium
+from chalicelib.utils import Dict2Obj
 
 STAGE = os.environ.get('CHALICE_STAGE', 'dev')
 PAGE_QUE_URL = os.environ.get('pageQueUrl')

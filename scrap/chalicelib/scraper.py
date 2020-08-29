@@ -3,11 +3,13 @@ import json
 import os
 from io import BytesIO
 from typing import List, Optional, TypedDict
+from urllib.parse import urldefrag
 
 import arrow
 import boto3
 import shortuuid
 from botocore.exceptions import ClientError
+from requests_html import HTMLSession
 
 from chalicelib.page import Page
 from chalicelib.utils import AsyncCutBrowserSession
@@ -61,18 +63,26 @@ def is_local_env():
     return not RUNTIME_ENV
 
 
-
 async def get_page(url: str):
     session = AsyncCutBrowserSession()
     print(f'start scrap {url}')
     req = await session.get(url)
-    await req.html.arender()
+    # await req.html.arender()
     result = req.html
+    print(result)
     return result
+
+
+
 
 
 def verify(pettern, url) -> bool:
     return True
+
+
+def refine_url(url: str) -> str:
+    link, _ = urldefrag(url)
+    return link
 
 
 def convert_url_to_key(url):
@@ -85,11 +95,7 @@ def convert_url_to_key(url):
     return key
 
 
-####
-# message type
-#   msg['site']
-#   msg['url']
-#   msg['host']   <--- ???
+
 
 class WorkerMsg(TypedDict):
     site: str
@@ -100,7 +106,6 @@ class WorkerMsg(TypedDict):
     doc_id: Optional[str]
     obj_key: Optional[str]
     meta_obj_key: Optional[str]
-
 
 
 async def handler(messages: List[WorkerMsg]):
@@ -159,7 +164,7 @@ async def handler(messages: List[WorkerMsg]):
             continue
 
         # get links
-        links = [l for l in html.absolute_links if l != url and (domain in l) and verify(pattern, url)]
+        links = {refine_url(l) for l in html.absolute_links if l != url and (domain in l) and verify(pattern, url)}
         for link in links:
             try:
                 page = Page.get(site, link)
@@ -178,15 +183,3 @@ async def handler(messages: List[WorkerMsg]):
             except Exception:
                 print(f'already scraped {site} : {url}')
 
-# if __name__ == '__main__':
-#     msg = {"url": "https://github.com/pricing", "site": "abcd", "host": "https://github.com/"}
-#
-#     if (len(sys.argv) == 2) and (sys.argv[1].upper() == OPERATOR):
-#         # todo: for testing. it should be removed.
-#         with open("event_samples/dynamodb_insert.json", "r") as f:
-#             events_data = json.load(f)
-#
-#         operator(request=events_data, context=None)
-#     else:
-#         # Worker
-#         asyncio.get_event_loop().run_until_complete(handler([msg]))

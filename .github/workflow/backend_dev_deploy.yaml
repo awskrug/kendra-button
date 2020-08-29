@@ -1,0 +1,47 @@
+name: Backend Dev Deploy
+
+on:
+  push:
+    branches:
+    - develop
+  workflow_dispatch:
+
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    env:
+      SCRAP_DIR: ${{ join([github.workspace,'scrap'],'/') }}
+      tf_actions_working_dir: ${{ join([github.workspace,'scrap','terraform'],'/') }}
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: pip install
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./scrap/requirements-dev.txt
+
+    - name: install & deploy
+      run: |
+        cd ./scrap
+        export AWS_DEFAULT_REGION=us-west-2
+        chalice package --pkg-format terraform --stage dev ./terraform/
+        cd terraform && terraform init && terraform workspace select dev && terraform apply -auto-approve
+
