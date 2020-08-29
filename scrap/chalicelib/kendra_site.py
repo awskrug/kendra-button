@@ -1,5 +1,4 @@
 import os
-import random
 
 import graphene
 from graphene_pynamodb import PynamoObjectType
@@ -34,7 +33,14 @@ class SiteNode(PynamoObjectType):
     crawler_status = graphene.Field(CrawlerStatus)
 
     def resolve_crawler_status(self, info, ):
-        return CrawlerStatus(total=100, done=random.randrange(10, 100))
+        total_count = Page.user_site_index.count(self.user, range_key_condition=Page.site == self.site)
+        done = Page.user_site_index.count(
+            self.user,
+            range_key_condition=Page.site == self.site,
+            filter_condition=Page.scraped == True
+        )
+
+        return CrawlerStatus(total=total_count, done=done)
 
 
 class SiteList(graphene.ObjectType):

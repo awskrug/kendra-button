@@ -2,11 +2,29 @@ import json
 import os
 
 from pynamodb.attributes import BooleanAttribute, NumberAttribute, UnicodeAttribute
+from pynamodb.indexes import AllProjection, GlobalSecondaryIndex
 from pynamodb.models import Model
 
 DB = os.environ.get('pageDB', 'kendra-btns-page-dbdev')
 
 SAMPLE_USER = 'sample'
+
+
+class UserSiteIndex(GlobalSecondaryIndex):
+    """
+    This class represents a global secondary index
+    """
+
+    class Meta:
+        # index_name is optional, but can be provided to override the default name
+        index_name = 'user_by_site'
+        read_capacity_units = 2
+        write_capacity_units = 1
+        # All attributes are projected
+        projection = AllProjection()
+
+    user = UnicodeAttribute(hash_key=True)
+    site = UnicodeAttribute(range_key=True)
 
 
 class Page(Model):
@@ -24,6 +42,7 @@ class Page(Model):
     obj_key = UnicodeAttribute(null=True)
     meta_obj_key = UnicodeAttribute(null=True)
     last_scraped_at = NumberAttribute(null=True)  # time-stamp
+    user_site_index = UserSiteIndex()
 
     def to_dict(self):
         return dict(
@@ -43,10 +62,10 @@ class Page(Model):
 
 
 if __name__ == '__main__':
-    p = Page("asvvta", "https://www.yna.co.kr/index?site=header_loasdfasgo",)
+    p = Page("asvvta", "https://www.yna.co.kr/index?site=header_loasdfasgo", )
     p.update(
         [
-            Page.user|'avda',
+            Page.user | 'avda',
             Page.scraped.set(False)
         ]
     )

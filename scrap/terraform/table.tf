@@ -1,7 +1,7 @@
 resource "aws_dynamodb_table" "site_db" {
-  name           = "kendra-btns-site-db${data.null_data_source.chalice.inputs.stage}"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "user"
+  name = "kendra-btns-site-db${data.null_data_source.chalice.inputs.stage}"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "user"
   range_key = "site"
 
   attribute {
@@ -15,14 +15,14 @@ resource "aws_dynamodb_table" "site_db" {
   }
 
   tags = {
-    Project        = "kendra-button"
+    Project = "kendra-button"
   }
 }
 
 resource "aws_dynamodb_table" "page_db" {
-  name           = "kendra-btns-page-db${data.null_data_source.chalice.inputs.stage}"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "site"
+  name = "kendra-btns-page-db${data.null_data_source.chalice.inputs.stage}"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key = "site"
   range_key = "url"
 
   attribute {
@@ -34,10 +34,23 @@ resource "aws_dynamodb_table" "page_db" {
     name = "url"
     type = "S"
   }
+
+  attribute {
+    name = "user"
+    type = "S"
+  }
+
+
   stream_enabled = true
   stream_view_type = "NEW_AND_OLD_IMAGES"
   tags = {
-    Project        = "kendra-button"
+    Project = "kendra-button"
+  }
+  global_secondary_index {
+    name = "user_by_site"
+    hash_key = "user"
+    range_key = "site"
+    projection_type = "ALL"
   }
 }
 
