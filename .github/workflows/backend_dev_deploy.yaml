@@ -11,15 +11,6 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-    env:
-      SCRAP_DIR: ${{ join([github.workspace,'scrap'],'/') }}
-      tf_actions_working_dir: ${{ join([github.workspace,'scrap','terraform'],'/') }}
-
-    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
-    defaults:
-      run:
-        shell: bash
-
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
