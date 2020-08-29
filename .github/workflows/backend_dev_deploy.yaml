@@ -11,6 +11,12 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-west-2
+      TF_WORKSPACE: dev
+
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -32,8 +38,6 @@ jobs:
         pip install -r ./scrap/requirements-dev.txt
 
     - name: install & deploy
-      env:
-        TF_WORKSPACE: dev
       run: |
         cd ./scrap
         export AWS_DEFAULT_REGION=us-west-2
