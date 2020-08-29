@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - develop
+    - migrate_chalice
   workflow_dispatch:
 
 
