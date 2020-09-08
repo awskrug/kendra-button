@@ -9,7 +9,6 @@ import arrow
 import boto3
 import shortuuid
 from botocore.exceptions import ClientError
-from requests_html import HTMLSession
 
 from chalicelib.page import Page
 from chalicelib.utils import AsyncCutBrowserSession
@@ -20,7 +19,7 @@ RUNTIME_ENV = os.environ.get('AWS_EXECUTION_ENV')
 PAGE_QUE_URL = os.environ.get('pageQueUrl')
 #  kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
 #     arn: arn:aws:iam::${self:custom.kendra.account}:role/${self:custom.role.kendra_role}
-S3 = os.environ.get('S3', 'kendra-button')
+S3 = os.environ.get('S3', 'kendra-button-data')
 BUCKET = boto3.resource('s3').Bucket(S3)
 CLIENT = boto3.client('sqs')
 KENDRA_ROLE_ARN = os.environ.get('KENDRA_ROLE', "arn:aws:iam::294038372338:role/kendra-buttons-put-doc-role-dev")
@@ -73,9 +72,6 @@ async def get_page(url: str):
     return result
 
 
-
-
-
 def verify(pettern, url) -> bool:
     return True
 
@@ -93,8 +89,6 @@ def convert_url_to_key(url):
         key = key.replace(ch, '_')
 
     return key
-
-
 
 
 class WorkerMsg(TypedDict):
@@ -127,7 +121,7 @@ async def handler(messages: List[WorkerMsg]):
             doc_id = f"{site}:{key}"
 
         f = BytesIO(html.raw_html)
-        BUCKET.upload_fileobj(f, key)
+        BUCKET.upload_fileobj(f, key, ExtraArgs={"ACL": "bucket-owner-full-control"})
 
         doc_title = html.find("title", first=True).text
 
@@ -143,7 +137,7 @@ async def handler(messages: List[WorkerMsg]):
         }
 
         meta_obj = BytesIO(json.dumps(metadata, ensure_ascii=False).encode('utf-8'))
-        BUCKET.upload_fileobj(meta_obj, meta_key)
+        BUCKET.upload_fileobj(meta_obj, meta_key, ExtraArgs={"ACL": "bucket-owner-full-control"})
 
         now = arrow.utcnow()
         updates: list = [
@@ -182,4 +176,3 @@ async def handler(messages: List[WorkerMsg]):
                 page.save()
             except Exception:
                 print(f'already scraped {site} : {url}')
-
