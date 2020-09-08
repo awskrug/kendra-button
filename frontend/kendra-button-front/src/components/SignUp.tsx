@@ -40,7 +40,7 @@ const SignUp = (props: Props): ReactElement => {
         .min(8, 'Password is too short - should be 8 characters minimum.')
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-          'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character',
+          'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
         ),
     }),
     onSubmit: () => {},
@@ -60,10 +60,13 @@ const SignUp = (props: Props): ReactElement => {
     }
 
     try {
-      const res = await Auth.signUp(
-        formik.values.email,
-        formik.values.password,
-      );
+      const res = await Auth.signUp({
+        username: formik.values.email,
+        password: formik.values.password,
+        attributes: {
+          email: formik.values.email,
+        },
+      });
 
       if (res) {
         setUsername(formik.values.email);
