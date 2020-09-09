@@ -772,7 +772,7 @@ Outputs :
     Value: !Ref 'IdentityPool'
     Description:  Id for the identity pool
     Export:
-      Name: "kendraIdentityPoolId"
+      Name: "kendraIdentityPoolIdProd"
   IdentityPoolName:
     Value: !GetAtt IdentityPool.Name 
   
@@ -789,7 +789,7 @@ Outputs :
     Value: !Ref 'UserPool'
     Description:  Id for the user pool
     Export:
-      Name: "kendraUserpoolId"
+      Name: "kendraUserPoolIdProd"
   UserPoolName:
     Value: !Ref userPoolName
   AppClientIDWeb:

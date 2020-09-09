@@ -190,7 +190,8 @@
 									}
 								]
 							}
-						},{
+						},
+						{
 							"Effect": "Allow",
 							"Action": [
 								"cognito-idp:ListUsers",
@@ -207,7 +208,7 @@
 											"Ref": "AWS::AccountId"
 										},
 										"userpoolid": {
-											"Fn::ImportValue": "kendraUserpoolId"
+											"Fn::ImportValue": "kendraUserPoolIdProd"
 										}
 									}
 								]
