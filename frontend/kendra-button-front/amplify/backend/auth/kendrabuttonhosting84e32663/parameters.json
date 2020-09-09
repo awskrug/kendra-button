@@ -1,6 +1,4 @@
 {
-    "identityPoolName": "kendrabuttonhosting84e32663_identitypool_84e32663",
-    "allowUnauthenticatedIdentities": false,
     "resourceNameTruncated": "kendra84e32663",
     "userPoolName": "kendrabuttonhosting84e32663_userpool_84e32663",
     "autoVerifiedAttributes": [
@@ -14,9 +12,14 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": false,
+    "defaultPasswordPolicy": true,
     "passwordPolicyMinLength": 8,
-    "passwordPolicyCharacters": [],
+    "passwordPolicyCharacters": [
+        "Requires Lowercase",
+        "Requires Uppercase",
+        "Requires Numbers",
+        "Requires Symbols"
+    ],
     "requiredAttributes": [
         "email"
     ],
@@ -29,10 +32,10 @@
         "email"
     ],
     "userpoolClientLambdaRole": "kendra84e32663_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": false,
+    "userpoolClientSetAttributes": true,
     "sharedId": "84e32663",
     "resourceName": "kendrabuttonhosting84e32663",
-    "authSelections": "identityPoolAndUserPool",
+    "authSelections": "userPoolOnly",
     "authRoleArn": {
         "Fn::GetAtt": [
             "AuthRole",
@@ -45,15 +48,25 @@
             "Arn"
         ]
     },
-    "useDefault": "defaultSocial",
-    "hostedUI": true,
+    "useDefault": "manual",
+    "hostedUI": false,
     "userPoolGroupList": [],
-    "dependsOn": [],
-    "hostedUIDomainName": "kendra-button-user-pool",
-    "authProvidersUserPool": [
-        "Facebook",
-        "Google"
+    "dependsOn": [
+        {
+            "category": "function",
+            "resourceName": "kendrabuttonhosting84e32663PreSignup",
+            "triggerProvider": "Cognito",
+            "attributes": [
+                "Arn",
+                "Name"
+            ]
+        }
     ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"id\"}},{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://admin.kendra.fun/\"],\"LogoutURLs\":[\"https://admin.kendra.fun/\"]}"
+    "userPoolGroups": false,
+    "adminQueries": false,
+    "triggers": "{\"PreSignup\":[\"custom\"]}",
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": []
 }

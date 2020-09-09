@@ -46,6 +46,12 @@
                     "appId": "dcj1fh5deo5r3",
                     "type": "cicd"
                 }
+            },
+            "function": {
+                "kendrabuttonhosting84e32663PreSignup": {}
+            },
+            "auth": {
+                "kendrabuttonhosting84e32663": {}
             }
         }
     }
