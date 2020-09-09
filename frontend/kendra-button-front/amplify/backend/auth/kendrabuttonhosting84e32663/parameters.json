@@ -1,4 +1,6 @@
 {
+    "identityPoolName": "kendrabuttonhosting84e32663_identitypool_50be9f5e",
+    "allowUnauthenticatedIdentities": false,
     "resourceNameTruncated": "kendra84e32663",
     "userPoolName": "kendrabuttonhosting84e32663_userpool_84e32663",
     "autoVerifiedAttributes": [
@@ -14,12 +16,7 @@
     "emailVerificationMessage": "Your verification code is {####}",
     "defaultPasswordPolicy": true,
     "passwordPolicyMinLength": 8,
-    "passwordPolicyCharacters": [
-        "Requires Lowercase",
-        "Requires Uppercase",
-        "Requires Numbers",
-        "Requires Symbols"
-    ],
+    "passwordPolicyCharacters": [],
     "requiredAttributes": [
         "email"
     ],
@@ -35,7 +32,7 @@
     "userpoolClientSetAttributes": true,
     "sharedId": "84e32663",
     "resourceName": "kendrabuttonhosting84e32663",
-    "authSelections": "userPoolOnly",
+    "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
             "AuthRole",
@@ -48,8 +45,8 @@
             "Arn"
         ]
     },
-    "useDefault": "manual",
-    "hostedUI": false,
+    "useDefault": "defaultSocial",
+    "hostedUI": true,
     "userPoolGroupList": [],
     "dependsOn": [
         {
@@ -68,5 +65,12 @@
     "parentStack": {
         "Ref": "AWS::StackId"
     },
-    "permissions": []
+    "permissions": [],
+    "hostedUIDomainName": "social-kendra",
+    "authProvidersUserPool": [
+        "Facebook",
+        "Google"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"id\"}},{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://admin.kendra.fun/\"],\"LogoutURLs\":[\"https://admin.kendra.fun/\"]}"
 }

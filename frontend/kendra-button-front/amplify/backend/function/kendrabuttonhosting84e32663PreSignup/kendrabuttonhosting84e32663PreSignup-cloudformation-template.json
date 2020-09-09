@@ -190,6 +190,28 @@
 									}
 								]
 							}
+						},{
+							"Effect": "Allow",
+							"Action": [
+								"cognito-idp:ListUsers",
+								"cognito-idp:AdminLinkProviderForUser"
+							],
+							"Resource": {
+								"Fn::Sub": [
+									"arn:aws:cognito-idp:${region}:${account}:userpool/${userpoolid}",
+									{
+										"region": {
+											"Ref": "AWS::Region"
+										},
+										"account": {
+											"Ref": "AWS::AccountId"
+										},
+										"userpoolid": {
+											"Fn::ImportValue": "kendraUserpoolId"
+										}
+									}
+								]
+							}
 						}
 					]
 				}
