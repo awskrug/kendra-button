@@ -20,31 +20,24 @@ type ListUsersResponseType = AWS.CognitoIdentityServiceProvider.UsersListType;
 type AdminCreateUserRequest = AWS.CognitoIdentityServiceProvider.Types.AdminCreateUserRequest;
 type AttributeType = AWS.CognitoIdentityServiceProvider.Types.AttributeType;
 
-interface BackupReqProp {
-  userData: ListUsersResponseType;
-  params: ListUsersRequestTypes;
-}
 const backupUserpoolData = async (
-  backupReqProp: BackupReqProp,
+  userData: ListUsersResponseType,
+  params: ListUsersRequestTypes,
 ): Promise<ListUsersResponseType> => {
   const {
     Users = [] as UserType[],
     PaginationToken,
-  } = await cognitoIdp.listUsers(backupReqProp.params).promise();
+  } = await cognitoIdp.listUsers(params).promise();
 
-  const existingUserData = backupReqProp.userData;
+  const existingUserData = userData;
   const newUserData = [...existingUserData, ...Users] as ListUsersResponseType;
 
   if (PaginationToken) {
-    return await backupUserpoolData({
-      userData: newUserData,
-      params: {
-        UserPoolId: backupReqProp.params.UserPoolId,
-        PaginationToken: backupReqProp.params.PaginationToken,
-      },
+    return await backupUserpoolData(newUserData, {
+      UserPoolId: params.UserPoolId,
+      PaginationToken: params.PaginationToken,
     });
   } else {
-    /* Userpool의 Users[] 을 리턴 */
     return newUserData;
   }
 };
@@ -106,12 +99,12 @@ const restoreUserpoolData = async (
 [backup/restore]
 backup Userpool -> target Userpool
 */
-const backupAndRestore = async (UserPoolId: string) => {
-  const userdata = await backupUserpoolData({
-    userData: [] as UserType[],
-    params: {
-      UserPoolId,
-    },
+const backupAndRestore = async (
+  backupUserPoolId: string,
+  restoreUserPoolId: string,
+) => {
+  const userdata = await backupUserpoolData([] as UserType[], {
+    UserPoolId: backupUserPoolId,
   });
   // file 저장
   //   const file = path.join('/', `dev-${devUserpoolId}.json`);
@@ -120,7 +113,7 @@ const backupAndRestore = async (UserPoolId: string) => {
   //     JSON.stringify(userdata, null, 2),
   //   );
 
-  await restoreUserpoolData(userdata, UserPoolId);
+  await restoreUserpoolData(userdata, restoreUserPoolId);
 };
 
-backupAndRestore(prodUserpoolId);
+backupAndRestore(prodUserpoolId, prodUserpoolId);
