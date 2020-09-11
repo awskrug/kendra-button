@@ -49,35 +49,78 @@ const backupUserpoolData = async (
   }
 };
 
-// const restoreUserpoolData = async (UserPoolId: string) => {
-//   const { UserPool } = await cognitoIdp
-//     .describeUserPool({ UserPoolId })
-//     .promise();
-//   console.log('UserPool', JSON.stringify(UserPool, null, 2));
+const restoreUserpoolData = async (
+  userdata: ListUsersResponseType,
+  UserPoolId: string,
+) => {
+  // const { UserPool } = await cognitoIdp
+  //   .describeUserPool({ UserPoolId })
+  //   .promise();
+  // console.log('UserPool', JSON.stringify(UserPool, null, 2));
 
-//   const params: AdminCreateUserRequest = {
-//     UserPoolId,
-//     Username: user.Username,
-//     UserAttributes: attributes,
-//   };
-// };
+  for (let i = 0; i < userdata.length; i++) {
+    const user = userdata[i];
+    if (!user.Attributes || !user.Username) {
+      continue;
+    }
+
+    let Username: string = `NewUsername-${i}`;
+    const UserAttributes: AttributeType[] = [];
+    user.Attributes.forEach((attr: AttributeType) => {
+      if (!attr.Value || attr.Name === 'sub' || attr.Name === 'identities')
+        return;
+      if (attr.Name === 'email') {
+        Username = attr.Value;
+      }
+      UserAttributes.push(attr);
+    });
+
+    const params: AdminCreateUserRequest = {
+      UserPoolId,
+      Username,
+      DesiredDeliveryMediums: ['EMAIL'],
+      UserAttributes,
+      MessageAction: 'SUPPRESS',
+      TemporaryPassword: 'kendra-button',
+      ClientMetadata: {
+        restore: 'Y',
+      },
+    };
+
+    try {
+      await cognitoIdp.adminCreateUser(params).promise();
+    } catch (e) {
+      console.log('error:', e);
+      if (e.code === 'UsernameExistsException') {
+        console.log(
+          `Looks like user ${user.Username} already exists, ignoring.`,
+        );
+      } else {
+        throw e;
+      }
+    }
+  }
+};
+
 /*
 [backup/restore]
 backup Userpool -> target Userpool
 */
-backupUserpoolData({
-  userData: [] as UserType[],
-  params: {
-    UserPoolId: prodUserpoolId,
-  },
-}).then((userdata: ListUsersResponseType) => {
-  console.log('backup userinfo', JSON.stringify(userdata, null, 2));
+const backupAndRestore = async (UserPoolId: string) => {
+  const userdata = await backupUserpoolData({
+    userData: [] as UserType[],
+    params: {
+      UserPoolId,
+    },
+  });
   // file 저장
-  const file = path.join('/', `dev-${devUserpoolId}.json`);
-  fs.writeFileSync(
-    `${backupfilePrefix}-prod-${devUserpoolId}.json`,
-    JSON.stringify(userdata, null, 2),
-  );
-});
+  //   const file = path.join('/', `dev-${devUserpoolId}.json`);
+  //   fs.writeFileSync(
+  //     `${backupfilePrefix}-prod-${devUserpoolId}.json`,
+  //     JSON.stringify(userdata, null, 2),
+  //   );
 
-// restoreUserpoolData(prodUserpoolId);
+  await restoreUserpoolData(userdata, UserPoolId);
+};
+
+backupAndRestore(prodUserpoolId);
