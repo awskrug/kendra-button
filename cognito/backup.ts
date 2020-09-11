@@ -46,11 +46,6 @@ const restoreUserpoolData = async (
   userdata: ListUsersResponseType,
   UserPoolId: string,
 ) => {
-  // const { UserPool } = await cognitoIdp
-  //   .describeUserPool({ UserPoolId })
-  //   .promise();
-  // console.log('UserPool', JSON.stringify(UserPool, null, 2));
-
   for (let i = 0; i < userdata.length; i++) {
     const user = userdata[i];
     if (!user.Attributes || !user.Username) {
