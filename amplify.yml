@@ -5,7 +5,7 @@ backend:
       commands:
         - cd frontend/kendra-button-front
         - chmod +x amplfypush.sh
-        - ./amplfypush.sh -e dev
+        - ./amplfypush.sh -e prod
 frontend:
   phases:
     preBuild:
