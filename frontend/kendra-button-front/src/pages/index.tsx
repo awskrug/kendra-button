@@ -22,7 +22,7 @@ const oauthConfig = awsconfig.oauth
               .filter((url) => !url.includes('localhost'))[0],
     }
   : {};
-const url = 'https://prod.kendra-btns.whatilearened.today/graphql';
+const url = 'https://dev.kendra-btns.whatilearened.today/graphql';
 
 Amplify.configure({
   ...awsconfig,
