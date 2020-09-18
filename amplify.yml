@@ -4,6 +4,7 @@ backend:
     build:
       commands:
         - cd frontend/kendra-button-front
+        - envCache --set stackInfo ""
         - amplifyPush -e prod
 frontend:
   phases:
