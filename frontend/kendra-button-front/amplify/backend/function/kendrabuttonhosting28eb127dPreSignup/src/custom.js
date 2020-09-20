@@ -43,7 +43,7 @@ const linkProviderToUser = async ({
 exports.handler = async (event, context, callback) => {
   const userRs = await getUserByEmail(
     event.userPoolId,
-    event.request.userAttributes.email
+    event.request.userAttributes.email,
   );
 
   console.log('userRs', JSON.stringify(userRs, null, 2));
@@ -58,7 +58,7 @@ exports.handler = async (event, context, callback) => {
         '-' +
           JSON.stringify({
             msg: 'email already exists',
-          })
+          }),
       );
     }
 

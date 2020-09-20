@@ -6,13 +6,13 @@
         }
     },
     "auth": {
-        "kendrabuttonhosting84e32663": {
+        "kendrabuttonhosting28eb127d": {
             "service": "Cognito",
             "providerPlugin": "awscloudformation",
             "dependsOn": [
                 {
                     "category": "function",
-                    "resourceName": "kendrabuttonhosting84e32663PreSignup",
+                    "resourceName": "kendrabuttonhosting28eb127dPreSignup",
                     "triggerProvider": "Cognito",
                     "attributes": [
                         "Arn",
@@ -24,7 +24,7 @@
         }
     },
     "function": {
-        "kendrabuttonhosting84e32663PreSignup": {
+        "kendrabuttonhosting28eb127dPreSignup": {
             "build": true,
             "providerPlugin": "awscloudformation",
             "service": "Lambda"
