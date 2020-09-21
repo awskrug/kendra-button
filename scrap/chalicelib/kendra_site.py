@@ -19,6 +19,7 @@ class Site(Model):
     site = UnicodeAttribute(range_key=True)
     domain = UnicodeAttribute()
     scrap_endpoint = UnicodeAttribute()
+    scrap_interval = UnicodeAttribute(default='daily')
 
 
 class CrawlerStatus(graphene.ObjectType):

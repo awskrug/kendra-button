@@ -5,13 +5,14 @@ from functools import partial
 
 import boto3
 from chalice import Chalice, CognitoUserPoolAuthorizer
-from chalice.app import Request, Response, SQSEvent
+from chalice.app import Cron, Request, Response, SQSEvent
 from graphql import GraphQLError, GraphQLSchema
 from graphql.error import format_error
 from graphql_server import HttpQueryError, encode_execution_results, json_encode, \
     run_http_query
 
 from chalicelib.kendra_site import Site
+from chalicelib.page import Page
 from chalicelib.render_graphiql import GraphiQLConfig, GraphiQLData, GraphiQLOptions, render_graphiql_sync
 from chalicelib.schema import schema
 from chalicelib.scraper import BUCKET, WorkerMsg, handler
@@ -329,3 +330,11 @@ def worker_handler(event: SQSEvent):
         raise e
     # download_chromium()
     asyncio.get_event_loop().run_until_complete(handler(messages))
+
+
+@app.schedule(Cron(0, 3, '*', '*', '?', '*'))
+def daily_scrap(event):
+    print('run daily_scrap')
+    for site in Site.scan(Site.scrap_interval == 'daily'):
+        page = Page(site, site.scrap_endpoint, user=site.user, _type='html', scraped=False)
+        page.save()
