@@ -12,7 +12,8 @@
     "aws-sdk": "^2.747.0"
   },
   "scripts": {
-    "start": "yarn tsc && ts-node backup.ts",
+    "dev": "yarn tsc && ts-node backup.ts",
+    "start": "ts-node backup.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc"
   },
