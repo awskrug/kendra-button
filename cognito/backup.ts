@@ -2,11 +2,15 @@ import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const devUserpoolId = 'us-west-2_XT1s3RtPp';
-const prodUserpoolId = 'us-west-2_pdulBxv2r';
-const backupfilePrefix = 'userpoolbackup';
-
-const localProfileName = 'kendra-geoseong';
+// START: "yarn start" 실행 하기 전 파라미터 값을 원하는 대로 수정
+const backupUserpoolId = 'us-west-2_rtftALkqJ';
+const restoreUserpoolId = 'us-west-2_kPvJLjiXE';
+const stageName = 'sample';
+const backupFilePrefix = 'userpoolbackup';
+const backedUpDataFileName = 'userpoolbackup-sample-us-west-2_rtftALkqJ';
+const localProfileName = 'kendra-geoseong'; // default: 'default'
+const tempPassword = 'kendra-button';
+// END: "yarn start" 실행 하기 전 파라미터 값을 원하는 대로 수정
 
 const creds = new AWS.SharedIniFileCredentials({ profile: localProfileName });
 AWS.config.region = 'us-west-2';
@@ -49,11 +53,24 @@ const restoreUserpoolData = async (
   for (let i = 0; i < userdata.length; i++) {
     const user = userdata[i];
     if (!user.Attributes || !user.Username) {
+      console.log('[restoreUserpoolData] continue');
       continue;
     }
 
     let Username: string = `NewUsername-${i}`;
     const UserAttributes: AttributeType[] = [];
+
+    // TODO: why don't async?
+    // for (let i = 0; i < user.Attributes.length; i++) {
+    //   const attr = user.Attributes[i];
+    //   if (!attr.Value || attr.Name === 'sub' || attr.Name === 'identities')
+    //     return;
+    //   if (attr.Name === 'email') {
+    //     Username = attr.Value;
+    //   }
+    //   UserAttributes.push(attr);
+    // }
+
     user.Attributes.forEach((attr: AttributeType) => {
       if (!attr.Value || attr.Name === 'sub' || attr.Name === 'identities')
         return;
@@ -63,13 +80,15 @@ const restoreUserpoolData = async (
       UserAttributes.push(attr);
     });
 
+    console.log('[restoreUserpoolData] UserAttributes:', UserAttributes);
+
     const params: AdminCreateUserRequest = {
       UserPoolId,
       Username,
       DesiredDeliveryMediums: ['EMAIL'],
       UserAttributes,
       MessageAction: 'SUPPRESS',
-      TemporaryPassword: 'kendra-button',
+      TemporaryPassword: tempPassword,
       ClientMetadata: {
         restore: 'Y',
       },
@@ -83,11 +102,13 @@ const restoreUserpoolData = async (
         console.log(
           `Looks like user ${user.Username} already exists, ignoring.`,
         );
+        throw `Looks like user ${user.Username} already exists, ignoring.`;
       } else {
         throw e;
       }
     }
-  }
+  } // end for
+  return 'OK';
 };
 
 /*
@@ -101,14 +122,56 @@ const backupAndRestore = async (
   const userdata = await backupUserpoolData([] as UserType[], {
     UserPoolId: backupUserPoolId,
   });
-  // file 저장
-  //   const file = path.join('/', `dev-${devUserpoolId}.json`);
-  //   fs.writeFileSync(
-  //     `${backupfilePrefix}-prod-${devUserpoolId}.json`,
-  //     JSON.stringify(userdata, null, 2),
-  //   );
 
-  await restoreUserpoolData(userdata, restoreUserPoolId);
+  const result = await restoreUserpoolData(userdata, restoreUserPoolId).catch(
+    (err) => {
+      console.log(err);
+      return;
+    },
+  );
+  console.log('backupAndRestore completed', result);
 };
 
-backupAndRestore(prodUserpoolId, prodUserpoolId);
+console.log(process.argv);
+
+let modeFlagIdx = 99;
+for (let i = 0; i < process.argv.length; i++) {
+  let option = process.argv[i];
+  if (option === '--mode') {
+    modeFlagIdx = i;
+    continue;
+  }
+  if (i === modeFlagIdx + 1) {
+    console.log('option:', option);
+    if (option === 'backup') {
+      backupUserpoolData([] as UserType[], {
+        UserPoolId: backupUserpoolId,
+      }).then((userdata) => {
+        // file 저장
+        const file = path.join('/', `${stageName}-${backupUserpoolId}.json`);
+        fs.writeFileSync(
+          `${backupFilePrefix}-${stageName}-${backupUserpoolId}.json`,
+          JSON.stringify(userdata, null, 2),
+        );
+      });
+    } else if (option === 'backupandrestore') {
+      backupAndRestore(backupUserpoolId, restoreUserpoolId);
+    } else if (option === 'restore') {
+      const userdata = require(`./${backedUpDataFileName}.json`) as ListUsersResponseType;
+      console.log('userdata.length', userdata.length);
+      restoreUserpoolData(userdata, restoreUserpoolId)
+        .then((result) => {
+          console.log('restore completed', result);
+        })
+        .catch((err) => {
+          console.log(err);
+          return;
+        });
+    } else {
+      console.log(
+        'Please type one of the "backup", "backupandrestore", "restore" flag.',
+      );
+    }
+    break;
+  }
+}
