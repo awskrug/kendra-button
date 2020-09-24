@@ -1,6 +1,8 @@
 import graphene
 import requests
 
+from chalicelib.utils import get_secret
+
 
 class Highlight(graphene.ObjectType):
     start = graphene.Int()
@@ -82,40 +84,52 @@ class Query:
     def resolve_search(self, info, text, site, size=100, page=1):
         if size > 100:
             raise Exception('Page size should be less than 100')
-
-        url = "https://f7ngbade0c.execute-api.us-west-2.amazonaws.com/dev/kendra/query"
-        print(text)
+        query_api_info = get_secret()
+        QUERY_API_ENDPOINT = query_api_info['endpoint']
+        KENDRA_INDEX_ID = query_api_info['indexid']
 
         payload = {
-            "IndexId": "65a73c7f-74df-43da-950b-70cbc46be778",
+            "IndexId": KENDRA_INDEX_ID,
             "QueryText": text,
             "PageSize": size,
             "PageNumber": page,
+            "AttributeFilter": {
+                'EqualsTo': {
+                    "Key": "site",
+                    "Value": {
+                        "StringValue": site,
+                    }
+                }
+            }
         }
-
-        response = requests.request("POST", url, json=payload).json()
+        raw_resp = requests.request("POST", f"{QUERY_API_ENDPOINT}/kendra/query", json=payload)
+        print(raw_resp.text)
+        response = raw_resp.json()
+        print(response)
         items = []
-        for doc in response['ResultItems']:
-            result = {}
-            result['url'] = doc['DocumentURI']
-            result['title'] = HighlightText.make_from_dict(doc.get("DocumentTitle"))
-            result['excerpt'] = HighlightText.make_from_dict(doc.get('DocumentExcerpt'))
+        total = 0
+        if response:
+            for doc in response.get('ResultItems', []):
+                result = {}
+                result['url'] = doc['DocumentURI']
+                result['title'] = HighlightText.make_from_dict(doc.get("DocumentTitle"))
+                result['excerpt'] = HighlightText.make_from_dict(doc.get('DocumentExcerpt'))
 
-            doc_type = doc['Type']
-            item = BaseDocument
-            # type (RequestedDocumentAttributes) 이 DOCUMENT, QUESTION_ANSWER, ANSWER 라고 나와있지만
-            # QUESTION_ANSWER 는 테스트 시 출력되는 상황 확인 된 적 없음 
-            if doc_type == 'DOCUMENT':
-                item = DOCUMENT
-            elif doc_type == 'ANSWER':
-                item = ANSWER
-                result['answers'] = []
+                doc_type = doc['Type']
+                item = BaseDocument
+                # type (RequestedDocumentAttributes) 이 DOCUMENT, QUESTION_ANSWER, ANSWER 라고 나와있지만
+                # QUESTION_ANSWER 는 테스트 시 출력되는 상황 확인 된 적 없음
+                if doc_type == 'DOCUMENT':
+                    item = DOCUMENT
+                elif doc_type == 'ANSWER':
+                    item = ANSWER
+                    result['answers'] = []
 
-            items.append(item(**result))
-
+                items.append(item(**result))
+            total = response.get('TotalNumberOfResults', 0)
         return SearchResult(
             items=items,
-            total=response['TotalNumberOfResults']
+            total=total
             # DocumentType 기준으로 실행 예정
         )
 

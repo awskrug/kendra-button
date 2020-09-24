@@ -13,7 +13,8 @@ resource "aws_iam_policy" "lambda_policy" {
         "sns:*",
         "sqs:*",
         "cloudwatch:*",
-        "events:*"
+        "events:*",
+        "secretsmanager:*"
       ],
       "Effect": "Allow",
       "Resource": "*"

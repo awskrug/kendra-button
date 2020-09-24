@@ -24,11 +24,16 @@ sqs = boto3.client('sqs')
 
 app = Chalice(app_name='kendra-scrap')
 app.debug = True
+if STAGE == 'dev':
+    CognitoUserPool = 'arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_XT1s3RtPp'
+else:
+    CognitoUserPool = "arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_pdulBxv2r"
 
-authorizer = CognitoUserPoolAuthorizer('KendraBtnUserPool', provider_arns=[
-    'arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_XT1s3RtPp'],
-                                       header='Authorization'
-                                       )
+authorizer = CognitoUserPoolAuthorizer(
+    'KendraBtnUserPool',
+    provider_arns=[CognitoUserPool],
+    header='Authorization'
+)
 
 
 class GraphQLView:

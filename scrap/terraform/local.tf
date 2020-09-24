@@ -3,14 +3,6 @@ variable "kendra_account" {
   default = "294038372338"
 }
 
-locals {
-  kendra_role = "kendra-buttons-put-doc-role-${data.null_data_source.chalice.inputs.stage}"
-
-}
-locals {
-  kendra_role_arn = "arn:aws:iam::${var.kendra_account}:role/${local.kendra_role}"
-}
-
 
 data "aws_sqs_queue" "page_que_info" {
   name = aws_sqs_queue.page_que.name
@@ -21,11 +13,11 @@ data "aws_sqs_queue" "page_que_info" {
 
 locals {
   variables = {
-    S3 = "kendra-button-data"
+    S3 = "kendra-buttons-everypython-store-dev"
     siteDB = aws_dynamodb_table.site_db.name
     pageDB = aws_dynamodb_table.page_db.name
     pageQueUrl = data.aws_sqs_queue.page_que_info.url
-    KENDRA_ROLE = local.kendra_role_arn
+    secrets = aws_secretsmanager_secret.secrets.name
     PYPPETEER_HOME = "/tmp/"
     CHALICE_STAGE = data.null_data_source.chalice.inputs.stage
   }

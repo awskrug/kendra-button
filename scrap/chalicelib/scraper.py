@@ -17,45 +17,12 @@ OPERATOR = "OPERATOR"
 RUNTIME_ENV = os.environ.get('AWS_EXECUTION_ENV')
 
 PAGE_QUE_URL = os.environ.get('pageQueUrl')
-#  kendra_role: kendra-buttons-put-doc-role-${self:custom.stage}
-#     arn: arn:aws:iam::${self:custom.kendra.account}:role/${self:custom.role.kendra_role}
-S3 = os.environ.get('S3', 'kendra-button-data')
+S3 = os.environ.get('S3', 'kendra-buttons-everypython-store-dev')
 BUCKET = boto3.resource('s3').Bucket(S3)
 CLIENT = boto3.client('sqs')
-KENDRA_ROLE_ARN = os.environ.get('KENDRA_ROLE', "arn:aws:iam::294038372338:role/kendra-buttons-put-doc-role-dev")
-SECRET_ID = os.environ.get("SECRET_ID", "kendera-btn/dev/secretes")
-SECRET_REGION = os.environ.get("SECRET_REGION", "us-west-2")
-
-KENDRA_INDEX_ID = os.environ.get("KENDRA_INDEX_ID", "f3eca9c5-5307-4347-b573-9fbb20be6658")
 
 
-def get_secret():
-    # Create a Secrets Manager client
-    session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=SECRET_REGION
-    )
 
-    # In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
-    # See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
-    # We rethrow the exception by default.
-
-    try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=SECRET_ID
-        )
-    except ClientError as e:
-        raise e
-    else:
-        # Decrypts secret using the associated KMS CMK.
-        # Depending on whether the secret is a string or binary, one of these fields will be populated.
-        if 'SecretString' in get_secret_value_response:
-            secret = get_secret_value_response['SecretString']
-            return secret
-        else:
-            decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
-            return decoded_binary_secret
 
 
 def is_local_env():
