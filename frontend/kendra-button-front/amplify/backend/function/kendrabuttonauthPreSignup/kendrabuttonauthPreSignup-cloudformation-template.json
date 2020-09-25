@@ -65,12 +65,12 @@
 				"FunctionName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"kendrabuttonhosting84e32663PreSignup",
+						"kendrabuttonauthPreSignup",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"kendrabuttonhosting84e32663PreSignup",
+									"kendrabuttonauthPreSignup",
 									"-",
 									{
 										"Ref": "env"
@@ -108,8 +108,8 @@
 				"Runtime": "nodejs10.x",
 				"Timeout": "25",
 				"Code": {
-					"S3Bucket": "amplify-kendrabuttonhosting-prod-234130-deployment",
-					"S3Key": "amplify-builds/kendrabuttonhosting84e32663PreSignup-58616771514c77366f4c-build.zip"
+					"S3Bucket": "amplify-kendrabuttonhosting-dev-213422-deployment",
+					"S3Key": "amplify-builds/kendrabuttonauthPreSignup-484d6169446f67483766-build.zip"
 				}
 			}
 		},
@@ -119,12 +119,12 @@
 				"RoleName": {
 					"Fn::If": [
 						"ShouldNotCreateEnvResources",
-						"kendrabuttonhosting84e32663PreSignup",
+						"kendrabuttonauthPreSignup",
 						{
 							"Fn::Join": [
 								"",
 								[
-									"kendrabuttonhosting84e32663PreSignup",
+									"kendrabuttonauthPreSignup",
 									"-",
 									{
 										"Ref": "env"
@@ -208,7 +208,7 @@
 											"Ref": "AWS::AccountId"
 										},
 										"userpoolid": {
-											"Fn::ImportValue": "kendraUserPoolIdProd"
+											"Fn::ImportValue": "kendraUserPoolIdDev"
 										}
 									}
 								]
