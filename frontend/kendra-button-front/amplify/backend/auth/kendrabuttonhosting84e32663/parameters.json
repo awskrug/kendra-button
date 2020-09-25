@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "kendrabuttonauth_identitypool_33d7f4a1",
+    "identityPoolName": "kendrabuttonhosting84e32663_identitypool_50be9f5e",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "kendra1eadefa7",
-    "userPoolName": "kendrabuttonauth",
+    "resourceNameTruncated": "kendra84e32663",
+    "userPoolName": "kendrabuttonhosting84e32663_userpool_84e32663",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -14,7 +14,7 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": false,
+    "defaultPasswordPolicy": true,
     "passwordPolicyMinLength": 8,
     "passwordPolicyCharacters": [],
     "requiredAttributes": [
@@ -28,16 +28,11 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "kendra1eadefa7_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": false,
-    "useDefault": "defaultSocial",
+    "userpoolClientLambdaRole": "kendra84e32663_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": true,
+    "sharedId": "84e32663",
+    "resourceName": "kendrabuttonhosting84e32663",
     "authSelections": "identityPoolAndUserPool",
-    "resourceName": "kendrabuttonauth",
-    "userPoolGroups": false,
-    "adminQueries": false,
-    "triggers": "{\"PreSignup\":[\"custom\"]}",
-    "hostedUI": true,
-    "userPoolGroupList": [],
     "authRoleArn": {
         "Fn::GetAtt": [
             "AuthRole",
@@ -50,14 +45,13 @@
             "Arn"
         ]
     },
-    "parentStack": {
-        "Ref": "AWS::StackId"
-    },
-    "permissions": [],
+    "useDefault": "defaultSocial",
+    "hostedUI": true,
+    "userPoolGroupList": [],
     "dependsOn": [
         {
             "category": "function",
-            "resourceName": "kendrabuttonauthPreSignup",
+            "resourceName": "kendrabuttonhosting84e32663PreSignup",
             "triggerProvider": "Cognito",
             "attributes": [
                 "Arn",
@@ -65,11 +59,18 @@
             ]
         }
     ],
-    "hostedUIDomainName": "kendrabuttonauth",
+    "userPoolGroups": false,
+    "adminQueries": false,
+    "triggers": "{\"PreSignup\":[\"custom\"]}",
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": [],
+    "hostedUIDomainName": "social-kendra",
     "authProvidersUserPool": [
         "Facebook",
         "Google"
     ],
     "hostedUIProviderMeta": "[{\"ProviderName\":\"Facebook\",\"authorize_scopes\":\"email,public_profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"id\"}},{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://dev.kendra.fun/\"],\"LogoutURLs\":[\"https://dev.kendra.fun/\"]}"
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"https://admin.kendra.fun/\"],\"LogoutURLs\":[\"https://admin.kendra.fun/\"]}"
 }
