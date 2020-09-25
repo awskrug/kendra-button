@@ -1,0 +1,7 @@
+backup.js
+backup.js.*
+
+node_modules/
+
+userpoolbackup-*
+userpoolbackup-*.json
