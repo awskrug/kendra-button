@@ -9,6 +9,18 @@ Parameters:
     Type: String
   
   
+  
+  
+  functionkendrabuttonauthPreSignupArn: 
+    Type: String
+    Default: functionkendrabuttonauthPreSignupArn
+  
+  functionkendrabuttonauthPreSignupName: 
+    Type: String
+    Default: functionkendrabuttonauthPreSignupName
+  
+  
+  
 
     
   identityPoolName:
@@ -74,30 +86,39 @@ Parameters:
   userpoolClientSetAttributes:
     Type: String
             
-  sharedId:
-    Type: String
-              
-  resourceName:
+  useDefault:
     Type: String
               
   authSelections:
     Type: String
-                                      
-  useDefault:
-    Type: String
-                      
-  usernameAttributes:
-    Type: CommaDelimitedList
               
+  resourceName:
+    Type: String
+                
+  userPoolGroups:
+    Type: String
+              
+  adminQueries:
+    Type: String
+            
+  triggers:
+    Type: String
+                
+  hostedUI:
+    Type: String
+                    
   userPoolGroupList:
+    Type: CommaDelimitedList
+                                    
+  parentStack:
+    Type: String
+                
+  permissions:
     Type: CommaDelimitedList
               
   dependsOn:
     Type: CommaDelimitedList
-        
-  hostedUI:
-    Type: String
-            
+      
   hostedUIDomainName:
     Type: String
                       
@@ -124,7 +145,7 @@ Resources:
   # Created to allow the UserPool SMS Config to publish via the Simple Notification Service during MFA Process
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !If [ShouldNotCreateEnvResources, 'kendra28eb127d_sns-role', !Join ['',[ 'sns', '28eb127d', !Select [3, !Split ['-', !Ref 'AWS::StackName']], '-', !Ref env]]]
+      RoleName: !If [ShouldNotCreateEnvResources, 'kendra1eadefa7_sns-role', !Join ['',[ 'sns', 'undefined', !Select [3, !Split ['-', !Ref 'AWS::StackName']], '-', !Ref env]]]
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement: 
@@ -136,10 +157,10 @@ Resources:
               - "sts:AssumeRole"
             Condition: 
               StringEquals:
-                sts:ExternalId: kendra28eb127d_role_external_id
+                sts:ExternalId: kendra1eadefa7_role_external_id
       Policies: 
         - 
-          PolicyName: kendra28eb127d-sns-policy
+          PolicyName: kendra1eadefa7-sns-policy
           PolicyDocument: 
             Version: "2012-10-17"
             Statement: 
@@ -166,6 +187,19 @@ Resources:
         
       
       
+      LambdaConfig:
+        
+        
+        
+        
+        
+        
+        
+          PreSignUp: !Ref functionkendrabuttonauthPreSignupArn
+        
+        
+        
+      
       
       AutoVerifiedAttributes: !Ref autoVerifiedAttributes
       
@@ -180,22 +214,41 @@ Resources:
           RequireNumbers: false
           RequireSymbols: false
           RequireUppercase: false
-      
-      UsernameAttributes: !Ref usernameAttributes
           
       MfaConfiguration: !Ref mfaConfiguration
       SmsVerificationMessage: !Ref smsVerificationMessage
       SmsConfiguration: 
         SnsCallerArn: !GetAtt SNSRole.Arn
-        ExternalId: kendra28eb127d_role_external_id
+        ExternalId: kendra1eadefa7_role_external_id
     
+  
+    
+    
+  
+    
+    
+  
+  
+  UserPoolPreSignupLambdaInvokePermission: 
+    Type: "AWS::Lambda::Permission"
+    DependsOn: UserPool
+    Properties: 
+      Action: "lambda:invokeFunction"
+      Principal: "cognito-idp.amazonaws.com"
+      FunctionName: !Ref functionkendrabuttonauthPreSignupName
+      SourceArn: !GetAtt UserPool.Arn
+  
+   
+    
+  # Updating lambda role with permissions to Cognito
+  
   
   UserPoolClientWeb:
   # Created provide application access to user pool
   # Depends on UserPool for ID reference
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: kendra28eb127d_app_clientWeb
+      ClientName: kendra1eadefa7_app_clientWeb
       
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity
       UserPoolId: !Ref UserPool
@@ -205,7 +258,7 @@ Resources:
   # Depends on UserPool for ID reference
     Type: "AWS::Cognito::UserPoolClient"
     Properties:
-      ClientName: kendra28eb127d_app_client
+      ClientName: kendra1eadefa7_app_client
       
       GenerateSecret: !Ref userpoolClientGenerateSecret
       RefreshTokenValidity: !Ref userpoolClientRefreshTokenValidity
@@ -216,7 +269,7 @@ Resources:
   # Created to execute Lambda which gets userpool app client config values
     Type: 'AWS::IAM::Role'
     Properties:
-      RoleName: !If [ShouldNotCreateEnvResources, !Ref userpoolClientLambdaRole, !Join ['',['upClientLambdaRole', '28eb127d', !Select [3, !Split ['-', !Ref 'AWS::StackName']], '-', !Ref env]]]
+      RoleName: !If [ShouldNotCreateEnvResources, !Ref userpoolClientLambdaRole, !Join ['',['upClientLambdaRole', 'undefined', !Select [3, !Split ['-', !Ref 'AWS::StackName']], '-', !Ref env]]]
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -270,7 +323,7 @@ Resources:
   # Marked as depending on UserPoolClientRole for easier to understand CFN sequencing
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: kendra28eb127d_userpoolclient_lambda_iam_policy
+      PolicyName: kendra1eadefa7_userpoolclient_lambda_iam_policy
       Roles: 
         - !Ref UserPoolClientRole
       PolicyDocument:
@@ -287,7 +340,7 @@ Resources:
   # Marked as depending on UserPoolClientLambdaPolicy for easier to understand CFN sequencing
     Type: 'AWS::IAM::Policy'
     Properties:
-      PolicyName: kendra28eb127d_userpoolclient_lambda_log_policy
+      PolicyName: kendra1eadefa7_userpoolclient_lambda_log_policy
       Roles: 
         - !Ref UserPoolClientRole
       PolicyDocument:
@@ -674,7 +727,7 @@ Resources:
   # Always created
     Type: AWS::Cognito::IdentityPool
     Properties: 
-      IdentityPoolName: !If [ShouldNotCreateEnvResources, 'kendrabuttonhosting28eb127d_identitypool_28eb127d', !Join ['',['kendrabuttonhosting28eb127d_identitypool_28eb127d', '__', !Ref env]]]
+      IdentityPoolName: !If [ShouldNotCreateEnvResources, 'kendrabuttonauth_identitypool_33d7f4a1', !Join ['',['kendrabuttonauth_identitypool_33d7f4a1', '__', !Ref env]]]
       
       CognitoIdentityProviders:
         - ClientId:  !Ref UserPoolClient
@@ -709,6 +762,8 @@ Outputs :
   IdentityPoolId:
     Value: !Ref 'IdentityPool'
     Description:  Id for the identity pool
+    Export:
+      Name: "kendraIdentityPoolId"
   IdentityPoolName:
     Value: !GetAtt IdentityPool.Name 
   
@@ -724,6 +779,8 @@ Outputs :
   UserPoolId:
     Value: !Ref 'UserPool'
     Description:  Id for the user pool
+    Export:
+      Name: "kendraUserPoolIdDev"
   UserPoolName:
     Value: !Ref userPoolName
   AppClientIDWeb:
