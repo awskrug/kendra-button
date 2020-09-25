@@ -3,13 +3,14 @@
     "modules": [
         "custom"
     ],
-    "parentResource": "kendrabuttonhosting28eb127d",
-    "functionName": "kendrabuttonhosting28eb127dPreSignup",
-    "resourceName": "kendrabuttonhosting28eb127dPreSignup",
+    "parentResource": "kendrabuttonauth",
+    "functionName": "kendrabuttonauthPreSignup",
+    "resourceName": "kendrabuttonauthPreSignup",
     "parentStack": "auth",
-    "triggerEnvs": [],
+    "triggerEnvs": "[]",
     "triggerDir": "/Users/geoseong/.npm-packages/lib/node_modules/@aws-amplify/cli/node_modules/amplify-category-auth/provider-utils/awscloudformation/utils/../triggers/PreSignup",
     "triggerTemplate": "PreSignup.json.ejs",
-    "roleName": "kendrabuttonhosting28eb127dPreSignup",
-    "skipEdit": true
+    "roleName": "kendrabuttonauthPreSignup",
+    "skipEdit": true,
+    "triggerEventPath": "PreSignup.event.json"
 }
