@@ -44,7 +44,14 @@ const Search = (props: Props): ReactElement => {
       setIsLoading(false);
       return;
     }
-    // TODO: compare between validationRes.domain and props.domain
+    // compare between validationRes.domain and props.domain
+    if (validationRes.data.site.domain !== domain) {
+      setError(
+        `Domain address of this site's configuration does not match the domain address here: (${domain})`,
+      );
+      setIsLoading(false);
+      return;
+    }
 
     // Data Fetch
     const res = await callGraphql({ text: inputValue, site });
