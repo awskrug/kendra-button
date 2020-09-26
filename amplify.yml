@@ -1,19 +1,25 @@
-version: 0.1
+version: 1
+backend:
+  phases:
+    build:
+      commands:
+        - cd frontend/kendra-button-front
+        - envCache --set stackInfo ""
+        - chmod +x amplifypush.sh
+        - ./amplifypush.sh -e prod
 frontend:
   phases:
     preBuild:
       commands:
-        - cd frontend/kendra-button-front
-        - chmod +x amplify-pull.sh
-        - ./amplify-pull.sh
+        - yarn
     build:
       commands:
         - find . -name "aws-exports.js"
-        - yarn
         - yarn build
   artifacts:
     baseDirectory: frontend/kendra-button-front/src/out
     files:
       - '**/*'
   cache:
-    paths: []
+    paths: 
+      - node_modules/**/*

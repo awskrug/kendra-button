@@ -1,12 +1,14 @@
 import * as Yup from 'yup';
 
+import { Auth, Logger } from 'aws-amplify';
 import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 
-import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 import { CognitoException } from '../types';
 import { Loader } from './Loader';
 import { useFormik } from 'formik';
+
+const logger = new Logger('SignUp');
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
@@ -38,7 +40,7 @@ const SignUp = (props: Props): ReactElement => {
         .min(8, 'Password is too short - should be 8 characters minimum.')
         .matches(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-          'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character',
+          'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
         ),
     }),
     onSubmit: () => {},
@@ -58,17 +60,20 @@ const SignUp = (props: Props): ReactElement => {
     }
 
     try {
-      const res = await Auth.signUp(
-        formik.values.email,
-        formik.values.password,
-      );
+      const res = await Auth.signUp({
+        username: formik.values.email,
+        password: formik.values.password,
+        attributes: {
+          email: formik.values.email,
+        },
+      });
 
       if (res) {
         setUsername(formik.values.email);
         setScreen(AuthState.ConfirmSignUp);
       }
     } catch (e) {
-      console.log('error e ', e);
+      logger.error('error e ', e);
       const err: CognitoException<CognitoSignUpErrorState> = e;
       let errmsg = err.message;
       if (err.code === CognitoSignUpErrorState.UserLambdaValidationException) {
@@ -90,9 +95,8 @@ const SignUp = (props: Props): ReactElement => {
   };
 
   return (
-    <>
-      <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
-        <div></div>
+    <div className={`row justify-content-center m-2 mb-4`}>
+      <div className="rounded shadow col-sm-6 overflow-auto p-3 justify-content-between">
         <div className={`signUpTitle mb-2`}>Create a new account </div>
         {signupAccErr && (
           <div className="alert alert-dismissible alert-warning">
@@ -148,7 +152,10 @@ const SignUp = (props: Props): ReactElement => {
             <div className="invalid-feedback">{formik.errors.password}</div>
           )}
         </div>
-        <button className={`btn btn-success shadow-sm`} onClick={onSubmit}>
+        <button
+          className={`btn btn-success shadow-sm w-100`}
+          onClick={onSubmit}
+        >
           {isLoading && <Loader className={'mr-2'} />}
           Create Account
         </button>
@@ -159,11 +166,11 @@ const SignUp = (props: Props): ReactElement => {
             Sign In
           </span>
         </div>
-        <div></div>
       </div>
       <style global jsx>{`
         .signUpTitle {
-          font-size: 1.8rem;
+          font-size: 1.5rem;
+          font-family: 'Pacifico', cursive;
         }
         .backToSignIn {
           color: #93c54c;
@@ -174,7 +181,7 @@ const SignUp = (props: Props): ReactElement => {
           background-color: #b9e082;
         }
       `}</style>
-    </>
+    </div>
   );
 };
 

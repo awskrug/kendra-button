@@ -4,8 +4,11 @@ import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Loader } from './Loader';
+import { Logger } from 'aws-amplify';
 import { callGraphql } from '../utils';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
+const logger = new Logger('Projects');
 
 interface Props {}
 
@@ -19,7 +22,7 @@ const Projects = (props: Props): ReactElement => {
     if (!states.reloadSite) return;
     callGraphql({ query: siteList })
       .then((res) => {
-        console.log('200', JSON.stringify(res, null, 2));
+        logger.log('200', JSON.stringify(res, null, 2));
         setSites(res?.data?.sites);
         setIsLoading(false);
         dispatch({
@@ -30,7 +33,7 @@ const Projects = (props: Props): ReactElement => {
         });
       })
       .catch((err) => {
-        console.log('400', JSON.stringify(err, null, 2));
+        logger.error('400', JSON.stringify(err, null, 2));
         setIsLoading(false);
       });
   }, [states.reloadSite]);
@@ -100,7 +103,7 @@ const Projects = (props: Props): ReactElement => {
           box-shadow: 2px 2px 5px 0px grey;
         }
         .kendra-site-list {
-          max-height: 90vh;
+          max-height: 65vh;
         }
       `}</style>
     </>

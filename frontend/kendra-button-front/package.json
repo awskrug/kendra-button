@@ -11,6 +11,7 @@
     "@aws-amplify/ui-components": "^0.5.2",
     "@aws-amplify/ui-react": "^0.2.9",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-brands-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "aws-amplify": "^3.0.13",
@@ -19,6 +20,7 @@
     "next": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-tooltip": "^4.2.9",
     "yup": "^0.29.1"
   },
   "license": "ISC",

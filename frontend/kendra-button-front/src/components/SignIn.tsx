@@ -1,63 +1,59 @@
-import { AmplifyButton, AmplifyFormField, AmplifyPasswordField } from '@aws-amplify/ui-react';
-import { useRef, useState, Dispatch, SetStateAction, ReactElement } from 'react'
-import { Auth } from 'aws-amplify';
+import * as Yup from 'yup';
+
+import { Auth, Logger } from 'aws-amplify';
+import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
+
+import { AmplifyButton } from '@aws-amplify/ui-react';
 import { AuthState } from '@aws-amplify/ui-components';
+import { useFormik } from 'formik';
+
+const logger = new Logger('SignIn');
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
   setUsername?: Dispatch<SetStateAction<string>>;
-
 }
-
 
 const SignIn = (props: Props): ReactElement => {
   const { setScreen, setUsername } = props;
-  const email = useRef('');
-  const password = useRef('');
   const [confirmRequired, setconfirmRequired] = useState<boolean>(false);
-  const [emailErr, setEmailErr] = useState<string>('');
-  const [passwordErr, setPasswordErr] = useState<string>('');
   const [signinAccErr, setSigninAccErr] = useState<string>('');
 
-
-  const onEmailChange = (e): void => {
-    email.current = e.target.value;
-  };
-
-  const onPasswordChange = (e): void => {
-    password.current = e.target.value;
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .required('Please enter your email.')
+        .email('Invalid email address.'),
+      password: Yup.string().required('Please enter your password'),
+    }),
+    onSubmit: () => {},
+  });
 
   const onSubmit = async (e): Promise<void> => {
-    if (email.current.length === 0) {
-      setEmailErr('Required')
-      return;
-    }
-    if (password.current.length === 0) {
-      setPasswordErr('No password provided')
+    formik.submitForm();
+    if (!formik.isValid || !formik.values.email || !formik.values.password) {
       return;
     }
 
     try {
       const res = await Auth.signIn(
-        email.current,
-        password.current
+        formik.values.email,
+        formik.values.password,
       );
-
       if (res) {
-        setEmailErr('');
-        setPasswordErr('');
+        setSigninAccErr('');
       }
     } catch (e) {
-      console.log('error e', e);
-      setEmailErr('');
-      setPasswordErr('');
-
+      logger.error('error e', e);
       if (e.code === 'UserNotConfirmedException') {
-        setSigninAccErr('Please confirm your email before sign in.')
-        setconfirmRequired(true)
+        setSigninAccErr('Please confirm your email before sign in.');
+        setconfirmRequired(true);
       } else {
-        setSigninAccErr(e.message)
+        setSigninAccErr(e.message);
       }
     }
     return;
@@ -65,20 +61,20 @@ const SignIn = (props: Props): ReactElement => {
 
   const toSignUp = (): void => {
     setScreen(AuthState.SignUp);
+    // setScreen(AuthState.ConfirmSignUp);
   };
 
   const toConfirm = (): void => {
-    setUsername(email.current)
+    setUsername(formik.values.email);
     setScreen(AuthState.ConfirmSignUp);
   };
-
 
   const toSignInGoogle = async (): Promise<void> => {
     try {
       //@ts-ignore
       await Auth.federatedSignIn({ provider: 'Google' });
     } catch (e) {
-      console.log('[error in google]', e);
+      logger.error('[error in google]', e);
     }
   };
   const toSignInFacebook = async (e): Promise<void> => {
@@ -86,91 +82,101 @@ const SignIn = (props: Props): ReactElement => {
       //@ts-ignore
       await Auth.federatedSignIn({ provider: 'Facebook' });
     } catch (e) {
-      console.log('[error in facebook]', e);
+      logger.error('[error in facebook]', e);
     }
-
   };
-
   return (
-    <>
-      <div className={`card col-sm-6 h-75  overflow-auto p-3 justify-content-between`}>
-        <div></div>
-        <div className={`signUpTitle mb-3`}>Sign in to your account </div>
+    <div className={`row justify-content-center m-2 mb-4`}>
+      <div className={`rounded shadow col-sm-6 overflow-auto p-3`}>
+        <div className={`signUpTitle mb-3`}>Sign In </div>
         {signinAccErr && (
-          <div className="alert alert-dismissible alert-warning">
+          <div className="alert alert-dismissible alert-danger">
             <div className="mb-0">{signinAccErr}</div>
           </div>
         )}
         {confirmRequired && (
-          <div className="toConfirm btn mb-2" onClick={toConfirm}>Click here to confirm</div>
-        )}
-
-        <AmplifyFormField
-          fieldId={'email'}
-          handleInputChange={onEmailChange}
-          label={'Email'}
-          inputProps={{
-            placeholder: 'Enter your email',
-          }}
-          required={true}
-          value={null}
-        />
-        {emailErr && (
-          <div className="alert alert-dismissible alert-warning">
-            <div className="mb-0">{emailErr}</div>
+          <div className="toConfirm btn mb-2" onClick={toConfirm}>
+            Click here to confirm
           </div>
         )}
 
-        <AmplifyPasswordField
-          fieldId={'password'}
-          handleInputChange={onPasswordChange}
-          label={'Password'}
-          inputProps={{
-            placeholder: 'Enter your password',
-          }}
-          required={true}
-          value={null}
-        />
-        {passwordErr && (
-          <div className="alert alert-dismissible alert-warning">
-            <div className="mb-0">{passwordErr}</div>
+        <div className="form-group">
+          <label
+            className="form-control-label font-weight-bold"
+            htmlFor="email"
+          >{`Email`}</label>
+          <input
+            id="email"
+            name="email"
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            className={`form-control ${
+              formik.touched.email && formik.errors.email ? 'is-invalid' : ''
+            }`}
+          />
+          {formik.touched.email && formik.errors.email && (
+            <div className="invalid-feedback">{formik.errors.email}</div>
+          )}
+        </div>
+        <div className="form-group">
+          <label
+            className="form-control-label font-weight-bold"
+            htmlFor="password"
+          >{`Password`}</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            onBlur={formik.handleBlur}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            className={`form-control ${
+              formik.touched.password && formik.errors.password
+                ? 'is-invalid'
+                : ''
+            }`}
+          />
+          {formik.touched.password && formik.errors.password && (
+            <div className="invalid-feedback">{formik.errors.password}</div>
+          )}
+        </div>
+        <AmplifyButton handleButtonClick={onSubmit}>Sign In</AmplifyButton>
+        <div className={`row justify-content-between`}>
+          <div
+            className={`socialLoginBtns mt-1 col-sm-12 col-md-6 col-xl-4`}
+            onClick={toSignInGoogle}
+          >
+            <img src="/google.png" className="w-100" role="button" />
           </div>
-        )}
-        <AmplifyButton
-          handleButtonClick={onSubmit}
-        >Sign In</AmplifyButton>
-        <div className={`mt-3`}> Don't have an account?
-          <span className={`toSignUp btn`} onClick={toSignUp}>
-            Sign Up
-            </span>
-          <div>
-            <p className={`my-3 text-center`}> or </p>
-            <div className={`socialLoginBtns d-flex m-auto mt-1 col-sm-12 col-md-6`} onClick={toSignInGoogle}>
-              <img src="/google.png" className="w-100" />
-            </div>
-            <div className={`socialLoginBtns facebookLogin m-auto mt-1 col-sm-12 col-md-6`} onClick={toSignInFacebook}>
-              <img src="/facebook.png" className="w-100" />
-            </div>
+          <div
+            className={`socialLoginBtns mt-1 col-sm-12 col-md-6 col-xl-4`}
+            onClick={toSignInFacebook}
+          >
+            <img src="/facebook.png" className="w-100" role="button" />
           </div>
         </div>
-        <div></div>
+        <div className={`mt-3`}>
+          Don't have an account?
+          <span className={`toSignUp btn`} onClick={toSignUp}>
+            Sign Up
+          </span>
+        </div>
       </div>
       <style global jsx>{`
-      .signUpTitle{
-        font-size: 1.8rem;
-      }
-      .toSignUp, .toConfirm{
-        color: #ff9900;
-        font-size: 0.9rem;
-      }
-      .socialLoginBtns{
-        cursor: pointer;
-      }
+        .signUpTitle {
+          font-size: 1.5rem;
+          font-family: 'Pacifico', cursive;
+        }
+        .toSignUp,
+        .toConfirm {
+          color: #ff9900;
+          font-size: 1rem;
+        }
+        .socialLoginBtns {
+        }
       `}</style>
-    </>
-  )
+    </div>
+  );
+};
 
-
-}
-
-export { SignIn }
+export { SignIn };

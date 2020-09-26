@@ -1,13 +1,19 @@
 import * as Yup from 'yup';
 
-import { MouseEvent, ReactElement, useState } from 'react';
+import { ReactElement, useState } from 'react';
+import { callGraphql, regDomain } from '../utils';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Logger } from 'aws-amplify';
+import ReactTooltip from 'react-tooltip';
 import { Site } from '../types';
-import { callGraphql } from '../utils';
 import { createSite } from '../graphql/queries';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useFormik } from 'formik';
+
+const logger = new Logger('SiteCreateModal');
 
 interface ResCreateSite {
   createSite: {
@@ -28,19 +34,18 @@ const SiteCreateModal = (): ReactElement => {
       term: 'd',
     },
     validationSchema: Yup.object({
-      site: Yup.string().required(`"Title"은 필수 입력 항목입니다.`),
+      site: Yup.string().required(`"Title" is a required field`),
       url: Yup.string()
-        .url(`올바르지 않은 "url"입니다.`)
-        .required(`"url"은 필수 입력 항목입니다.`),
-      domain: Yup.string().required(`"domain"은 필수 입력 항목입니다.`),
-      term: Yup.string().required(`"term"은 필수 입력 항목입니다.`),
+        .url(`invalid url address`)
+        .required(`"url" is a required field`),
+      domain: Yup.string().required(`"domain" is a required field`),
+      term: Yup.string().required(`"term" is a required field`),
     }),
     onSubmit: () => {},
   });
   const {
     type,
     display,
-    blockExitOutside,
     positionTop,
     title,
     state,
@@ -66,6 +71,19 @@ const SiteCreateModal = (): ReactElement => {
     if (!formik.isValid) {
       return;
     }
+    const domainFromUrl = formik.values.url.match(regDomain);
+    const domainFromDomain = formik.values.domain.match(regDomain);
+
+    logger.log({
+      domainFromUrl,
+      domainFromDomain,
+      formikdomain: formik.values.domain,
+    });
+
+    if (!domainFromUrl || domainFromUrl.length < 2) {
+      formik.setFieldError('url', 'invalid url');
+      return;
+    }
 
     setLoading(true);
 
@@ -81,7 +99,7 @@ const SiteCreateModal = (): ReactElement => {
 
     formik.resetForm();
 
-    console.log({ res });
+    logger.log('onSubmit', res);
     dispatch({
       type: 'reload-site',
       payload: {
@@ -105,10 +123,6 @@ const SiteCreateModal = (): ReactElement => {
     <div
       className={isMe ? 'modal overflow-auto visible' : 'modal invisible'}
       id="plain-outer"
-      onClick={(e: MouseEvent<HTMLDivElement>) => {
-        const target = e.target as HTMLDivElement;
-        target.id === 'plain-outer' && !blockExitOutside && hideModal();
-      }}
     >
       <div
         className="modal-dialog"
@@ -139,6 +153,16 @@ const SiteCreateModal = (): ReactElement => {
                   className="form-control-label font-weight-bold"
                   htmlFor="input-site"
                 >{`Site Name`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
+                  data-tip
+                  data-for="siteNameTip"
+                />
+                <ReactTooltip id="siteNameTip" place="right" effect="solid">
+                  Name of website to register
+                </ReactTooltip>
                 <input
                   type="text"
                   className={`form-control ${
@@ -148,7 +172,7 @@ const SiteCreateModal = (): ReactElement => {
                   }`}
                   id="input-site"
                   name="site"
-                  placeholder={`input site`}
+                  placeholder={`Input site name`}
                   value={formik.values.site}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -161,7 +185,17 @@ const SiteCreateModal = (): ReactElement => {
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="input-url"
-                >{`Url to crawl`}</label>
+                >{`Crawling URL`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
+                  data-tip
+                  data-for="crawlingTip"
+                />
+                <ReactTooltip id="crawlingTip" place="right" effect="solid">
+                  Target to crawl
+                </ReactTooltip>
                 <input
                   type="text"
                   className={`form-control ${
@@ -169,7 +203,7 @@ const SiteCreateModal = (): ReactElement => {
                   }`}
                   id="input-url"
                   name="url"
-                  placeholder={`input url`}
+                  placeholder={`Input crawling url`}
                   value={formik.values.url}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -183,6 +217,16 @@ const SiteCreateModal = (): ReactElement => {
                   className="form-control-label font-weight-bold"
                   htmlFor="input-domain"
                 >{`Domain`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
+                  data-tip
+                  data-for="domainTip"
+                />
+                <ReactTooltip id="domainTip" place="right" effect="solid">
+                  Website URL that you'd like to embed Kendra Button
+                </ReactTooltip>
                 <input
                   type="text"
                   className={`form-control ${
@@ -192,7 +236,7 @@ const SiteCreateModal = (): ReactElement => {
                   }`}
                   id="input-domain"
                   name="domain"
-                  placeholder={`input domain`}
+                  placeholder={`Input domain`}
                   value={formik.values.domain}
                   onBlur={formik.handleBlur}
                   onChange={formik.handleChange}
@@ -205,7 +249,17 @@ const SiteCreateModal = (): ReactElement => {
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="select-term"
-                >{`Crawl/index term`}</label>
+                >{`Crawl/Index Term`}</label>
+                <FontAwesomeIcon
+                  className={`mx-2`}
+                  icon={faInfoCircle}
+                  role="button"
+                  data-tip
+                  data-for="crawlTermTip"
+                />
+                <ReactTooltip id="crawlTermTip" place="right" effect="solid">
+                  How frequently would you like to re-crawl your website?
+                </ReactTooltip>
                 <select
                   className="custom-select"
                   id="select-term"

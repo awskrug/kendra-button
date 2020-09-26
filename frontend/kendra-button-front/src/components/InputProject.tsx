@@ -13,9 +13,12 @@ import {
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GraphQLResult } from '@aws-amplify/api-graphql';
+import { Logger } from 'aws-amplify';
 import { Site } from '../types';
 import { callGraphql } from '../utils';
 import { createSite } from '../graphql/queries';
+
+const logger = new Logger('InputProject');
 
 interface Props {
   setSites: Dispatch<SetStateAction<Array<Site>>>;
@@ -36,7 +39,7 @@ const InputProject = (props: Props): ReactElement => {
   };
 
   const addProject = async (e: MouseEvent<SVGSVGElement>): Promise<void> => {
-    console.log(siteName);
+    logger.log('siteName', siteName);
     const res: GraphQLResult<ResCreateSite> = await callGraphql({
       query: createSite,
       variables: {
@@ -45,7 +48,7 @@ const InputProject = (props: Props): ReactElement => {
         url: ' ',
       },
     });
-    console.log('result', res);
+    logger.log('result', res);
     if (res.errors) {
       return;
     }
@@ -58,7 +61,7 @@ const InputProject = (props: Props): ReactElement => {
   const cancelAddProject = async (
     e: MouseEvent<SVGSVGElement>,
   ): Promise<void> => {
-    console.log('cancel');
+    logger.log('cancel');
     setIsNewItem(false);
     siteName.current = null;
   };

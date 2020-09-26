@@ -109,7 +109,6 @@ const Settings = (props: Props): ReactElement => {
     });
   };
 
-
   return (
     <>
       <div
@@ -135,61 +134,75 @@ const Settings = (props: Props): ReactElement => {
               {user.getUsername().includes('Google') ? (
                 <div>
                   <p className={`socialLoginUpdate`}>We are sorry!</p>
-                  <p className={`mb-0`}>You are not allowed to update your password if you logged in with Google.</p>
+                  <p className={`mb-0`}>
+                    You are not allowed to update your password if you logged in
+                    with Google.
+                  </p>
                 </div>
               ) : user.getUsername().includes('Facebook') ? (
                 <div>
                   <p className={`socialLoginUpdate`}>We are sorry!</p>
-                  <p className={`mb-0`}>You are not allowed to update your password if you logged in with Facebook.</p>
+                  <p className={`mb-0`}>
+                    You are not allowed to update your password if you logged in
+                    with Facebook.
+                  </p>
                 </div>
-              ) :
-                  (
-                    <>
-                      {updateAccErr && (
-                        <div className="alert alert-dismissible alert-warning">
-                          <div className="mb-0">{updateAccErr.split('\n').map((line, lIdx) => {
-                            return (<span key={`signup-err-` + lIdx}>{line}<br /></span>)
-                          })}</div>
-                        </div>
-                      )}
-                      {updateAccSuccess && (
-                        <div className="alert alert-dismissible alert-success">
-                          <p className="mb-0">{updateAccSuccess}</p>
-                        </div>
-                      )}
-                      <AmplifyFormField
-                        fieldId={'email'}
-                        label={'Your Email'}
-                        inputProps={{
-                          placeholder: 'placeholder',
-                        }}
-                        required={true}
-                        value={user?.attributes?.email}
-                        disabled={true}
-                      />
-                      <AmplifyPasswordField
-                        fieldId={'curr-password'}
-                        handleInputChange={onChangeCurrPw}
-                        label={'Your Current Password'}
-                        inputProps={{
-                          placeholder: 'Enter current password',
-                        }}
-                        required={true}
-                        value={null}
-                      />
-                      <AmplifyPasswordField
-                        fieldId={'new-password'}
-                        handleInputChange={onChangeNewPw}
-                        label={'Your New Password'}
-                        inputProps={{
-                          placeholder: 'Enter new password',
-                        }}
-                        required={true}
-                        value={null}
-                      />
-                      <AmplifyButton handleButtonClick={onSubmit}>Submit</AmplifyButton>
-                    </>
+              ) : (
+                <>
+                  {updateAccErr && (
+                    <div className="alert alert-dismissible alert-warning">
+                      <div className="mb-0">
+                        {updateAccErr.split('\n').map((line, lIdx) => {
+                          return (
+                            <span key={`signup-err-` + lIdx}>
+                              {line}
+                              <br />
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
                   )}
+                  {updateAccSuccess && (
+                    <div className="alert alert-dismissible alert-success">
+                      <p className="mb-0">{updateAccSuccess}</p>
+                    </div>
+                  )}
+                  <AmplifyFormField
+                    fieldId={'email'}
+                    label={'Your Email'}
+                    inputProps={{
+                      placeholder: 'placeholder',
+                    }}
+                    required={true}
+                    value={user?.attributes?.email}
+                    disabled={true}
+                  />
+                  <AmplifyPasswordField
+                    fieldId={'curr-password'}
+                    handleInputChange={onChangeCurrPw}
+                    label={'Your Current Password'}
+                    inputProps={{
+                      placeholder: 'Enter current password',
+                    }}
+                    required={true}
+                    value={null}
+                  />
+                  <AmplifyPasswordField
+                    fieldId={'new-password'}
+                    handleInputChange={onChangeNewPw}
+                    label={'Your New Password'}
+                    inputProps={{
+                      placeholder: 'Enter new password',
+                    }}
+                    required={true}
+                    value={null}
+                  />
+                  <AmplifyButton handleButtonClick={onSubmit}>
+                    Submit
+                  </AmplifyButton>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -197,7 +210,7 @@ const Settings = (props: Props): ReactElement => {
       <div
         className={`align-items-center d-flex justify-content-between pb-1 p-3`}
       >
-        <div className="card text-danger border-danger">
+        <div className="card text-danger border-danger w-100">
           <div className="card-header">Delete your account</div>
           <div className="card-body">
             <div className={'btn btn-danger mb-2'} onClick={deleteAccount}>
@@ -210,9 +223,9 @@ const Settings = (props: Props): ReactElement => {
         </div>
       </div>
       <style jsx>{`
-      .socialLoginUpdate {
-        font-size: 1.1rem;
-      }
+        .socialLoginUpdate {
+          font-size: 1.1rem;
+        }
       `}</style>
     </>
   );

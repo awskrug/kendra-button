@@ -1,4 +1,5 @@
 import { AmplifyButton, AmplifyFormField } from '@aws-amplify/ui-react';
+import { Auth, Logger } from 'aws-amplify';
 import {
   Dispatch,
   ReactElement,
@@ -7,10 +8,11 @@ import {
   useState,
 } from 'react';
 
-import { Auth } from 'aws-amplify';
 import { AuthState } from '@aws-amplify/ui-components';
 import { CognitoException } from '../types';
 import { Loader } from './Loader';
+
+const logger = new Logger('Confirmation');
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
@@ -63,24 +65,23 @@ const Confirmation = (props: Props): ReactElement => {
     } catch (e) {
       const err: CognitoException<CognitoSignUpErrorState> = e;
       setConfirmErr('');
-      console.log('error e ', err);
+      logger.error('CognitoException', err);
       setConfirmErr(err.message);
     }
     setIsLoading(false);
     return;
   };
   return (
-    <>
-      <div className="card col-sm-6 h-75  overflow-auto p-3 justify-content-between">
-        <div></div>
+    <div className={`row justify-content-center m-2 mb-4`}>
+      <div className="shadow col-sm-6 h-75 overflow-auto p-3 justify-content-between">
         <div className={`confirmTitle`}>Confirm Sign Up </div>
-        <p className={`text-secondary small`}>
+        <p className={`text-secondary small mt-4`}>
           We've sent you a confirmation code to your email.
         </p>
         <div>
           {signupAccSuccess && (
             <div
-              className="alert alert-dismissible alert-success signUpSuccess"
+              className="alert alert-dismissible alert-success signUpSuccess text-center px-0"
               onClick={toSignIn}
             >
               <p className="mb-0">{signupAccSuccess}</p>
@@ -109,14 +110,17 @@ const Confirmation = (props: Props): ReactElement => {
                 {isLoading && <Loader className={'mr-2'} />}
                 Complete Sign Up
               </AmplifyButton>
+              <div className={`btn btn-link mt-3 w-100`} onClick={toSignIn}>
+                Cancel and go to Sign In
+              </div>
             </>
           )}
         </div>
-        <div></div>
       </div>
       <style global jsx>{`
         .confirmTitle {
-          font-size: 1.8rem;
+          font-size: 1.5rem;
+          font-family: 'Pacifico', cursive;
         }
         .backToSignIn {
           color: #ff9900;
@@ -127,7 +131,7 @@ const Confirmation = (props: Props): ReactElement => {
           background-color: #b9e082;
         }
       `}</style>
-    </>
+    </div>
   );
 };
 

@@ -3,20 +3,16 @@
         "amplifyhosting": {
             "service": "amplifyhosting",
             "type": "cicd"
-        },
-        "S3AndCloudFront": {
-            "service": "S3AndCloudFront",
-            "providerPlugin": "awscloudformation"
         }
     },
     "auth": {
-        "kendrabuttonhosting28eb127d": {
+        "kendrabuttonhosting84e32663": {
             "service": "Cognito",
             "providerPlugin": "awscloudformation",
             "dependsOn": [
                 {
                     "category": "function",
-                    "resourceName": "kendrabuttonhosting28eb127dPreSignup",
+                    "resourceName": "kendrabuttonhosting84e32663PreSignup",
                     "triggerProvider": "Cognito",
                     "attributes": [
                         "Arn",
@@ -28,7 +24,7 @@
         }
     },
     "function": {
-        "kendrabuttonhosting28eb127dPreSignup": {
+        "kendrabuttonhosting84e32663PreSignup": {
             "build": true,
             "providerPlugin": "awscloudformation",
             "service": "Lambda"

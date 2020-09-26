@@ -33,35 +33,36 @@ const Content = (props: Props): ReactElement => {
         ) : null}
       </div>
       <style jsx>{`
-      @media (min-width: 992px) {
-        .content {
-          padding-left: 30%;
-          width: 100vw;
-          height: 100vh;
+        @media (min-width: 992px) {
+          .content {
+            padding-left: 30%;
+            width: 100vw;
+            height: 100vh;
+          }
+          .pageloader {
+            width: 70vw;
+            margin-left: 30vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
+            opacity: 0.5;
+          }
         }
-        .pageloader {
-          width: 70vw;
-          margin-left: 30vw;
-          height: 100vh;
-          position: absolute;
-          top: 0;
-          left: 0;
-          z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
-          opacity: 0.5;
+        @media (max-width: 991px) {
+          .content {
+            width: 100vw;
+            height: 100vh;
+            padding-top: 3rem;
+          }
+          .pageloader {
+            width: 100vw;
+            height: 100vh;
+            z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
+            opacity: 0.5;
+          }
         }
-      }
-      @media (max-width: 991px){
-        .content {
-          width: 100vw;
-          height: 100vh;
-        }
-        .pageloader {
-          width: 100vw;
-          height: 100vh;
-          z-index: 1040; /* refer to .modal-backdrop in bootswatch css */
-          opacity: 0.5;
-        }
-      }
       `}</style>
     </>
   );

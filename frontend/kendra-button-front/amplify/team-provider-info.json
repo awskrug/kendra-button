@@ -27,5 +27,34 @@
                 "kendrabuttonhosting28eb127dPreSignup": {}
             }
         }
+    },
+    "prod": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-kendrabuttonhosting-prod-234130-authRole",
+            "UnauthRoleArn": "arn:aws:iam::213888382832:role/amplify-kendrabuttonhosting-prod-234130-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::213888382832:role/amplify-kendrabuttonhosting-prod-234130-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-kendrabuttonhosting-prod-234130-deployment",
+            "UnauthRoleName": "amplify-kendrabuttonhosting-prod-234130-unauthRole",
+            "StackName": "amplify-kendrabuttonhosting-prod-234130",
+            "StackId": "arn:aws:cloudformation:us-west-2:213888382832:stack/amplify-kendrabuttonhosting-prod-234130/3b5090e0-ec61-11ea-b2be-0a54494481e5",
+            "AmplifyAppId": "dcj1fh5deo5r3"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "dcj1fh5deo5r3",
+                    "type": "cicd"
+                }
+            },
+            "function": {
+                "kendrabuttonhosting84e32663PreSignup": {}
+            },
+            "auth": {
+                "kendrabuttonhosting84e32663": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"617455608864309\",\"client_secret\":\"5da4d125944bd8ca5634d1708a422acb\"},{\"ProviderName\":\"Google\",\"client_id\":\"142628492668-1v65r5o99aturd4dvgmmslkh78bi3fr7.apps.googleusercontent.com\",\"client_secret\":\"dXtADx0tR-94q-ETdL_naf8J\"}]"
+                }
+            }
+        }
     }
 }
