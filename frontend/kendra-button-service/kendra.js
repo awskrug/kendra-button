@@ -14,7 +14,7 @@
     console.log('site received', splittedPath[1]);
 
     var params = splittedPath[1].split('&');
-    var site, target, _src, floating;
+    var site, target, _src, floating, dev;
 
     for (var i = 0; i < params.length; i++) {
       if (!params[i]) continue;
@@ -24,18 +24,22 @@
         target = params[i].replace('target=', '');
       } else if (params[i].indexOf('src=') > -1) {
         _src = params[i].replace('src=', '');
+      } else if (params[i].indexOf('dev=') > -1) {
+        dev = params[i].replace('dev=', '');
       } else if (params[i].indexOf('floating=') > -1) {
         floating = true;
       }
     }
-    console.log({ site, target });
+    console.log({ site, target, _src, dev, floating });
     console.log({ node });
 
     if (!target) {
       document.body.appendChild(node);
     }
-    var params = '?site=' + site + '&domain=' + location.origin;
-    var src = _src || 'https://service.kendra.fun/' + params;
+    var devParam = dev ? '&dev=' + dev : '';
+    var params = '?site=' + site + '&domain=' + location.origin + devParam;
+    var serviceDomain = _src || 'https://service.kendra.fun/';
+    var src = serviceDomain + params;
 
     if (target) {
       document.querySelector(target).replaceWith(node);
@@ -44,7 +48,7 @@
       iframenode.setAttribute('src', src);
       iframenode.setAttribute(
         'style',
-        'position:relative!important;height:100%!important;width:100%!important;border:none!important;'
+        'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
       );
       var targetNode = document.getElementById(kendraWrapperId);
       targetNode.appendChild(iframenode);
@@ -58,14 +62,14 @@
       iframenode.setAttribute('src', src);
       iframenode.setAttribute(
         'style',
-        'position:relative!important;height:100%!important;width:100%!important;border:none!important;'
+        'position:relative!important;height:100%!important;width:100%!important;border:none!important;',
       );
 
       var floatingNode = document.createElement('div');
       floatingNode.appendChild(iframenode);
       floatingNode.setAttribute(
         'style',
-        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;'
+        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;',
       );
       console.log('floatingNode', { floatingNode });
       document.body.appendChild(floatingNode);

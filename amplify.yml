@@ -3,9 +3,7 @@ backend:
   phases:
     build:
       commands:
-        - cd frontend/kendra-button-service
-        - chmod +x amplifypush.sh
-        - ./amplifypush.sh -e dev
+        - aws s3 cp frontend/kendra-button-service/kendra.js s3://button.kendra.fun --acl public-read
 frontend:
   phases:
     preBuild:

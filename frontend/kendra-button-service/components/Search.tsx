@@ -5,6 +5,8 @@ import { callGraphql } from '../utils';
 
 interface Props {
   site: string;
+  domain: string;
+  dev: string;
 }
 
 const Search = (props: Props): ReactElement => {
@@ -14,7 +16,7 @@ const Search = (props: Props): ReactElement => {
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { site } = props;
+  const { site, domain, dev } = props;
 
   const onChangeHandler = (e) => {
     setInputValue(e.target.value);
@@ -28,6 +30,30 @@ const Search = (props: Props): ReactElement => {
     setError(null);
     setKeywords(inputValue);
     setIsLoading(true);
+
+    // validation
+    const validationRes = await callGraphql({
+      text: inputValue,
+      site,
+      isValidation: true,
+      dev,
+    });
+    console.log('validationRes', validationRes);
+    if (validationRes.status > 200) {
+      setError('validation Query Error: ' + validationRes.message);
+      setIsLoading(false);
+      return;
+    }
+    // compare between validationRes.domain and props.domain
+    if (validationRes.data.site.domain !== domain) {
+      setError(
+        `Domain address of this site's configuration does not match the domain address here: (${domain})`,
+      );
+      setIsLoading(false);
+      return;
+    }
+
+    // Data Fetch
     const res = await callGraphql({ text: inputValue, site });
     if (res.status > 200) {
       setError('Query Error: ' + res.message);
