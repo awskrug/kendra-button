@@ -52,10 +52,14 @@
   - **target**
     - 자신의 site HTML에서 **kendra-button** 검색 화면이 보이게 하고자 하는 영역의 **id** or **class** name
   - **floating**
-    - 자산의 site HTML에서 우측 하단에 고정시키고자 한다면 입력
+    - 자신의 site HTML에서 우측 하단에 고정시키고자 한다면 입력
+      - ex) floating=true
   - **_src**
     - 정형화된 parameter 외에 custom parameter를 받고자 할 때 쓰인다
-
+  - **dev**
+    - Backend endpoint를 `https://dev.kendra-btns.whatilearened.today/noauth/graphql` 에서 실행하고자 할 때 사용된다
+      - ex) dev=false
+      - 따로 parameter로 넘겨주지 않을 시, `https://prod.kendra-btns.whatilearened.today/noauth/graphql` 가 호출된다
 
 <br>
 
