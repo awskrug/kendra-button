@@ -6,7 +6,7 @@ backend:
         - cd frontend/kendra-button-front
         - envCache --set stackInfo ""
         - chmod +x amplifypush.sh
-        - ./amplifypush.sh -e prod
+        - ./amplifypush.sh -e dev
 frontend:
   phases:
     preBuild:
