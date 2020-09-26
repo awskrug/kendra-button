@@ -26,3 +26,10 @@ export const getSearchQry = ({ text = '', site = '' }) => `query{
     total
   }
 }`;
+export const validationQry = ({ site = '' }) => `query{
+  site(site: "${site}") {
+    site
+    domain
+    scrapEndpoint
+  }
+}`;
