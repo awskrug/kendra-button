@@ -25,7 +25,7 @@ sqs = boto3.client('sqs')
 app = Chalice(app_name='kendra-scrap')
 app.debug = True
 if STAGE == 'dev':
-    CognitoUserPool = 'arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_XT1s3RtPp'
+    CognitoUserPool = 'arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_CtB4uaG0r'
 else:
     CognitoUserPool = "arn:aws:cognito-idp:us-west-2:213888382832:userpool/us-west-2_pdulBxv2r"
 
