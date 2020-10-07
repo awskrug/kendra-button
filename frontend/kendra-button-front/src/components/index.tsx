@@ -15,3 +15,5 @@ export * from './SignIn';
 export * from './Confirmation';
 export * from './Title';
 export * from './ViewSource';
+export * from './ForgotPassword';
+export * from './CompletePW';

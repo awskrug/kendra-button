@@ -1,3 +1,4 @@
+import { AuthPage, User } from '../types';
 import {
   Dispatch,
   ReactElement,
@@ -8,10 +9,8 @@ import {
 import { faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { Auth } from 'aws-amplify';
-import { AuthState } from '@aws-amplify/ui-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Projects } from './Projects';
-import { User } from '../types';
 import { ViewSource } from './ViewSource';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { useMainContextImpls } from '../contexts';
@@ -38,7 +37,7 @@ const Sidebar = (props: Props): ReactElement => {
 
   const signOut = async (): Promise<void> => {
     await Auth.signOut();
-    setScreen(AuthState.SignIn);
+    setScreen(AuthPage.SignIn);
   };
 
   const goToSettingsPage = (): void => {
