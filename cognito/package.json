@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "yarn tsc && ts-node resetPW.ts",
-    "start": "ts-node resetPW.ts"
+    "reset": "ts-node resetPW.ts"
   },
   "keywords": [],
   "author": "",
