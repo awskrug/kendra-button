@@ -79,7 +79,7 @@ const CompletePW = (props: Props): ReactElement => {
 
     try {
       const { requiredAttributes } = user.current.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
-      console.log('requiredAttributes:', requiredAttributes);
+      logger.log('requiredAttributes:', requiredAttributes);
       const res = await Auth.completeNewPassword(
         user.current,
         formik.values.password,
