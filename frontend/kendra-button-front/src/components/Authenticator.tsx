@@ -1,15 +1,25 @@
 import { Auth, Hub, Logger } from 'aws-amplify';
-import { Confirmation, Loader, SignIn, SignUp, Title } from '../components';
+import {
+  CompletePW,
+  Confirmation,
+  ForgotPassword,
+  Loader,
+  SignIn,
+  SignUp,
+  Title,
+} from '../components';
 import {
   Dispatch,
   ReactElement,
   ReactNode,
   SetStateAction,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 
-import { AuthState } from '@aws-amplify/ui-components';
+import { AuthPage } from '../types';
+import { CognitoUser } from '@aws-amplify/auth';
 import { ViewSource } from './ViewSource';
 import { useModalContextImpls } from '../contexts';
 import { useRouter } from 'next/router';
@@ -34,7 +44,7 @@ interface Props {
   setIsLoggedIn: Dispatch<SetStateAction<any>>;
   children: ReactNode;
   isLoggedIn: boolean;
-  screen: AuthState;
+  screen: AuthPage;
   setScreen: Dispatch<SetStateAction<any>>;
 }
 const Authenticator = (props: Props): ReactElement => {
@@ -51,6 +61,8 @@ const Authenticator = (props: Props): ReactElement => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [username, setUsername] = useState<string>('');
 
+  const user = useRef<CognitoUser | any>(null);
+
   const checkUser = async (retry, tryCnt = 1): Promise<void> => {
     const tryLimit = 3;
     try {
@@ -61,7 +73,7 @@ const Authenticator = (props: Props): ReactElement => {
         type: 'plain',
         display: false,
       });
-      setScreen(AuthState.SignedIn);
+      setScreen(AuthPage.SignedIn);
       setUser(user);
     } catch (e) {
       logger.log('[error in checkUser]', e);
@@ -78,7 +90,7 @@ const Authenticator = (props: Props): ReactElement => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      setScreen(AuthState.SignIn);
+      setScreen(AuthPage.SignIn);
       checkUser(false);
     }
   }, [isLoggedIn]);
@@ -92,7 +104,7 @@ const Authenticator = (props: Props): ReactElement => {
       errorDescription.includes('email')
     ) {
       alert('Please check the email address on your Facebook account.');
-      setScreen(AuthState.SignUp);
+      setScreen(AuthPage.SignUp);
     }
 
     // intermittently failure
@@ -101,14 +113,16 @@ const Authenticator = (props: Props): ReactElement => {
     Hub.listen('auth', (data) => {
       logger.log('[Hub] data', data);
       switch (data.payload.event) {
+        case 'forgotPasswordSubmit':
         case 'signIn':
           setIsLoggedIn(true);
           checkUser(false);
           break;
         case 'signIn_failure':
           logger.log('[Hub] signIn_failure');
+
           setIsLoading(false);
-          setScreen(AuthState.SignIn);
+          setScreen(AuthPage.SignIn);
           setModalConfig({
             type: 'plain',
             display: true,
@@ -126,7 +140,7 @@ const Authenticator = (props: Props): ReactElement => {
     <div
       className={`fullscreen d-flex flex-column justify-content-center align-items-center`}
     >
-      {isLoading && screen === AuthState.SignIn ? (
+      {isLoading && screen === AuthPage.SignIn ? (
         <div className={`w-100`}>
           <TitleWithIcon />
           <div className={`text-center`}>
@@ -135,22 +149,32 @@ const Authenticator = (props: Props): ReactElement => {
             />
           </div>
         </div>
-      ) : screen === AuthState.SignedIn ? (
+      ) : screen === AuthPage.SignedIn ? (
         children
-      ) : screen === AuthState.SignUp ? (
+      ) : screen === AuthPage.SignUp ? (
         <div className={`overflow-auto w-100`}>
           <TitleWithIcon />
           <SignUp setScreen={setScreen} setUsername={setUsername} />
         </div>
-      ) : screen === AuthState.ConfirmSignUp ? (
+      ) : screen === AuthPage.ConfirmSignUp ? (
         <div className={`overflow-auto w-100`}>
           <TitleWithIcon />
           <Confirmation setScreen={setScreen} username={username} />
         </div>
+      ) : screen === AuthPage.ForgotPassword ? (
+        <div className={`overflow-auto w-100`}>
+          <TitleWithIcon />
+          <ForgotPassword setScreen={setScreen} username={username} />
+        </div>
+      ) : screen === AuthPage.CompletePW ? (
+        <div className={`overflow-auto w-100`}>
+          <TitleWithIcon />
+          <CompletePW setScreen={setScreen} username={username} user={user} />
+        </div>
       ) : (
         <div className={`overflow-auto w-100`}>
           <TitleWithIcon />
-          <SignIn setScreen={setScreen} setUsername={setUsername} />
+          <SignIn setScreen={setScreen} setUsername={setUsername} user={user} />
         </div>
       )}
       <style global jsx>{`

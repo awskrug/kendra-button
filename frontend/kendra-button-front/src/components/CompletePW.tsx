@@ -2,7 +2,14 @@ import * as Yup from 'yup';
 
 import { Auth, Logger } from 'aws-amplify';
 import { AuthPage, CognitoException } from '../types';
-import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
+import {
+  Dispatch,
+  MutableRefObject,
+  ReactElement,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 
 import { Loader } from './Loader';
 import { useFormik } from 'formik';
@@ -11,7 +18,8 @@ const logger = new Logger('SignUp');
 
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
-  setUsername?: Dispatch<SetStateAction<string>>;
+  username?: string;
+  user?: MutableRefObject<any>;
 }
 
 // https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html#API_SignUp_Errors
@@ -20,8 +28,8 @@ enum CognitoSignUpErrorState {
   UserLambdaValidationException = 'UserLambdaValidationException',
 }
 
-const SignUp = (props: Props): ReactElement => {
-  const { setScreen, setUsername } = props;
+const CompletePW = (props: Props): ReactElement => {
+  const { setScreen, username, user } = props;
   const [signupAccErr, setSignupAccErr] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,6 +37,7 @@ const SignUp = (props: Props): ReactElement => {
     initialValues: {
       email: '',
       password: '',
+      code: '',
     },
     validationSchema: Yup.object({
       email: Yup.string()
@@ -41,15 +50,25 @@ const SignUp = (props: Props): ReactElement => {
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
           'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character',
         ),
+      code: Yup.string(),
     }),
     onSubmit: () => {},
   });
+
+  useEffect(() => {
+    logger.log('Recoveraccount props', props);
+    if (!username) return;
+    // formik.values.email = username;
+    formik.setValues({
+      email: username,
+    });
+  }, [username]);
 
   const toSignIn = () => {
     setScreen(AuthPage.SignIn);
   };
 
-  const onSubmit = async (e): Promise<void> => {
+  const onCompletePW = async (e): Promise<void> => {
     if (isLoading) return;
     setIsLoading(true);
     formik.submitForm();
@@ -59,17 +78,16 @@ const SignUp = (props: Props): ReactElement => {
     }
 
     try {
-      const res = await Auth.signUp({
-        username: formik.values.email,
-        password: formik.values.password,
-        attributes: {
-          email: formik.values.email,
-        },
-      });
+      const { requiredAttributes } = user.current.challengeParam; // the array of required attributes, e.g ['email', 'phone_number']
+      console.log('requiredAttributes:', requiredAttributes);
+      const res = await Auth.completeNewPassword(
+        user.current,
+        formik.values.password,
+        requiredAttributes,
+      );
 
       if (res) {
-        setUsername(formik.values.email);
-        setScreen(AuthPage.ConfirmSignUp);
+        setScreen(AuthPage.SigningUp);
       }
     } catch (e) {
       logger.error('error e ', e);
@@ -96,7 +114,11 @@ const SignUp = (props: Props): ReactElement => {
   return (
     <div className={`row justify-content-center m-2 mb-4`}>
       <div className="rounded shadow col-sm-6 overflow-auto p-3 justify-content-between">
-        <div className={`signUpTitle mb-2`}>Create a new account </div>
+        <div className={`signUpTitle mb-2`}>Complete New Password</div>
+        <div className={`mb-3`}>
+          This account needs to set the New password. please complete the new
+          password.
+        </div>
         {signupAccErr && (
           <div className="alert alert-dismissible alert-warning">
             <div className="mb-0">
@@ -120,15 +142,18 @@ const SignUp = (props: Props): ReactElement => {
             id="email"
             name="email"
             onChange={formik.handleChange}
-            value={formik.values.email}
+            onBlur={formik.handleBlur}
+            defaultValue={formik.values.email}
             className={`form-control ${
               formik.touched.email && formik.errors.email ? 'is-invalid' : ''
             }`}
+            disabled
           />
           {formik.touched.email && formik.errors.email && (
             <div className="invalid-feedback">{formik.errors.email}</div>
           )}
         </div>
+
         <div className="form-group">
           <label
             className="form-control-label font-weight-bold"
@@ -140,7 +165,7 @@ const SignUp = (props: Props): ReactElement => {
             name="password"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.password}
+            defaultValue={formik.values.password}
             className={`form-control ${
               formik.touched.password && formik.errors.password
                 ? 'is-invalid'
@@ -153,10 +178,10 @@ const SignUp = (props: Props): ReactElement => {
         </div>
         <button
           className={`btn btn-success shadow-sm w-100`}
-          onClick={onSubmit}
+          onClick={onCompletePW}
         >
           {isLoading && <Loader className={'mr-2'} />}
-          Create Account
+          Complete New Password
         </button>
         <div className={`mt-3`}>
           Have an account?
@@ -184,4 +209,4 @@ const SignUp = (props: Props): ReactElement => {
   );
 };
 
-export { SignUp };
+export { CompletePW };
