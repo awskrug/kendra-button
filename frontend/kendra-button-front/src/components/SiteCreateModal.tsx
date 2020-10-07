@@ -65,6 +65,11 @@ const SiteCreateModal = (): ReactElement => {
     }));
   };
 
+  const closeModal = (): void => {
+    formik.resetForm();
+    hideModal();
+  };
+
   const onSubmit = async (): Promise<void> => {
     if (loading) return;
     formik.submitForm();
@@ -87,31 +92,39 @@ const SiteCreateModal = (): ReactElement => {
 
     setLoading(true);
 
-    const res: GraphQLResult<ResCreateSite> = await callGraphql({
-      query: createSite,
-      variables: {
-        site: formik.values.site,
-        scrapEndpoint: formik.values.url,
-        domain: formik.values.domain,
-        term: formik.values.term,
-      },
-    });
+    try {
+      const res: GraphQLResult<ResCreateSite> = await callGraphql({
+        query: createSite,
+        variables: {
+          site: formik.values.site,
+          scrapEndpoint: formik.values.url,
+          domain: formik.values.domain,
+          term: formik.values.term,
+        },
+      });
 
-    formik.resetForm();
+      formik.resetForm();
 
-    logger.log('onSubmit', res);
-    dispatch({
-      type: 'reload-site',
-      payload: {
-        reloadSite: true,
-      },
-    });
+      logger.log('onSubmit', res);
+      dispatch({
+        type: 'reload-site',
+        payload: {
+          reloadSite: true,
+        },
+      });
 
-    if (okaction) {
-      okaction(state);
+      if (okaction) {
+        okaction(state);
+      }
+      setLoading(false);
+      hideModal();
+    } catch (e) {
+      logger.log(e);
+      setLoading(false);
+      if (e.errors && e.errors[0]) {
+        formik.setErrors({ site: e.errors[0].message });
+      }
     }
-    setLoading(false);
-    hideModal();
   };
 
   // example: { header: 'header', body: 'body', footer: 'footer' }
@@ -139,7 +152,7 @@ const SiteCreateModal = (): ReactElement => {
                   className="close"
                   data-dismiss="modal"
                   aria-label="Close"
-                  onClick={hideModal}
+                  onClick={closeModal}
                 >
                   <span aria-hidden="true">&times;</span>
                 </button>
