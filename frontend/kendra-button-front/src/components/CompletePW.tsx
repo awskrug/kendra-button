@@ -61,6 +61,8 @@ const CompletePW = (props: Props): ReactElement => {
     // formik.values.email = username;
     formik.setValues({
       email: username,
+      password: formik.initialValues.password,
+      code: formik.initialValues.code,
     });
   }, [username]);
 
