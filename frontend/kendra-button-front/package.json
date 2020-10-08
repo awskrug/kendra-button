@@ -5,7 +5,9 @@
     "build": "next build src && cd src && next export",
     "start": "next src",
     "prestart": "yarn tsc",
-    "tsc": "cd src && tsc"
+    "tsc": "cd src && tsc",
+    "amplify:pull": "amplify pull --appId dcj1fh5deo5r3 --envName prod",
+    "amplify:checkout": "amplify env checkout prod --restore"
   },
   "dependencies": {
     "@aws-amplify/ui-components": "^0.5.2",
