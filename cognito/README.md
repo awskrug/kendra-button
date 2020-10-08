@@ -53,7 +53,7 @@ Please go through following steps to complete the procedure.
 > Execution command
 
 ```bash
-$ yarn start --mode backup
+$ yarn reset --mode backup
 ```
 
 
@@ -82,7 +82,7 @@ $ yarn start --mode backup
 
 
 ```bash
-$ yarn start --mode restore
+$ yarn reset --mode restore
 ```
 <br>
 <br>
@@ -107,6 +107,6 @@ $ yarn start --mode restore
 
 
 ```bash
-$ yarn start --mode backupandrestore
+$ yarn reset --mode backupandrestore
 ```
 <br>

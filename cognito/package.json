@@ -13,7 +13,8 @@
   },
   "scripts": {
     "dev": "yarn tsc && ts-node backup.ts",
-    "start": "ts-node backup.ts",
+    "backup": "ts-node backup.ts",
+    "reset": "ts-node resetPW.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc"
   },
