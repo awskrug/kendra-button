@@ -1,10 +1,16 @@
 import * as Yup from 'yup';
 
 import { Auth, Logger } from 'aws-amplify';
-import { Dispatch, ReactElement, SetStateAction, useState } from 'react';
+import {
+  Dispatch,
+  MutableRefObject,
+  ReactElement,
+  SetStateAction,
+  useState,
+} from 'react';
 
 import { AmplifyButton } from '@aws-amplify/ui-react';
-import { AuthState } from '@aws-amplify/ui-components';
+import { AuthPage } from '../types';
 import { useFormik } from 'formik';
 
 const logger = new Logger('SignIn');
@@ -12,10 +18,11 @@ const logger = new Logger('SignIn');
 interface Props {
   setScreen?: Dispatch<SetStateAction<string>>;
   setUsername?: Dispatch<SetStateAction<string>>;
+  user?: MutableRefObject<any>;
 }
 
 const SignIn = (props: Props): ReactElement => {
-  const { setScreen, setUsername } = props;
+  const { setScreen, setUsername, user } = props;
   const [confirmRequired, setconfirmRequired] = useState<boolean>(false);
   const [signinAccErr, setSigninAccErr] = useState<string>('');
 
@@ -44,7 +51,13 @@ const SignIn = (props: Props): ReactElement => {
         formik.values.email,
         formik.values.password,
       );
-      if (res) {
+      logger.log('signin res', res);
+
+      if (res.challengeName === 'NEW_PASSWORD_REQUIRED') {
+        setScreen(AuthPage.CompletePW);
+        setUsername(formik.values.email);
+        user.current = res;
+      } else if (res) {
         setSigninAccErr('');
       }
     } catch (e) {
@@ -60,13 +73,15 @@ const SignIn = (props: Props): ReactElement => {
   };
 
   const toSignUp = (): void => {
-    setScreen(AuthState.SignUp);
-    // setScreen(AuthState.ConfirmSignUp);
+    setScreen(AuthPage.SignUp);
+  };
+  const toForgotPW = (): void => {
+    setScreen(AuthPage.ForgotPassword);
   };
 
   const toConfirm = (): void => {
     setUsername(formik.values.email);
-    setScreen(AuthState.ConfirmSignUp);
+    setScreen(AuthPage.ConfirmSignUp);
   };
 
   const toSignInGoogle = async (): Promise<void> => {
@@ -161,6 +176,12 @@ const SignIn = (props: Props): ReactElement => {
             Sign Up
           </span>
         </div>
+        <div className={`mt-3`}>
+          You Forgot your password?
+          <span className={`toForgotPW btn`} onClick={toForgotPW}>
+            Reset Password
+          </span>
+        </div>
       </div>
       <style global jsx>{`
         .signUpTitle {
@@ -168,6 +189,7 @@ const SignIn = (props: Props): ReactElement => {
           font-family: 'Pacifico', cursive;
         }
         .toSignUp,
+        .toForgotPW,
         .toConfirm {
           color: #ff9900;
           font-size: 1rem;

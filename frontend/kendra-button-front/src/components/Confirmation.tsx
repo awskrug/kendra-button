@@ -1,5 +1,6 @@
 import { AmplifyButton, AmplifyFormField } from '@aws-amplify/ui-react';
 import { Auth, Logger } from 'aws-amplify';
+import { AuthPage, CognitoException } from '../types';
 import {
   Dispatch,
   ReactElement,
@@ -8,8 +9,6 @@ import {
   useState,
 } from 'react';
 
-import { AuthState } from '@aws-amplify/ui-components';
-import { CognitoException } from '../types';
 import { Loader } from './Loader';
 
 const logger = new Logger('Confirmation');
@@ -39,7 +38,7 @@ const Confirmation = (props: Props): ReactElement => {
   };
 
   const toSignIn = () => {
-    setScreen(AuthState.SignIn);
+    setScreen(AuthPage.SignIn);
   };
 
   const onSubmit = async (e): Promise<void> => {
