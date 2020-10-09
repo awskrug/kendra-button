@@ -40,7 +40,19 @@ const SignIn = (props: Props): ReactElement => {
     onSubmit: () => {},
   });
 
-  const onSubmit = async (e): Promise<void> => {
+  const onKeyDownOnEmail = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.keyCode === 13 && formPw.current) {
+      formPw.current.focus();
+    }
+  };
+  const onKeyDownOnPw = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.keyCode === 13) {
+      setSigninAccErr('');
+      onSubmit();
+    }
+  };
+
+  const onSubmit = async (): Promise<void> => {
     formik.submitForm();
     if (!formik.isValid || !formik.values.email || !formik.values.password) {
       return;
