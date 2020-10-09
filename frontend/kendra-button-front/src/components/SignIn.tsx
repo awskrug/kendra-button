@@ -50,7 +50,7 @@ const SignIn = (props: Props): ReactElement => {
   };
   const onKeyDownOnPw = (e: KeyboardEvent<HTMLInputElement>): void => {
     if (e.keyCode === 13) {
-      setSigninAccErr(false);
+      setSigninAccErr('');
       onSubmit();
     }
   };
