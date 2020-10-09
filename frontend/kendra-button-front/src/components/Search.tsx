@@ -10,7 +10,6 @@ interface Props {
 
 const Search = (props: Props): ReactElement => {
   const [inputValue, setInputValue] = useState<string>('');
-  const [keyword, setKeywords] = useState<string>('');
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<any>([]);
@@ -27,7 +26,6 @@ const Search = (props: Props): ReactElement => {
       return;
     }
     setError(null);
-    setKeywords(inputValue);
     setIsLoading(true);
 
     try {
@@ -35,7 +33,7 @@ const Search = (props: Props): ReactElement => {
         query: search,
         variables: {
           site,
-          keyword,
+          keyword: inputValue,
         },
       });
       setResult(res.data.search.items);
@@ -70,8 +68,8 @@ const Search = (props: Props): ReactElement => {
       </form>
       {isLoading ? (
         <div className={`p-3 text-primary font-weight-bold`}>Loading...</div>
-      ) : !isLoading && !error && keyword.length > 0 ? (
-        <SearchResult searchInput={keyword} result={result} />
+      ) : !isLoading && !error && inputValue.length > 0 ? (
+        <SearchResult searchInput={inputValue} result={result} />
       ) : !isLoading && error ? (
         <div className={`p-3 text-danger`}>
           <span className={`font-weight-bold`}>{error}</span>
