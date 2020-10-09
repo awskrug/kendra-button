@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface Props {
   site: string;
-  scrapEndpoint: string;
+  domain: string;
 }
 
 const copyCode = ({ setState, ref }) => () => {
@@ -23,7 +23,7 @@ const copyCode = ({ setState, ref }) => () => {
 };
 
 const EmbedInstruction = (props: Props): ReactElement => {
-  const { site = '', scrapEndpoint = '' } = props;
+  const { site = '', domain = '' } = props;
   const codeRefOne = useRef(null);
   const codeRefTwo = useRef(null);
   const codeRefThree = useRef(null);
@@ -70,8 +70,7 @@ const EmbedInstruction = (props: Props): ReactElement => {
               (e.g., #target) or{' '}
               <span className={`badge-pill badge-info`}>class</span> (e.g.,
               .target) property of HTML DOM in your{' '}
-              <span className={`font-weight-bold`}>"{scrapEndpoint}"</span>{' '}
-              website.
+              <span className={`font-weight-bold`}>"{domain}"</span> website.
             </div>
             <div>
               * Change the{' '}
@@ -111,7 +110,7 @@ const EmbedInstruction = (props: Props): ReactElement => {
             <div>
               * <span className={`badge-pill badge-primary`}>floating</span>{' '}
               option can display our service by the fixed floating screen in
-              your <span className={`font-weight-bold`}>"{scrapEndpoint}"</span>{' '}
+              your <span className={`font-weight-bold`}>"{domain}"</span>{' '}
               website.
             </div>
           </div>
@@ -150,8 +149,7 @@ const EmbedInstruction = (props: Props): ReactElement => {
               * this option can display both{' '}
               <u>placing in the site's content</u> and
               <u>place the fixed floating screen</u> in your{' '}
-              <span className={`font-weight-bold`}>"{scrapEndpoint}"</span>{' '}
-              website.
+              <span className={`font-weight-bold`}>"{domain}"</span> website.
             </div>
           </div>
         </div>
