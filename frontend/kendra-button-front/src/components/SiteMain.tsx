@@ -44,7 +44,7 @@ const SiteMain = (props: Props): ReactElement => {
       type: 'plain',
       display: true,
       title: 'Embed kendra-button to your website',
-      content: <EmbedInstruction site={site} scrapEndpoint={scrapEndpoint} />,
+      content: <EmbedInstruction site={site} domain={domain} />,
     });
   };
   const askToDelete = (): void => {
