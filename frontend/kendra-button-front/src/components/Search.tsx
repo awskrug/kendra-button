@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { KeyboardEvent, ReactElement, useState } from 'react';
 
 import { SearchResult } from './SearchResult';
 import { callGraphql } from '../utils';
@@ -45,9 +45,15 @@ const Search = (props: Props): ReactElement => {
     setIsLoading(false);
   };
 
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.keyCode === 13) {
+      searchHandler();
+    }
+  };
+
   return (
     <>
-      <form className={`form-inline mb-4`}>
+      <div className={`form-inline mb-4`}>
         <div className={`inputtext pr-2`}>
           <input
             type="text"
@@ -56,6 +62,7 @@ const Search = (props: Props): ReactElement => {
             placeholder={`ex) What is Amazon Kendra?`}
             value={inputValue}
             onChange={onChangeHandler}
+            onKeyDown={onKeyDown}
           />
         </div>
         <div className={`searchbtn text-break`}>
@@ -65,7 +72,7 @@ const Search = (props: Props): ReactElement => {
             onClick={searchHandler}
           >{`Search`}</button>
         </div>
-      </form>
+      </div>
       {isLoading ? (
         <div className={`p-3 text-primary font-weight-bold`}>Loading...</div>
       ) : !isLoading && !error && inputValue.length > 0 ? (
