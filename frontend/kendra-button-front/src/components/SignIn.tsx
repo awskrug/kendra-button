@@ -3,9 +3,11 @@ import * as Yup from 'yup';
 import { Auth, Logger } from 'aws-amplify';
 import {
   Dispatch,
+  KeyboardEvent,
   MutableRefObject,
   ReactElement,
   SetStateAction,
+  useRef,
   useState,
 } from 'react';
 
@@ -25,6 +27,7 @@ const SignIn = (props: Props): ReactElement => {
   const { setScreen, setUsername, user } = props;
   const [confirmRequired, setconfirmRequired] = useState<boolean>(false);
   const [signinAccErr, setSigninAccErr] = useState<string>('');
+  const formPw = useRef(null);
 
   const formik = useFormik({
     initialValues: {
@@ -40,7 +43,19 @@ const SignIn = (props: Props): ReactElement => {
     onSubmit: () => {},
   });
 
-  const onSubmit = async (e): Promise<void> => {
+  const onKeyDownOnEmail = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.keyCode === 13 && formPw.current) {
+      formPw.current.focus();
+    }
+  };
+  const onKeyDownOnPw = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.keyCode === 13) {
+      setSigninAccErr(false);
+      onSubmit();
+    }
+  };
+
+  const onSubmit = async (): Promise<void> => {
     formik.submitForm();
     if (!formik.isValid || !formik.values.email || !formik.values.password) {
       return;
@@ -128,6 +143,7 @@ const SignIn = (props: Props): ReactElement => {
             className={`form-control ${
               formik.touched.email && formik.errors.email ? 'is-invalid' : ''
             }`}
+            onKeyDown={onKeyDownOnEmail}
           />
           {formik.touched.email && formik.errors.email && (
             <div className="invalid-feedback">{formik.errors.email}</div>
@@ -150,6 +166,8 @@ const SignIn = (props: Props): ReactElement => {
                 ? 'is-invalid'
                 : ''
             }`}
+            onKeyDown={onKeyDownOnPw}
+            ref={formPw}
           />
           {formik.touched.password && formik.errors.password && (
             <div className="invalid-feedback">{formik.errors.password}</div>
