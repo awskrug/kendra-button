@@ -1,10 +1,11 @@
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify, { Auth, Logger } from 'aws-amplify';
 import { Authenticator, Content, Sidebar } from '../components';
 
 import { AuthPage } from '../types';
 import awsconfig from '../aws-exports';
 import { useState } from 'react';
 
+const logger = new Logger('Index');
 const oauthConfig = awsconfig.oauth
   ? {
       ...awsconfig.oauth,
@@ -44,6 +45,8 @@ const Page = (props: Props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [screen, setScreen] = useState<AuthPage>(AuthPage.SignIn);
+
+  logger.log(oauthConfig);
 
   return (
     <>
