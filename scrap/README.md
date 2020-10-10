@@ -56,6 +56,10 @@ cat event_samples/dynamodb_modify.json | sls invoke -f operator -s {id}
 sls deploy function --function worker --stage {id}
 ```
 
+## Kendra 설정
+Index 생성 > secrets manager에 추가
+data sources에 수집 버킷 추가 > 
+Facet definition > Add field > `site_id` 추가
 
 # run server in local
 ```shell script

@@ -1,4 +1,5 @@
 import graphene
+import jwt
 import requests
 
 from chalicelib.utils import get_secret
@@ -66,7 +67,7 @@ class SearchResult(graphene.ObjectType):
 class Query:
     search = graphene.Field(SearchResult,
                             text=graphene.String(required=True),
-                            site=graphene.String(required=True),
+                            token=graphene.String(required=True),
                             size=graphene.Int(),
                             page=graphene.Int()
                             )
@@ -81,12 +82,15 @@ class Query:
             highlightText=f'text{c}'
         )
 
-    def resolve_search(self, info, text, site, size=100, page=1):
+    def resolve_search(self, info, text, token, size=100, page=1):
         if size > 100:
             raise Exception('Page size should be less than 100')
         query_api_info = get_secret()
+        secret_key = query_api_info['jwt_secret_key']
+
         QUERY_API_ENDPOINT = query_api_info['endpoint']
         KENDRA_INDEX_ID = query_api_info['indexid']
+        token_info = jwt.decode(token,secret_key)
 
         payload = {
             "IndexId": KENDRA_INDEX_ID,
@@ -95,17 +99,15 @@ class Query:
             "PageNumber": page,
             "AttributeFilter": {
                 'EqualsTo': {
-                    "Key": "site",
+                    "Key": "site_id",
                     "Value": {
-                        "StringValue": site,
+                        "StringValue": token_info['site_id'],
                     }
                 }
             }
         }
         raw_resp = requests.request("POST", f"{QUERY_API_ENDPOINT}/kendra/query", json=payload)
-        print(raw_resp.text)
         response = raw_resp.json()
-        print(response)
         items = []
         total = 0
         if response:

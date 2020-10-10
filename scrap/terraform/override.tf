@@ -11,6 +11,7 @@ resource "aws_lambda_function" "ddb_operator" {
     variables = local.variables
 
   }
+  timeout = 900
 }
 
 
@@ -18,5 +19,6 @@ resource "aws_lambda_function" "worker_handler" {
   environment {
     variables = local.variables
   }
+  timeout = 540
 }
 

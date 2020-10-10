@@ -10,3 +10,4 @@ beautifulsoup4
 chalice
 graphql-server-core
 arrow
+PyJWT

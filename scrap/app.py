@@ -261,10 +261,10 @@ def send_job(message: WorkerMsg):
 def domain_buff():
     domains = {}
 
-    def get_domain(user: str, site: str):
-        key = f"{user}:{site}"
+    def get_domain(user: str, site_id: str):
+        key = f"{user}:{site_id}"
         if key not in domains:
-            site = Site.get(user, site)
+            site = Site.get(user, site_id)
             domains[key] = site.domain
         return domains[key]
 
@@ -300,13 +300,13 @@ def ddb_operator(request, context):
             if not event.dynamodb.NewImage.scraped.BOOL:
                 try:
                     user = event.dynamodb.NewImage.user.S
-                    site = event.dynamodb.NewImage.site.S
+                    site_id = event.dynamodb.NewImage.site_id.S
                     worker_msg = WorkerMsg(
-                        site=site,
+                        site_id=site_id,
                         _type=event.dynamodb.NewImage.type.S,
                         url=event.dynamodb.NewImage.url.S,
                         user=user,
-                        domain=get_domain(user, site),
+                        domain=get_domain(user, site_id),
                         doc_id=None,
                         obj_key=None,
                         meta_obj_key=None,
@@ -323,7 +323,7 @@ def ddb_operator(request, context):
                     print(e)
 
 
-@app.on_sqs_message(f'kendra-btns-page-que-{STAGE}', batch_size=10)
+@app.on_sqs_message(f'kendra-btns-page-que-{STAGE}', batch_size=5)
 def worker_handler(event: SQSEvent):
     print('run worker')
     print(event.to_dict())
@@ -341,5 +341,5 @@ def worker_handler(event: SQSEvent):
 def daily_scrap(event):
     print('run daily_scrap')
     for site in Site.scan(Site.scrap_interval == 'daily'):
-        page = Page(site, site.scrap_endpoint, user=site.user, _type='html', scraped=False)
+        page = Page(site.site_id, site.scrap_endpoint, user=site.user, _type='html', scraped=False)
         page.save()

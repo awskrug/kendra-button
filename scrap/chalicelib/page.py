@@ -24,7 +24,7 @@ class UserSiteIndex(GlobalSecondaryIndex):
         projection = AllProjection()
 
     user = UnicodeAttribute(hash_key=True)
-    site = UnicodeAttribute(range_key=True)
+    site_id = UnicodeAttribute(range_key=True)
 
 
 class Page(Model):
@@ -32,7 +32,7 @@ class Page(Model):
         table_name = DB
         region = 'us-west-2'
 
-    site = UnicodeAttribute(hash_key=True)
+    site_id = UnicodeAttribute(hash_key=True)
     url = UnicodeAttribute(range_key=True)
     user = UnicodeAttribute()
     _type = UnicodeAttribute(attr_name="type", default='html')
@@ -46,7 +46,7 @@ class Page(Model):
 
     def to_dict(self):
         return dict(
-            site=self.site,
+            site_id=self.site_id,
             url=self.url,
             type=self._type,
             doc_id=self.doc_id,
