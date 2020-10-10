@@ -1,8 +1,8 @@
+import { GqlSearchRes, search } from '../graphql/queries';
 import { KeyboardEvent, ReactElement, useState } from 'react';
 
 import { SearchResult } from './SearchResult';
 import { callGraphql } from '../utils';
-import { search } from '../graphql/queries';
 
 interface Props {
   site: string;
@@ -31,7 +31,7 @@ const Search = (props: Props): ReactElement => {
     setKeywords(inputValue);
 
     try {
-      const res = await callGraphql({
+      const res = await callGraphql<GqlSearchRes>({
         query: search,
         variables: {
           site,

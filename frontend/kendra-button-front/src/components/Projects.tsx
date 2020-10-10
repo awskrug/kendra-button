@@ -1,5 +1,10 @@
+import {
+  GqlSiteItemRes,
+  GqlSiteListRes,
+  siteItem,
+  siteList,
+} from '../graphql/queries';
 import { MouseEvent, ReactElement, useEffect, useState } from 'react';
-import { siteItem, siteList } from '../graphql/queries';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,7 +25,7 @@ const Projects = (props: Props): ReactElement => {
 
   useEffect(() => {
     if (!states.reloadSite) return;
-    callGraphql({ query: siteList })
+    callGraphql<GqlSiteListRes>({ query: siteList })
       .then((res) => {
         logger.log('200', JSON.stringify(res, null, 2));
         setSites(res?.data?.sites);
@@ -58,9 +63,9 @@ const Projects = (props: Props): ReactElement => {
         loadingFlag: true,
       },
     });
-    const res = await callGraphql({
+    const res = await callGraphql<GqlSiteItemRes>({
       query: siteItem,
-      variables: { site: target.innerText },
+      variables: { siteId: target.innerText },
     });
     dispatch({
       type: 'change-site',

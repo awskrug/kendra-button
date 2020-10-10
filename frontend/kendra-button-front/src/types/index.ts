@@ -18,17 +18,17 @@ export interface CognitoException<T> {
   name: T;
 }
 
-export interface Site {
-  site: string;
-  user: string;
-  domain: string;
-  scrapEndpoint: string;
-  term: string;
-  crawlerStatus: {
-    total: number;
-    done: number;
-  };
-}
+// export interface Site {
+//   site: string;
+//   user: string;
+//   domain: string;
+//   scrapEndpoint: string;
+//   term: string;
+//   crawlerStatus: {
+//     total: number;
+//     done: number;
+//   };
+// }
 
 export enum AuthPage {
   SignUp = 'signup',
