@@ -2,7 +2,7 @@ resource "aws_dynamodb_table" "site_db" {
   name = "kendra-btns-site-db${data.null_data_source.chalice.inputs.stage}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key = "user"
-  range_key = "site"
+  range_key = "site_id"
 
   attribute {
     name = "user"
@@ -10,7 +10,7 @@ resource "aws_dynamodb_table" "site_db" {
   }
 
   attribute {
-    name = "site"
+    name = "site_id"
     type = "S"
   }
 
@@ -22,11 +22,11 @@ resource "aws_dynamodb_table" "site_db" {
 resource "aws_dynamodb_table" "page_db" {
   name = "kendra-btns-page-db${data.null_data_source.chalice.inputs.stage}"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key = "site"
+  hash_key = "site_id"
   range_key = "url"
 
   attribute {
-    name = "site"
+    name = "site_id"
     type = "S"
   }
 
@@ -49,7 +49,7 @@ resource "aws_dynamodb_table" "page_db" {
   global_secondary_index {
     name = "user_by_site"
     hash_key = "user"
-    range_key = "site"
+    range_key = "site_id"
     projection_type = "ALL"
   }
 }
