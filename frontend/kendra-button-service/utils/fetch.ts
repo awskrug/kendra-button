@@ -1,36 +1,28 @@
-import { getSearchQry, validationQry } from '../graphql';
+import {
+  GqlSearchResult,
+  GraphQLResult,
+  getSearchQry,
+  validationQry,
+} from '../graphql';
 interface Props {
   text: string;
   site: string;
   isValidation?: boolean;
   dev?: string;
 }
-interface GraphQLResult<T = object> {
-  data?: T;
-  errors?: [
-    {
-      locations: object;
-      message: string;
-      path: object;
-    },
-  ];
-  extensions?: {
-    [key: string]: any;
-  };
-}
 
-interface fetchResult {
+interface FetchResult<T> {
   status: number;
   message?: string;
-  data?: any;
+  data?: T;
 }
 
-const callGraphql = async ({
+const callGraphql = async <T>({
   text = '',
   site = '',
   isValidation,
   dev,
-}: Props): Promise<fetchResult> => {
+}: Props): Promise<FetchResult<T>> => {
   const qry = isValidation
     ? validationQry({ site })
     : getSearchQry({
@@ -48,7 +40,7 @@ const callGraphql = async ({
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query: qry }),
   });
-  const resJson: GraphQLResult<any> = await res.json();
+  const resJson: GraphQLResult<T> = await res.json();
 
   if (resJson.errors && resJson.errors.length > 0) {
     const error = resJson.errors[0].message;
