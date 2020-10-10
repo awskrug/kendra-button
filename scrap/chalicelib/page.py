@@ -7,7 +7,6 @@ from pynamodb.models import Model
 
 DB = os.environ.get('pageDB', 'kendra-btns-page-dbdev')
 
-SAMPLE_USER = 'sample'
 
 
 class UserSiteIndex(GlobalSecondaryIndex):
@@ -24,7 +23,7 @@ class UserSiteIndex(GlobalSecondaryIndex):
         projection = AllProjection()
 
     user = UnicodeAttribute(hash_key=True)
-    site = UnicodeAttribute(range_key=True)
+    site_id = UnicodeAttribute(range_key=True)
 
 
 class Page(Model):
@@ -32,7 +31,7 @@ class Page(Model):
         table_name = DB
         region = 'us-west-2'
 
-    site = UnicodeAttribute(hash_key=True)
+    site_id = UnicodeAttribute(hash_key=True)
     url = UnicodeAttribute(range_key=True)
     user = UnicodeAttribute()
     _type = UnicodeAttribute(attr_name="type", default='html')
@@ -46,7 +45,7 @@ class Page(Model):
 
     def to_dict(self):
         return dict(
-            site=self.site,
+            site_id=self.site_id,
             url=self.url,
             type=self._type,
             doc_id=self.doc_id,
@@ -62,11 +61,10 @@ class Page(Model):
 
 
 if __name__ == '__main__':
-    p = Page("asvvta", "https://www.yna.co.kr/index?site=header_loasdfasgo", )
-    p.update(
-        [
-            Page.user | 'avda',
-            Page.scraped.set(False)
-        ]
-    )
-    print(p)
+    count = 0
+    with Page.batch_write() as batch:
+        for p in Page.scan():
+            count += 1
+            batch.delete(p)
+            if count%1000==0:
+                print(f'delete {count} page')

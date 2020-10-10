@@ -1,4 +1,3 @@
-import base64
 import json
 import os
 from io import BytesIO
@@ -8,7 +7,6 @@ from urllib.parse import urldefrag
 import arrow
 import boto3
 import shortuuid
-from botocore.exceptions import ClientError
 
 from chalicelib.page import Page
 from chalicelib.utils import AsyncCutBrowserSession
@@ -20,9 +18,6 @@ PAGE_QUE_URL = os.environ.get('pageQueUrl')
 S3 = os.environ.get('S3', 'kendra-buttons-everypython-store-dev')
 BUCKET = boto3.resource('s3').Bucket(S3)
 CLIENT = boto3.client('sqs')
-
-
-
 
 
 def is_local_env():
@@ -59,7 +54,7 @@ def convert_url_to_key(url):
 
 
 class WorkerMsg(TypedDict):
-    site: str
+    site_id: str
     url: str
     domain: str
     user: str
@@ -71,7 +66,7 @@ class WorkerMsg(TypedDict):
 
 async def handler(messages: List[WorkerMsg]):
     for msg in messages:
-        site = msg['site']
+        site_id = msg['site_id']
         url = msg['url']
         domain = msg.get('domain', '')
         pattern = "*"
@@ -85,7 +80,7 @@ async def handler(messages: List[WorkerMsg]):
         else:
             key = shortuuid.uuid(name=url)
             meta_key = f"{key}.metadata.json"
-            doc_id = f"{site}:{key}"
+            doc_id = f"{site_id}:{key}"
 
         f = BytesIO(html.raw_html)
         BUCKET.upload_fileobj(f, key, ExtraArgs={"ACL": "bucket-owner-full-control"})
@@ -96,7 +91,7 @@ async def handler(messages: List[WorkerMsg]):
             "DocumentId": doc_id,
             "Attributes": {
                 "_source_uri": url,
-                "site": site,
+                "site_id": site_id,
                 "domain": domain,
             },
             "Title": doc_title,
@@ -119,7 +114,7 @@ async def handler(messages: List[WorkerMsg]):
                 Page.meta_obj_key.set(meta_key),
             ]
         try:
-            Page(site, url).update(updates)
+            Page(site_id, url).update(updates)
         except Page.DoesNotExist:
             print(f"Fail update scrap {url} result")
             continue
@@ -128,7 +123,7 @@ async def handler(messages: List[WorkerMsg]):
         links = {refine_url(l) for l in html.absolute_links if l != url and (domain in l) and verify(pattern, url)}
         for link in links:
             try:
-                page = Page.get(site, link)
+                page = Page.get(site_id, link)
                 page.update(
                     [Page.scraped.set(False)],
                     # 한시간 이내 수집 했으면 수집 안함
@@ -136,10 +131,10 @@ async def handler(messages: List[WorkerMsg]):
                 )
             except Page.DoesNotExist:
                 page = Page(
-                    site, link,
+                    site_id, link,
                     _type='html',
                     user=msg['user'],
                 )
                 page.save()
             except Exception:
-                print(f'already scraped {site} : {url}')
+                print(f'already scraped {site_id} : {url}')

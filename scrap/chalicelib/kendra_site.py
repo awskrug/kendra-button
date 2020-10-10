@@ -1,13 +1,28 @@
 import os
 
 import graphene
+import jwt
+import shortuuid
 from graphene_pynamodb import PynamoObjectType
 from pynamodb.attributes import UnicodeAttribute
 from pynamodb.models import Model
 
 from chalicelib.page import Page
+from chalicelib.utils import get_secret
 
 DB = os.environ.get('siteDB', 'kendra-btns-site-dbdev')
+
+
+def _generate_token(site_id, user, domain, sub='search', **kwargs):
+    jwt_secret_key = get_secret()['jwt_secret_key']
+    payload = {
+        'site_id': site_id,
+        'sub': 'search',
+        'user': user,
+        'domain': domain,
+        **kwargs,
+    }
+    return jwt.encode(payload, jwt_secret_key, algorithm='HS256')
 
 
 class Site(Model):
@@ -16,10 +31,29 @@ class Site(Model):
         region = 'us-west-2'
 
     user = UnicodeAttribute(hash_key=True)
-    site = UnicodeAttribute(range_key=True)
+    site_id = UnicodeAttribute(range_key=True)
+    token = UnicodeAttribute()
+    name = UnicodeAttribute()
     domain = UnicodeAttribute()
     scrap_endpoint = UnicodeAttribute()
     scrap_interval = UnicodeAttribute(default='daily')
+
+    def update_token(self):
+        self.token = _generate_token(self.site_id, self.user, self.domain)
+
+    @classmethod
+    def create_site(cls, user: str, name: str, domain: str, scrap_endpoint: str, scrap_interval: str = "daily"):
+        site_id = shortuuid.uuid()
+        site = cls(
+            user, site_id,
+            name=name,
+            domain=domain,
+            scrap_endpoint=scrap_endpoint,
+            scrap_interval=scrap_interval,
+        )
+        site.update_token()
+        site.save()
+        return site
 
 
 class CrawlerStatus(graphene.ObjectType):
@@ -33,11 +67,11 @@ class SiteNode(PynamoObjectType):
 
     crawler_status = graphene.Field(CrawlerStatus)
 
-    def resolve_crawler_status(self, info, ):
-        total_count = Page.user_site_index.count(self.user, range_key_condition=Page.site == self.site)
+    def resolve_crawler_status(self: Site, info, ):
+        total_count = Page.user_site_index.count(self.user, range_key_condition=Page.site_id == self.site_id)
         done = Page.user_site_index.count(
             self.user,
-            range_key_condition=Page.site == self.site,
+            range_key_condition=Page.site_id == self.site_id,
             filter_condition=Page.scraped == True
         )
 
@@ -53,10 +87,10 @@ class Query:
     sites = graphene.List(SiteNode)
     sites_page_nation = graphene.Field(SiteList, page_size=graphene.Int(), last_key=graphene.String())
 
-    site = graphene.Field(SiteNode, site=graphene.String())
+    site = graphene.Field(SiteNode, site_id=graphene.String())
 
-    def resolve_site(self, info, site: str):
-        return Site.get(info.context.get('user'), site)
+    def resolve_site(self, info, site_id: str):
+        return Site.get(info.context.get('user'), site_id)
 
     def resolve_sites(self, info):
         results = []
@@ -93,39 +127,42 @@ class Query:
 
 class SiteCreate(graphene.Mutation):
     class Arguments:
-        site = graphene.String(required=True)
+        name = graphene.String(required=True)
         domain = graphene.String(required=True)
         scrap_endpoint = graphene.String(required=True)
 
     site = graphene.Field(SiteNode)
 
-    def mutate(self, info, site, domain, scrap_endpoint):
+    def mutate(self, info, name, domain, scrap_endpoint):
         user = info.context.get('user')
-        if Site.count(user, Site.site == site):
+        if Site.count(user, Site.name == name):
             raise Exception('duplicated site name')
-        data = Site(user, site, domain=domain, scrap_endpoint=scrap_endpoint)
-        data.save()
-        page = Page(site, data.scrap_endpoint, user=user, _type='html')
+        site = Site.create_site(user, name, domain, scrap_endpoint)
+        page = Page(name, site.site_id, user=user, _type='html')
         page.save()
-        return SiteCreate(site=data)
+        return SiteCreate(site=site)
 
 
 class SiteUpdate(graphene.Mutation):
     class Arguments:
-        site = graphene.String(required=True)
+        site_id = graphene.String(required=True)
+        name = graphene.String(required=False)
         domain = graphene.String(required=False)
 
     site = graphene.Field(SiteNode)
 
-    def mutate(self, info, site, domain=None):
+    def mutate(self, info, site_id, name=None, domain=None):
         user = info.context.get('user')
         try:
-            item = Site.get(user, site)
+            item = Site.get(user, site_id)
         except Exception as e:
             raise Exception('there is no site')
         actions = []
         if domain:
             actions.append(Site.domain.set(domain))
+            actions.append(Site.token.set(_generate_token(site_id, user, domain)))
+        if name:
+            actions.append(Site.name.set(name))
         if actions:
             item.update(actions=actions)
         return SiteUpdate(site=item)
@@ -133,18 +170,18 @@ class SiteUpdate(graphene.Mutation):
 
 class SiteDelete(graphene.Mutation):
     class Arguments:
-        site = graphene.String(required=True)
+        site_id = graphene.String(required=True)
 
     ok = graphene.Boolean()
 
-    def mutate(self, info, site):
+    def mutate(self, info, site_id):
         user = info.context.get('user')
         try:
-            Site(info.context.get('user'), site).delete()
+            Site(info.context.get('user'), site_id).delete()
         except Exception as e:
             print(e)
             return SiteDelete(ok=False)
-        pages = Page.user_site_index.query(user,Page.site == site)
+        pages = Page.user_site_index.query(user, Page.site_id == site_id)
         with Page.batch_write() as batch:
             for page in pages:
                 batch.delete(page)

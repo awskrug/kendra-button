@@ -1,5 +1,6 @@
-import os
 import json
+import os
+
 import boto3
 import pyppeteer
 import shortuuid
@@ -44,8 +45,6 @@ class AsyncCutBrowserSession(AsyncHTMLSession):
         return self._browser
 
 
-
-
 def make_hash(name: str):
     return shortuuid.uuid(name=name)
 
@@ -72,8 +71,9 @@ class Dict2Obj(object):
                 setattr(self, k, Dict2Obj(v) if isinstance(v, dict) else v)
 
 
+secret_name = os.environ.get('secrets', 'kendera-btn/dev/query-api')
 
-secret_name = os.environ.get('secrets','kendera-btn/dev/query-api')
+
 def get_secret():
     region_name = "us-west-2"
 
@@ -88,7 +88,7 @@ def get_secret():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
-        return json.loads( get_secret_value_response['SecretString'])
+        return json.loads(get_secret_value_response['SecretString'])
     except ClientError as e:
         if e.response['Error']['Code'] == 'DecryptionFailureException':
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
@@ -112,4 +112,3 @@ def get_secret():
             raise e
         else:
             raise e
-
