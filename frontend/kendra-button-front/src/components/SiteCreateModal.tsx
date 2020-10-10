@@ -117,6 +117,7 @@ const SiteCreateModal = (): ReactElement => {
         okaction(state);
       }
       setLoading(false);
+      alert("It would take up to 10 minutes to crawl and 60 minutes to index your site.")
       hideModal();
     } catch (e) {
       logger.log(e);
