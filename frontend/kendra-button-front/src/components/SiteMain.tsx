@@ -121,7 +121,7 @@ const SiteMain = (props: Props): ReactElement => {
       type: 'plain',
       display: true,
       title: 'Update Site Success',
-      content: 'Update site info is successfully changed!',
+      content: 'It would take up to 10 minutes to crawl and 60 minutes to index your site.',
     });
     setIsLoading(false);
   };
