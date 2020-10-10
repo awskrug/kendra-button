@@ -1,5 +1,6 @@
 import { KeyboardEvent, ReactElement, useState } from 'react';
 
+import { GqlSearchResult } from '../graphql';
 import { SearchResult } from './SearchResult';
 import { callGraphql } from '../utils';
 
@@ -32,33 +33,33 @@ const Search = (props: Props): ReactElement => {
     setIsLoading(true);
 
     // validation
-    const validationRes = await callGraphql({
-      text: inputValue,
-      site,
-      isValidation: true,
-      dev,
-    });
-    console.log('validationRes', validationRes);
-    if (validationRes.status > 200) {
-      setError('validation Query Error: ' + validationRes.message);
-      setIsLoading(false);
-      return;
-    }
-    // compare between validationRes.domain and props.domain
-    if (validationRes.data.site.domain !== domain) {
-      setError(
-        `Domain address of this site's configuration does not match the domain address here: (${domain})`,
-      );
-      setIsLoading(false);
-      return;
-    }
+    // const validationRes = await callGraphql({
+    //   text: inputValue,
+    //   site,
+    //   isValidation: true,
+    //   dev,
+    // });
+    // console.log('validationRes', validationRes);
+    // if (validationRes.status > 200) {
+    //   setError('validation Query Error: ' + validationRes.message);
+    //   setIsLoading(false);
+    //   return;
+    // }
+    // // compare between validationRes.domain and props.domain
+    // if (validationRes.data.site.domain !== domain) {
+    //   setError(
+    //     `Domain address of this site's configuration does not match the domain address here: (${domain})`,
+    //   );
+    //   setIsLoading(false);
+    //   return;
+    // }
 
     // Data Fetch
-    const res = await callGraphql({ text: inputValue, site });
+    const res = await callGraphql<GqlSearchResult>({ text: inputValue, site });
     if (res.status > 200) {
       setError('Query Error: ' + res.message);
     } else {
-      setResult(res);
+      setResult([...res.data.search.items]);
     }
     setIsLoading(false);
   };
