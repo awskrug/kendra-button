@@ -1,9 +1,4 @@
-import {
-  GqlSearchResult,
-  GraphQLResult,
-  getSearchQry,
-  validationQry,
-} from '../graphql';
+import { GraphQLResult, getSearchQry, validationQry } from '../graphql';
 interface Props {
   text: string;
   site: string;
