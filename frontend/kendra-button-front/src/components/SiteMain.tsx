@@ -129,10 +129,21 @@ const SiteMain = (props: Props): ReactElement => {
       type: 'plain',
       display: true,
       title: 'Update Site Success',
-      content:
-        'It would take up to 10 minutes to crawl and 60 minutes to index your site.',
+      content: (
+        <>
+          <div className="my-3">{`It would take up to 10 minutes to crawl and 60 minutes to index your site.`}</div>
+          <div className="my-2">
+            {`If you embed this to your site, `}{' '}
+            <u>{`you have to change the url`}</u>
+            {` looking `}
+            <b>{`"EMBED"`}</b>
+            {` instruction`}
+          </div>
+          <div className="my-2">{`because search token is re-genereated.`}</div>
+        </>
+      ),
     });
-    // TODO: 관리자한테 도메인 필드를 변경하면 꼭 새 토큰으로 변경하라고 고지 해줘야
+
     setIsLoading(false);
   };
 
