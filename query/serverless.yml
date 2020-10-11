@@ -19,6 +19,7 @@ functions:
       - http: 'ANY {proxy+}'
 
 custom:
+  stage:  ${opt:stage, 'dev'}
   wsgi:
     app: app.app
     pythonBin: python3 # Some systems with Python3 may require this

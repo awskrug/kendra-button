@@ -943,3 +943,16 @@ amplifyconfiguration.json
 amplify-build-config.json
 amplify-gradle-config.json
 amplifyxc.config
+
+scrap/.chalice/deployments/
+scrap/.chalice/venv/
+scrap/vendor
+!scrap/vendor/bin/headless-chromium
+
+scrap/terraform/deployment.zip
+!/scrap/vendor/requirements.txt
+!/scrap/vendor/bin/
+
+scrap/terraform/layer-deployment.zip
+
+scrap/terraform/chalice.tf.json

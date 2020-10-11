@@ -1,0 +1,48 @@
+name: Backend Dev Deploy
+
+on:
+  push:
+    branches:
+    - master
+    paths:
+    - 'scrap/**'
+  workflow_dispatch:
+
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: us-west-2
+      AWS_DEFAULT_REGION: us-west-2
+      CHALICE_STAGE: prod
+      TF_WORKSPACE: prod
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        terraform_version: 0.12.5
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: pip install
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r ./scrap/requirements-dev.txt
+
+    - name: install & deploy
+      run: |
+        cd ./scrap
+        chalice package --pkg-format terraform --stage prod ./terraform/
+        cd terraform && terraform init &&  terraform apply -auto-approve
+
