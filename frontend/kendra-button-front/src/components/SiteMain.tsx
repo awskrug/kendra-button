@@ -28,7 +28,7 @@ interface Props {
 const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
-  const { name, scrapEndpoint, domain, crawlerStatus, siteId } =
+  const { name, scrapEndpoint, domain, crawlerStatus, siteId, token } =
     props.siteInfo || {};
   const [domainInput, setDomainInput] = useState(domain);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +44,7 @@ const SiteMain = (props: Props): ReactElement => {
       type: 'plain',
       display: true,
       title: 'Embed kendra-button to your website',
-      content: <EmbedInstruction site={name} domain={domain} />,
+      content: <EmbedInstruction site={token} domain={domain} />,
     });
   };
   const askToDelete = (): void => {
@@ -117,7 +117,14 @@ const SiteMain = (props: Props): ReactElement => {
         siteId,
       },
     });
-    setDomainInput(res.data.updateSite.site.domain);
+
+    dispatch({
+      type: 'change-site',
+      payload: {
+        selectedSite: res.data.updateSite.site,
+      },
+    });
+
     setModalConfig({
       type: 'plain',
       display: true,
@@ -125,6 +132,7 @@ const SiteMain = (props: Props): ReactElement => {
       content:
         'It would take up to 10 minutes to crawl and 60 minutes to index your site.',
     });
+    // TODO: 관리자한테 도메인 필드를 변경하면 꼭 새 토큰으로 변경하라고 고지 해줘야
     setIsLoading(false);
   };
 
@@ -216,7 +224,7 @@ const SiteMain = (props: Props): ReactElement => {
       </div>
 
       <div className={`p-3`}>
-        <Search site={name} />
+        <Search token={token} />
       </div>
 
       <style jsx>{``}</style>
