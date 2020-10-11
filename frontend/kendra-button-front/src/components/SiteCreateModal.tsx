@@ -1,25 +1,18 @@
 import * as Yup from 'yup';
 
+import { GqlCreateSiteRes, createSite } from '../graphql/queries';
 import { ReactElement, useState } from 'react';
 import { callGraphql, regDomain } from '../utils';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Logger } from 'aws-amplify';
 import ReactTooltip from 'react-tooltip';
-import { Site } from '../types';
-import { createSite } from '../graphql/queries';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useFormik } from 'formik';
 
 const logger = new Logger('SiteCreateModal');
 
-interface ResCreateSite {
-  createSite: {
-    site: Site;
-  };
-}
 const SiteCreateModal = (): ReactElement => {
   const { modalConfig, setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
@@ -31,7 +24,7 @@ const SiteCreateModal = (): ReactElement => {
       site: '',
       url: '',
       domain: '',
-      term: 'd',
+      // term: 'd',
     },
     validationSchema: Yup.object({
       site: Yup.string().required(`"Title" is a required field`),
@@ -39,7 +32,7 @@ const SiteCreateModal = (): ReactElement => {
         .url(`invalid url address`)
         .required(`"url" is a required field`),
       domain: Yup.string().required(`"domain" is a required field`),
-      term: Yup.string().required(`"term" is a required field`),
+      // term: Yup.string().required(`"term" is a required field`),
     }),
     onSubmit: () => {},
   });
@@ -93,13 +86,13 @@ const SiteCreateModal = (): ReactElement => {
     setLoading(true);
 
     try {
-      const res: GraphQLResult<ResCreateSite> = await callGraphql({
+      const res = await callGraphql<GqlCreateSiteRes>({
         query: createSite,
         variables: {
-          site: formik.values.site,
-          scrapEndpoint: formik.values.url,
           domain: formik.values.domain,
-          term: formik.values.term,
+          name: formik.values.site,
+          scrapEndpoint: formik.values.url,
+          // term: formik.values.term,
         },
       });
 
@@ -118,7 +111,9 @@ const SiteCreateModal = (): ReactElement => {
       }
       setLoading(false);
       hideModal();
-      alert("It would take up to 10 minutes to crawl and 60 minutes to index your site.")
+      alert(
+        'It would take up to 10 minutes to crawl and 60 minutes to index your site.',
+      );
     } catch (e) {
       logger.log(e);
       setLoading(false);
@@ -259,7 +254,7 @@ const SiteCreateModal = (): ReactElement => {
                   <div className="invalid-feedback">{formik.errors.domain}</div>
                 )}
               </div>
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label
                   className="form-control-label font-weight-bold"
                   htmlFor="select-term"
@@ -284,7 +279,7 @@ const SiteCreateModal = (): ReactElement => {
                   <option value={`d`}>{`Daily`}</option>
                   <option value={`h`}>{`Hourly`}</option>
                 </select>
-              </div>
+              </div> */}
               <div className={`d-flex justify-content-end`}>
                 <button
                   className={`btn btn-primary shadow-sm`}

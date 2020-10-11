@@ -5,17 +5,17 @@ interface Props {
   query: string;
   variables?: object;
 }
-const callGraphql = async ({
+const callGraphql = async <T>({
   query,
   variables,
-}: Props): Promise<GraphQLResult<any>> => {
+}: Props): Promise<GraphQLResult<T>> => {
   const res = await API.graphql({
     query,
     variables,
     // @ts-ignore
     authMode: 'AMAZON_COGNITO_USER_POOLS',
   });
-  return res as GraphQLResult<any>;
+  return res as GraphQLResult<T>;
 };
 
 export { callGraphql };

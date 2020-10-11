@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 
-import { Site } from '../types';
+import { SiteNode } from '../graphql/queries';
 
 export type ReducerType =
   | 'reload-site'
@@ -19,7 +19,7 @@ export type ReducerType =
   | 'change-content';
 export interface State {
   theme?: string;
-  selectedSite?: Site;
+  selectedSite?: SiteNode;
   reloadSite?: boolean;
   loadingFlag?: boolean;
   content?: 'site' | 'settings';
