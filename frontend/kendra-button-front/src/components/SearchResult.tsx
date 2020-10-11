@@ -1,46 +1,83 @@
+import { useCallback, useState } from 'react';
+
+import { BaseDocument } from '../graphql/queries';
+
 interface Props {
   searchInput: string;
-  result: any;
+  result: BaseDocument[];
 }
+
+const pageCnt = 5;
 
 const SearchResult = (props: Props) => {
   const { searchInput, result } = props || {};
+  const [page, setPage] = useState<number>(0);
+
+  const Result = useCallback(() => {
+    return result.reduce((accuR, currR, idxR) => {
+      // 처음부터 특정 페이지까지 보기
+      if (pageCnt * (page + 1) <= idxR) {
+        return accuR;
+      }
+      // // 특정 페이지의 영역만 보기
+      // if (idxR < pageCnt * page || pageCnt * (page + 1) <= idxR) {
+      //   return accuR;
+      // }
+
+      const item = currR;
+      const text = item.excerpt.text;
+      const resultRange = item.excerpt.highlights.reduce((accu, curr, idx) => {
+        const start = curr.start;
+        const end = curr.end;
+        if (start > 0) {
+          accu.push(text.substring(0, start));
+        }
+        accu.push(
+          <strong key={'highlight-' + idx}>
+            {' '}
+            {text.substring(start, end)}
+          </strong>,
+        );
+        if (end < text.length) {
+          accu.push(text.substring(end, text.length));
+        }
+        return accu;
+      }, []);
+
+      const openUrl = (): void => {
+        window.open(item.url, '_blank');
+      };
+
+      accuR.push(
+        <div
+          className={`btn btn-light my-1 text-left`}
+          key={idxR}
+          onClick={openUrl}
+        >
+          <p className={`badge badge-pill badge-success`}> {idxR + 1}</p>
+          <p> {item.title.text}</p>
+          <p> {resultRange}</p>
+        </div>,
+      );
+      return accuR;
+    }, []);
+  }, [result, page]);
+
+  const appendNextPage = (): void => {
+    setPage(page + 1);
+  };
 
   return (
-    <div className="container">
+    <div className="">
       <p className={`lead`}>Search result for "{searchInput}"</p>
-      {result.map((item, idx) => {
-        if (idx <= 5) {
-          const highlights = item.excerpt.highlights[0];
-          const start = highlights.start;
-          const end = highlights.end;
-
-          const resultRange = [];
-
-          const text = item.excerpt.text;
-          if (start > 0) {
-            resultRange.push(text.substring(0, start));
-          }
-          resultRange.push(
-            <strong key={'highlight' + idx}>
-              {' '}
-              {text.substring(start, end)}
-            </strong>,
-          );
-
-          if (end < text.length) {
-            resultRange.push(text.substring(end, text.length));
-          }
-
-          return (
-            <div className={`my-1`} key={idx}>
-              <p className={`badge badge-pill badge-success`}> {idx + 1}</p>
-              <p> {item.title.text}</p>
-              <p> {resultRange}</p>
-            </div>
-          );
-        }
-      })}
+      <Result />
+      <div
+        role="button"
+        className={`btn btn-outline-primary font-weight-bold`}
+        onClick={appendNextPage}
+      >
+        Show More ...
+      </div>
     </div>
   );
 };
