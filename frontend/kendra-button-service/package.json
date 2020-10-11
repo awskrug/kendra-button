@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && next export",
-    "export": "yarn build && next export",
+    "export": "yarn build",
     "prestart": "yarn tsc",
     "start": "yarn dev"
   },

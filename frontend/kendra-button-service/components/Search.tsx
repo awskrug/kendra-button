@@ -1,3 +1,4 @@
+import { BaseDocument, GqlSearchResult } from '../graphql';
 import { KeyboardEvent, ReactElement, useState } from 'react';
 
 import { SearchResult } from './SearchResult';
@@ -12,8 +13,8 @@ interface Props {
 const Search = (props: Props): ReactElement => {
   const [inputValue, setInputValue] = useState<string>('');
   const [keyword, setKeywords] = useState<string>('');
-  const [result, setResult] = useState<any>([]);
-  const [error, setError] = useState<any>(null);
+  const [result, setResult] = useState<BaseDocument[]>([]);
+  const [error, setError] = useState<string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { site, domain, dev } = props;
@@ -22,7 +23,7 @@ const Search = (props: Props): ReactElement => {
     setInputValue(e.target.value);
   };
 
-  const searchHandler = async (): Promise<any> => {
+  const searchHandler = async (): Promise<void> => {
     if (inputValue.length === 0) {
       setError('Please type the keyword to find.');
       return;
@@ -31,34 +32,24 @@ const Search = (props: Props): ReactElement => {
     setKeywords(inputValue);
     setIsLoading(true);
 
-    // validation
-    const validationRes = await callGraphql({
+    // Data Fetch
+    const res = await callGraphql<GqlSearchResult>({
       text: inputValue,
       site,
-      isValidation: true,
       dev,
     });
-    console.log('validationRes', validationRes);
-    if (validationRes.status > 200) {
-      setError('validation Query Error: ' + validationRes.message);
-      setIsLoading(false);
-      return;
-    }
-    // compare between validationRes.domain and props.domain
-    if (validationRes.data.site.domain !== domain) {
-      setError(
-        `Domain address of this site's configuration does not match the domain address here: (${domain})`,
-      );
-      setIsLoading(false);
-      return;
-    }
-
-    // Data Fetch
-    const res = await callGraphql({ text: inputValue, site });
     if (res.status > 200) {
       setError('Query Error: ' + res.message);
+      // // compare between validationRes.domain and props.domain
+      // if (validationRes.data.site.domain !== domain) {
+      //   setError(
+      //     `Domain address of this site's configuration does not match the domain address here: (${domain})`,
+      //   );
+      //   setIsLoading(false);
+      //   return;
+      // }
     } else {
-      setResult(res);
+      setResult([...res.data.search.items]);
     }
     setIsLoading(false);
   };
@@ -90,16 +81,7 @@ const Search = (props: Props): ReactElement => {
             onClick={searchHandler}
           >{`Search`}</button>
         </div>
-        <style jsx>{`
-          .inputtext {
-            width: 80%;
-          }
-          .searchbtn {
-            width: 20%;
-          }
-        `}</style>
       </div>
-
       {isLoading ? (
         <div className={`p-3 text-primary font-weight-bold`}>Loading...</div>
       ) : !isLoading && !error && keyword.length > 0 ? (
@@ -109,6 +91,14 @@ const Search = (props: Props): ReactElement => {
           <span className={`font-weight-bold`}>{error}</span>
         </div>
       ) : null}
+      <style jsx>{`
+        .inputtext {
+          width: 80%;
+        }
+        .searchbtn {
+          width: 20%;
+        }
+      `}</style>
     </>
   );
 };

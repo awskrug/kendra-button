@@ -1,44 +1,27 @@
-import { getSearchQry, validationQry } from '../graphql';
+import { GraphQLResult, getSearchQry } from '../graphql';
 interface Props {
   text: string;
   site: string;
   isValidation?: boolean;
   dev?: string;
 }
-interface GraphQLResult<T = object> {
-  data?: T;
-  errors?: [
-    {
-      locations: object;
-      message: string;
-      path: object;
-    },
-  ];
-  extensions?: {
-    [key: string]: any;
-  };
-}
 
-interface fetchResult {
+interface FetchResult<T> {
   status: number;
   message?: string;
-  data?: any;
+  data?: T;
 }
 
-const callGraphql = async ({
+const callGraphql = async <T>({
   text = '',
   site = '',
   isValidation,
   dev,
-}: Props): Promise<fetchResult> => {
-  const qry = isValidation
-    ? validationQry({ site })
-    : getSearchQry({
-        text,
-        site,
-      });
-  console.log('callGraphql', { isValidation, dev });
-  console.log('qry:', qry);
+}: Props): Promise<FetchResult<T>> => {
+  const qry = getSearchQry({
+    text,
+    site,
+  });
 
   const reqUrl = dev
     ? 'https://dev.kendra-btns.whatilearened.today/noauth/graphql'
@@ -48,7 +31,7 @@ const callGraphql = async ({
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query: qry }),
   });
-  const resJson: GraphQLResult<any> = await res.json();
+  const resJson: GraphQLResult<T> = await res.json();
 
   if (resJson.errors && resJson.errors.length > 0) {
     const error = resJson.errors[0].message;
