@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { ReactElement, useMemo, useState } from 'react';
 
 import { BaseDocument } from '../graphql/queries';
 
@@ -9,11 +9,11 @@ interface Props {
 
 const pageCnt = 5;
 
-const SearchResult = (props: Props) => {
+const SearchResult = (props: Props): ReactElement => {
   const { searchInput, result } = props || {};
   const [page, setPage] = useState<number>(0);
 
-  const Result = useCallback(() => {
+  const Result = useMemo(() => {
     return result.reduce((accuR, currR, idxR) => {
       // 처음부터 특정 페이지까지 보기
       if (pageCnt * (page + 1) <= idxR) {
@@ -70,7 +70,7 @@ const SearchResult = (props: Props) => {
   return (
     <div className="">
       <p className={`lead`}>Search result for "{searchInput}"</p>
-      <Result />
+      {Result}
       <div
         role="button"
         className={`btn btn-outline-primary font-weight-bold`}
