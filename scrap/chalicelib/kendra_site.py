@@ -138,7 +138,7 @@ class SiteCreate(graphene.Mutation):
         if Site.count(user, Site.name == name):
             raise Exception('duplicated site name')
         site = Site.create_site(user, name, domain, scrap_endpoint)
-        page = Page(name, site.site_id, user=user, _type='html')
+        page = Page(site.site_id, scrap_endpoint, user=user, _type='html')
         page.save()
         return SiteCreate(site=site)
 
