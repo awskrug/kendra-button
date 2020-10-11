@@ -33,7 +33,7 @@ const SearchResult = (props: Props): ReactElement => {
           accu.push(text.substring(0, start));
         }
         accu.push(
-          <strong key={'highlight-' + idx}>
+          <strong key={'highlight-' + idx} className={`text-info`}>
             {' '}
             {text.substring(start, end)}
           </strong>,
