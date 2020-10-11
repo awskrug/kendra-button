@@ -4,7 +4,6 @@ export * from './Projects';
 export * from './Content';
 export * from './Loader';
 export * from './PageLoader';
-export * from './InputProject';
 export * from './PlainModal';
 export * from './SiteCreateModal';
 export * from './SiteEdit';

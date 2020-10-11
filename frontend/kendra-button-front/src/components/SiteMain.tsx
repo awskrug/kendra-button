@@ -1,34 +1,34 @@
 import { ChangeEvent, ReactElement, useEffect, useState } from 'react';
-import { Site, User } from '../types';
+import {
+  GqlDeleteSiteRes,
+  GqlUpdateSiteRes,
+  SiteNode,
+  deleteSite,
+  updateSite,
+} from '../graphql/queries';
 import { callGraphql, regDomain } from '../utils';
-import { deleteSite, updateSite } from '../graphql/queries';
 import { useMainContextImpls, useModalContextImpls } from '../contexts';
 
 import { EmbedInstruction } from './EmbedInstruction';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { GraphQLResult } from '@aws-amplify/api-graphql';
 import { Loader } from './Loader';
 import { Logger } from 'aws-amplify';
 import { ProgressBar } from './ProgressBar';
 import { Search } from './Search';
+import { User } from '../types';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 
 const logger = new Logger('SiteMain');
 
 interface Props {
   user?: User;
-  siteInfo?: Site;
-}
-interface ResUpdateSite {
-  updateSite: {
-    site: Site;
-  };
+  siteInfo?: SiteNode;
 }
 
 const SiteMain = (props: Props): ReactElement => {
   const { setModalConfig } = useModalContextImpls();
   const { dispatch } = useMainContextImpls();
-  const { site, scrapEndpoint, term, domain, crawlerStatus } =
+  const { name, scrapEndpoint, domain, crawlerStatus, siteId, token } =
     props.siteInfo || {};
   const [domainInput, setDomainInput] = useState(domain);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,7 +44,7 @@ const SiteMain = (props: Props): ReactElement => {
       type: 'plain',
       display: true,
       title: 'Embed kendra-button to your website',
-      content: <EmbedInstruction site={site} domain={domain} />,
+      content: <EmbedInstruction site={token} domain={domain} />,
     });
   };
   const askToDelete = (): void => {
@@ -52,13 +52,13 @@ const SiteMain = (props: Props): ReactElement => {
       type: 'plain',
       display: true,
       title: 'Are you sure?',
-      content: `Are you really going to delete this site "${site}"?`,
+      content: `Are you really going to delete this site "${name}"?`,
       okaction: async ({ hideModal }) => {
         try {
-          const res = await callGraphql({
+          const res = await callGraphql<GqlDeleteSiteRes>({
             query: deleteSite,
             variables: {
-              site,
+              siteId,
             },
           });
           logger.info('delete res', res);
@@ -109,20 +109,41 @@ const SiteMain = (props: Props): ReactElement => {
     }
 
     setIsLoading(true);
-    const res: GraphQLResult<ResUpdateSite> = await callGraphql({
+    const res = await callGraphql<GqlUpdateSiteRes>({
       query: updateSite,
       variables: {
-        site,
+        name,
         domain: domainInput,
+        siteId,
       },
     });
-    setDomainInput(res.data.updateSite.site.domain);
+
+    dispatch({
+      type: 'change-site',
+      payload: {
+        selectedSite: res.data.updateSite.site,
+      },
+    });
+
     setModalConfig({
       type: 'plain',
       display: true,
       title: 'Update Site Success',
-      content: 'It would take up to 10 minutes to crawl and 60 minutes to index your site.',
+      content: (
+        <>
+          <div className="my-3">{`It would take up to 10 minutes to crawl and 60 minutes to index your site.`}</div>
+          <div className="my-2">
+            {`If you embed this to your site, `}{' '}
+            <u>{`you have to change the url`}</u>
+            {` looking `}
+            <b>{`"EMBED"`}</b>
+            {` instruction`}
+          </div>
+          <div className="my-2">{`because search token is re-genereated.`}</div>
+        </>
+      ),
     });
+
     setIsLoading(false);
   };
 
@@ -131,7 +152,7 @@ const SiteMain = (props: Props): ReactElement => {
       <div
         className={`h3 p-3 d-flex justify-content-between align-items-center`}
       >
-        {site}
+        {name}
       </div>
       <div className={`d-flex justify-content-between p-3`}>
         <div
@@ -179,7 +200,7 @@ const SiteMain = (props: Props): ReactElement => {
             value={domainInput}
           />
         </div>
-        <div className="form-group">
+        {/* <div className="form-group">
           <label
             className="form-control-label font-weight-bold"
             htmlFor="select-term"
@@ -193,7 +214,7 @@ const SiteMain = (props: Props): ReactElement => {
             <option value={`d`}>{`Daily`}</option>
             <option value={`h`}>{`Hourly`}</option>
           </select>
-        </div>
+        </div> */}
         <div className={`text-right`}>
           <button
             className={`btn ${
@@ -214,7 +235,7 @@ const SiteMain = (props: Props): ReactElement => {
       </div>
 
       <div className={`p-3`}>
-        <Search site={site} />
+        <Search token={token} />
       </div>
 
       <style jsx>{``}</style>
