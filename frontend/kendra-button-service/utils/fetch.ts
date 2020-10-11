@@ -1,4 +1,4 @@
-import { GraphQLResult, getSearchQry, validationQry } from '../graphql';
+import { GraphQLResult, getSearchQry } from '../graphql';
 interface Props {
   text: string;
   site: string;
@@ -18,14 +18,10 @@ const callGraphql = async <T>({
   isValidation,
   dev,
 }: Props): Promise<FetchResult<T>> => {
-  const qry = isValidation
-    ? validationQry({ site })
-    : getSearchQry({
-        text,
-        site,
-      });
-  console.log('callGraphql', { isValidation, dev });
-  console.log('qry:', qry);
+  const qry = getSearchQry({
+    text,
+    site,
+  });
 
   const reqUrl = dev
     ? 'https://dev.kendra-btns.whatilearened.today/noauth/graphql'
