@@ -156,7 +156,9 @@ export const siteItem = `query SiteItem(
 ){
 	site(siteId: $siteId) {
     user
-    site
+    name
+    token
+    siteId
     domain
     scrapEndpoint
     crawlerStatus {
