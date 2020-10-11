@@ -1,6 +1,7 @@
 import {
   GqlSiteItemRes,
   GqlSiteListRes,
+  SiteNode,
   siteItem,
   siteList,
 } from '../graphql/queries';
@@ -18,8 +19,8 @@ const logger = new Logger('Projects');
 interface Props {}
 
 const Projects = (props: Props): ReactElement => {
-  const [sites, setSites] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [sites, setSites] = useState<SiteNode[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { states, dispatch } = useMainContextImpls();
   const { setModalConfig } = useModalContextImpls();
 
@@ -92,12 +93,12 @@ const Projects = (props: Props): ReactElement => {
           ) : (
             sites.map((item) => (
               <div
-                key={item.site}
+                key={item.siteId}
                 className={`list-group-item list-group-item-action`}
                 role={`button`}
                 onClick={setSelectedSite}
               >
-                {item.site}
+                {item.name}
               </div>
             ))
           )}
