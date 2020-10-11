@@ -66,7 +66,7 @@ const Projects = (props: Props): ReactElement => {
     });
     const res = await callGraphql<GqlSiteItemRes>({
       query: siteItem,
-      variables: { siteId: target.innerText },
+      variables: { siteId: target.id },
     });
     dispatch({
       type: 'change-site',
@@ -94,6 +94,7 @@ const Projects = (props: Props): ReactElement => {
             sites.map((item) => (
               <div
                 key={item.siteId}
+                id={item.siteId}
                 className={`list-group-item list-group-item-action`}
                 role={`button`}
                 onClick={setSelectedSite}
