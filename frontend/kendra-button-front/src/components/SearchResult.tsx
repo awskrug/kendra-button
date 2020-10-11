@@ -49,15 +49,22 @@ const SearchResult = (props: Props): ReactElement => {
       };
 
       accuR.push(
-        <div
-          className={`btn btn-light my-1 text-left`}
-          key={idxR}
-          onClick={openUrl}
-        >
-          <p className={`badge badge-pill badge-success`}> {idxR + 1}</p>
-          <p> {item.title.text}</p>
-          <p> {resultRange}</p>
-        </div>,
+        <>
+          <div
+            className={`btn btn-light my-1 text-left searchresult`}
+            key={idxR}
+            onClick={openUrl}
+          >
+            <p className={`badge badge-pill badge-success`}> {idxR + 1}</p>
+            <p>{item.title.text}</p>
+            <p className={``}>{resultRange}</p>
+          </div>
+          <style jsx>{`
+            .searchresult {
+              text-transform: none !important;
+            }
+          `}</style>
+        </>,
       );
       return accuR;
     }, []);
