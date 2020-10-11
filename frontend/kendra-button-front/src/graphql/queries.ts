@@ -59,8 +59,8 @@ export interface GqlCreateSiteRes {
 }
 
 export const updateSite = `mutation Update(
-  $domain: String!
-  $name: String!
+  $domain: String
+  $name: String
   $siteId: String!
 ) {
   updateSite(
@@ -171,7 +171,7 @@ export interface GqlSiteItemRes {
   site: SiteNode;
 }
 
-export const search = `query($keyword:String!, $token: String!, $size: String!, $page: String!){
+export const search = `query($keyword:String!, $token: String!, $size: Int, $page: Int){
   search(text: $keyword token: $token size: $size page: $page){
     items{
       url
