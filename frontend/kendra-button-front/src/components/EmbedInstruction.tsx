@@ -59,10 +59,10 @@ const EmbedInstruction = (props: Props): ReactElement => {
           </div>
           <div
             ref={codeRefOne}
-            className={`border border-secondary bg-light rounded p-2 shadow-sm text-primary`}
+            className={`border border-secondary bg-light rounded p-2 shadow-sm text-primary text-break`}
           >{`
-          <script type="text/javascript" src="http://button.kendra.fun/kendra.js?site=${site}&target=#target" defer></script>
-        `}</div>
+            <script type="text/javascript" src="http://button.kendra.fun/kendra.js?site=${site}&target=#target" defer></script>
+          `}</div>
           <div className={`p-2`}>
             <div>
               * <span className={`badge-pill badge-primary`}>target</span> is
@@ -102,7 +102,7 @@ const EmbedInstruction = (props: Props): ReactElement => {
           </div>
           <div
             ref={codeRefTwo}
-            className={`border border-secondary bg-light rounded p-2 shadow-sm text-primary`}
+            className={`border border-secondary bg-light rounded p-2 shadow-sm text-primary text-break`}
           >{`
           <script type="text/javascript" src="http://button.kendra.fun/kendra.js?site=${site}&floating=true" defer></script>
         `}</div>
@@ -140,7 +140,7 @@ const EmbedInstruction = (props: Props): ReactElement => {
           </div>
           <div
             ref={codeRefThree}
-            className={`border border-secondary bg-light rounded p-2 shadow-sm text-primary`}
+            className={`border border-secondary bg-light rounded p-2 shadow-sm text-primary text-break`}
           >{`
           <script type="text/javascript" src="http://button.kendra.fun/kendra.js?site=${site}&target=#target&floating=true" defer></script>
         `}</div>
