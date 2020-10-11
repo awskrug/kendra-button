@@ -17,12 +17,12 @@ def _generate_token(site_id, user, domain, sub='search', **kwargs):
     jwt_secret_key = get_secret()['jwt_secret_key']
     payload = {
         'site_id': site_id,
-        'sub': 'search',
+        'sub': sub,
         'user': user,
         'domain': domain,
         **kwargs,
     }
-    return jwt.encode(payload, jwt_secret_key, algorithm='HS256')
+    return jwt.encode(payload, jwt_secret_key, algorithm='HS256').decode('utf-8')
 
 
 class Site(Model):
