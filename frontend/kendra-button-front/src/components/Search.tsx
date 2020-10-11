@@ -20,6 +20,7 @@ const Search = (props: Props): ReactElement => {
   useEffect(() => {
     setInputValue('');
     setKeywords('');
+    setResult([]);
   }, [token]);
 
   const onChangeHandler = (e) => {
