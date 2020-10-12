@@ -1,21 +1,27 @@
-import { KeyboardEvent, ReactElement, useState } from 'react';
+import { BaseDocument, GqlSearchRes, search } from '../graphql/queries';
+import { KeyboardEvent, ReactElement, useEffect, useState } from 'react';
 
 import { SearchResult } from './SearchResult';
 import { callGraphql } from '../utils';
-import { search } from '../graphql/queries';
 
 interface Props {
-  site: string;
+  token: string;
 }
 
 const Search = (props: Props): ReactElement => {
+  const { token } = props;
+
   const [inputValue, setInputValue] = useState<string>('');
   const [keyword, setKeywords] = useState<string>('');
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<any>([]);
+  const [result, setResult] = useState<BaseDocument[]>([]);
 
-  const { site } = props;
+  useEffect(() => {
+    setInputValue('');
+    setKeywords('');
+    setResult([]);
+  }, [token]);
 
   const onChangeHandler = (e) => {
     setInputValue(e.target.value);
@@ -31,11 +37,11 @@ const Search = (props: Props): ReactElement => {
     setKeywords(inputValue);
 
     try {
-      const res = await callGraphql({
+      const res = await callGraphql<GqlSearchRes>({
         query: search,
         variables: {
-          site,
           keyword: inputValue,
+          token,
         },
       });
       setResult(res.data.search.items);
