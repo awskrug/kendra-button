@@ -2,6 +2,7 @@
   var kendraWrapperId = 'kendra-button-wraper';
   var kendraIframeId = 'kendra-button-iframe';
   var node = document.createElement('div');
+  node.setAttribute('style', 'height: 50vh;');
   node.id = kendraWrapperId;
 
   var myName = 'kendra.js';
@@ -69,7 +70,7 @@
       floatingNode.appendChild(iframenode);
       floatingNode.setAttribute(
         'style',
-        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; height: 20%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;',
+        'position: fixed; bottom: 1rem; right: 1rem; max-width: 90%; max-height: 50%;width: 50%;height:35%;border-radius: .5rem;box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.3);overflow: auto;',
       );
       console.log('floatingNode', { floatingNode });
       document.body.appendChild(floatingNode);
