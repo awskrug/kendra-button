@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { ReactElement } from 'react';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 
@@ -23,15 +22,10 @@ const ViewSource = (props: Props): ReactElement => {
   const viewSource = (): void => {
     window.open(githubLink, '_blank');
   };
-  const faPropIcon = faGithub as IconProp;
   return (
     <>
       <div className={`viewsource d-flex ${extraClass}`} onClick={viewSource}>
-        <FontAwesomeIcon
-          role="button"
-          icon={faPropIcon}
-          className={sizeClass}
-        />
+        <FontAwesomeIcon role="button" icon={faGithub} className={sizeClass} />
         {text && <span className={`ml-2`}>{text}</span>}
       </div>
       <style jsx>{`
