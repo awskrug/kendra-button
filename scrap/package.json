@@ -3,7 +3,7 @@
   "description": "",
   "version": "0.1.0",
   "dependencies": {
-    "serverless": "^1.72.0",
+    "serverless": "^3.24.1",
     "to": "^0.2.9",
     "update": "^0.7.4"
   },
